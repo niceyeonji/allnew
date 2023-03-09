@@ -1,0 +1,4 @@
+     1	my home is /root
+     2	my prompt is [\[\e[1;31m\]\u\[\e[m\]@\[\e[1;32m\]\h\[\e[m\] \[\e[1;36m\]\w\[\e[m\]]\$ 
+     3	current directory is /work
+     4	today is 2023. 03. 09. (목) 09:32:23 KST
