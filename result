@@ -1,0 +1,30 @@
+합계 2744420
+drwxr-xr-x  22 root root         4096  3월  8 11:50 .
+drwxr-xr-x  22 root root         4096  3월  8 11:50 ..
+lrwxrwxrwx   1 root root            7  3월  6 15:27 bin -> usr/bin
+drwxr-xr-x   4 root root         4096  3월  9 09:04 boot
+drwxrwxr-x   2 root root         4096  3월  6 15:30 cdrom
+drwxrwx---   1 root vboxsf       8192  3월 10 11:32 data
+drwxr-xr-x  19 root root         4100  3월 10 11:17 dev
+drwxr-xr-x 130 root root        12288  3월 10 15:11 etc
+drwxr-xr-x   3 root root         4096  3월  9 14:37 home
+lrwxrwxrwx   1 root root            7  3월  6 15:27 lib -> usr/lib
+lrwxrwxrwx   1 root root            9  3월  6 15:27 lib32 -> usr/lib32
+lrwxrwxrwx   1 root root            9  3월  6 15:27 lib64 -> usr/lib64
+lrwxrwxrwx   1 root root           10  3월  6 15:27 libx32 -> usr/libx32
+drwx------   2 root root        16384  3월  6 15:27 lost+found
+drwxr-xr-x   3 root root         4096  3월  6 16:42 media
+drwxr-xr-x   2 root root         4096  2월 23 12:57 mnt
+drwxr-xr-x   3 root root         4096  3월  6 16:43 opt
+dr-xr-xr-x 297 root root            0  3월 10 11:17 proc
+drwx------  10 root root         4096  3월 10 15:30 root
+drwxr-xr-x  36 root root         1040  3월 10 14:57 run
+lrwxrwxrwx   1 root root            8  3월  6 15:27 sbin -> usr/sbin
+drwxr-xr-x  11 root root         4096  2월 23 13:03 snap
+drwxr-xr-x   2 root root         4096  2월 23 12:57 srv
+-rw-------   1 root root   2810183680  3월  6 15:27 swapfile
+dr-xr-xr-x  13 root root            0  3월 10 11:17 sys
+drwxrwxrwt  20 root root         4096  3월 10 15:31 tmp
+drwxr-xr-x  14 root root         4096  2월 23 12:57 usr
+drwxr-xr-x  14 root root         4096  2월 23 13:02 var
+drwxr-xr-x   5 root root         4096  3월 10 15:33 work
