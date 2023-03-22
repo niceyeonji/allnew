@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-set -- $(getopt -q ab:cd "$@")
+set -- $(getopt -q ab:c:d "$@")
 #
 echo
 while [ -n "$1" ]
@@ -10,7 +10,9 @@ do
 	-b) param="$2"
 	    echo "Found the -b option. with parameter value $param"
 	    shift ;;
-	-c) echo "Found the -c option" ;;
+	-c) param="$2"
+	    echo "Found the -c option, with parameter value $param"
+	    shift ;;
 	--) shift
 	    break ;;
 	*) echo "$1 is not an option" ;;
