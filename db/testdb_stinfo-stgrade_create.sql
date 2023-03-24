@@ -1,7 +1,7 @@
 use testdb;
 show tables;
 
-create table st_info(ST_ID int, NAME varchar(20), DEPT varchar(25)) st_gradest_gradedefault charset=utf8;
+create table st_info(ST_ID int, NAME varchar(20), DEPT varchar(25)) default	charset=utf8;
 show tables;
 
 create table st_grade(ST_ID int, Linux int, DB int);
