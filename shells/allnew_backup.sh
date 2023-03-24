@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /work
-tar cvzf allenw.tar.gz /work/allnew
+cd /
+tar cvzf allnew.tar.gz /allnew
 mv allnew.tar.gz ~
