@@ -1,0 +1,58 @@
+
+SQL*Loader: Release 11.2.0.2.0 - Production on 목 3월 30 12:03:39 2023
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   movieLoader.txt
+Data File:      movieData.txt
+  Bad File:     movieData.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 0
+Errors allowed: 50
+Bind array:     64 rows, maximum of 256000 bytes
+Continuation:    none specified
+Path used:      Conventional
+
+Table MOVIETBL, loaded from every logical record.
+Insert option in effect for this table: INSERT
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+MOVIE_ID                            FIRST     4   ,       CHARACTER            
+MOVIE_TITLE                          NEXT    30   ,       CHARACTER            
+MOVIE_DIRECTOR                       NEXT    30   ,       CHARACTER            
+MOVIE_STAR                           NEXT    30   ,       CHARACTER            
+SCRIPTFNAME                          NEXT    80   ,       CHARACTER            
+  (FILLER FIELD)
+FILMFNAME                            NEXT    80   ,       CHARACTER            
+  (FILLER FIELD)
+MOVIE_SCRIPT                      DERIVED     *  EOF      CHARACTER            
+    Dynamic LOBFILE.  Filename in field SCRIPTFNAME
+MOVIE_FILM                        DERIVED     *  EOF      CHARACTER            
+    Dynamic LOBFILE.  Filename in field FILMFNAME
+
+
+Table MOVIETBL:
+  3 Rows successfully loaded.
+  0 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                  17024 bytes(64 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          0
+Total logical records read:             3
+Total logical records rejected:         0
+Total logical records discarded:        0
+
+Run began on 목 3월  30 12:03:39 2023
+Run ended on 목 3월  30 12:03:40 2023
+
+Elapsed time was:     00:00:01.24
+CPU time was:         00:00:00.11

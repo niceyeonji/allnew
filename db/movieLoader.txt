@@ -1,0 +1,14 @@
+LOAD DATA
+INFILE 'movieData.txt'
+	INTO TABLE movieTBL
+	FIELDS TERMINATED BY ','
+	(
+		movie_id	char(4),
+		movie_title	char(30),
+		movie_director	char(30),
+		movie_star	char(30),
+		scriptFname	filler char(80),
+		filmFname	filler char(80),
+		movie_script	lobfile(scriptFname) TERMINATED BY EOF,
+		movie_film	lobfile(filmFname) TERMINATED BY EOF
+	)
