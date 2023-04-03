@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 use test
 db.things.drop()
 
