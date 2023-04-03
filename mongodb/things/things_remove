@@ -1,0 +1,5 @@
+use test
+db.things.count()
+db.things.remove({ename:"smith"})
+db.things.find()
+db.things.count()

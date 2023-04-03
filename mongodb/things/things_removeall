@@ -1,0 +1,3 @@
+use test
+db.things.remove({})
+db.things.find()
