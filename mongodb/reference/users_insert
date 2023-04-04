@@ -7,8 +7,8 @@ db.users.insert({"_id" : "kristina", "displayname" : "Kristina C"})
 db.users.find()
 
 db.notes.insert({"_id":5, "author":"mike", "text":"MongoDB is fun!"})
-db.notes.insert({"_id":20, "author":"kristina", "text":"... and DBRefs are easy.too",
-    "reference":[
+db.notes.insert({"_id":20, "author":"kristina", "text":"... and DBRefs are esay. too", 
+    "reference" : [
         {"$ref" : "users", "$id" : "mike"},
         {"$ref" : "notes", "$id" : 5},
     ]
