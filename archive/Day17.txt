@@ -1,0 +1,416 @@
+Day-17
+
+# lsnrctl start
+
+# lsnrctl stop
+
+# lsnrctl start
+
+# lsnrctl status
+
+
+### Oracle XE Install - Ubuntu
+
+# cd /data
+
+# cp oracle-xe-11.2.0-1.0.x86_64.rpm.zip ~
+
+# cd
+
+# unzip oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+
+# rm -rf oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+
+# cd Disk1/
+
+# ls
+
+# apt -y install alien libaio1 unixodbc
+
+# alien --scripts -d oracle*
+
+# ll
+
+# dpkg -i oracle-xe_11.2.0-2_amd64.deb
+
+# service oracle-xe configure
+
+<enter> : 8080
+<enter> : 1521 
+initial configuration:1234
+Confirm the password:1234
+<enter> : y
+
+# vi /etc/profile
+
+     29 export ORACLE_SID=XE
+     30 export ORACLE_BASE=/u01/app/oracle
+     31 export ORACLE_HOME=$ORACLE_BASE/product/11.2.0/xe
+     32 export ORACLE_TERM=xterm
+     33 export NLS_LANG=KOREAN_KOREA.AL32UTF8
+     34 export TNS_ADMIN=$ORACLE_HOME/network/admin
+     35 export ORA_NLS33=$ORACLE_HOME/ocommon/nls/admin/data
+     36 export LD_LIBRARY_PATH=$ORACLE_HOME/bin
+     37 export PATH=$PATH:$ORACLE_HOME/bin
+
+# source /etc/profile
+
+# source ~/.bashrc
+
+# sqlplus system/1234@xe
+
+SQL> EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
+
+SQL> alter user hr account unlock identified by 1234;
+
+SQL> select * from tab;
+
+SQL> exit
+
+
+# sqlplus hr/1234@xe
+
+SQL> select * from tab;
+
+SQL> exit
+
+
+## CentOS_HR 에서 데이터 익스포트 한 후에…
+Ubuntu_HR에서 sql editor를 열어서 copy and paste해서 실행.
+
+
+—————————————————————————————
+### Oracle-xe 재설치 하는 방법
+—————————————————————————————
+
+## Centos
+
+# lsnrctl stop
+
+# rm -rf /u01
+
+# rpm -qa | grep oracle-xe
+
+# rpm -e oracle-xe
+
+# cd ~/Disk1
+
+# rpm -ivh oracle*
+
+# service oracle-xe configure
+
+# lsnrctl status
+
+# lsnrctl stop
+
+# lsnrctl start
+
+—————————————————————————————
+
+## Ubuntu
+
+# lsnrctl stop
+
+# rm -rf /u01
+
+# dpkg -l oracle-xe
+
+# dpkg -r oracle-xe
+
+# cd ~/Disk1
+
+# dpkg -i oracle*
+
+# service oracle-xe configure
+
+# lsnrctl status
+
+# lsnrctl stop
+
+# lsnrctl start
+
+—————————————————————————————
+
+### Oracle 11g 자동 실행 - systemctl
+
+# ls /usr/lib/systemd/system/
+
+# vi /usr/lib/systemd/system/oracle_listener.service
+
+      1 [Unit]
+      2 Description=oracle_listener
+      3 After=network.target
+      4
+      5 [Service]
+      6 Type=forking
+      7 User=root
+      8 Group=root
+      9 Environment=ORACLE_BASE=/u01/app/oracle
+     10 Environment=ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+     11 Environment=ORACLE_SID=xe
+     12 ExecStart=/u01/app/oracle/product/11.2.0/xe/bin/lsnrctl start
+     13 ExecStop=/u01/app/oracle/product/11.2.0/xe/bin/lsnrctl stop
+     14
+     15 [Install]
+     16 WantedBy=multi-user.target
+
+
+# vi /usr/lib/systemd/system/oracle_instance.service
+
+      1 [Unit]
+      2 Description=oracle_instance
+      3 After=network.target syslog.target
+      4
+      5 [Service]
+      6 Type=forking
+      7 User=root
+      8 Group=root
+      9 Environment=ORACLE_BASE=/u01/app/oracle
+     10 Environment=ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+     11 Environment=ORACLE_SID=xe
+     12 ExecStart=/u01/app/oracle/product/11.2.0/xe/bin/dbstart ORACLE_HOME
+     13 ExecStop=/u01/app/oracle/product/11.2.0/xe/bin/dbsthu ORACLE_HOME
+     14
+     15 [Install]
+     16 WantedBy=multi-user.target
+
+# systemctl daemon-reload
+
+# systemctl enable oracle_listener.service
+
+# systemctl enable oracle_instance.service
+
+# vi /etc/oratab
+
+      1 XE:/u01/app/oracle/product/11.2.0/xe:Y
+
+# shutdown -r now
+
+——————————————————————————————
+
+# systemctl daemon-reload
+
+# systemctl start oracle_listener.service
+
+# systemctl stop oracle_listener.service
+
+——————————————————————————————
+
+### Oracle Backup and Restore
+
+## self backup
+
+# exp hr/1234@xe
+
+<enter>
+<enter>
+<enter>
+<enter>
+<enter>
+
+# file expdat.dmp
+
+
+## table backup
+
+# exp hr/1234@xe tables=membertbl, producttbl
+
+# sqlplus hr/1234@xe
+
+SQL> select * from tab;
+
+SQL> drop table membertbl;
+
+SQL> drop table producttbl;
+
+SQL> select * from tab;
+
+SQL> exit
+
+# imp hr/1234@xe tables=membertbl, producttbl
+
+# sqlplus hr/1234@xe
+
+SQL> select * from tab;
+
+SQL> select * from membertbl;
+
+SQL> select * from producttbl;
+
+SQL> exit
+
+
+## Full backup
+
+# exp system/1234@xe full=y
+
+# imp system/1234@xe full=y
+
+
+## 추천 백업 방법 - schema backup
+
+# mkdir oracle_backup 
+
+# exp system/1234@xe owner=hr  file=oracle_backup/hr_user_backup
+
+# ls oracle_backup
+
+
+
+# sqlplus hr/1234@xe
+
+SQL> create table cartable(id INT, data varchar2(20));
+
+SQL> insert into cartable values(1000, 'SM6');
+
+SQL> insert into cartable values(1000, 'K5');
+
+SQL> insert into cartable values(1000, 'SONATA');
+
+SQL> select * from cartable;
+
+SQL> describe cartable;
+
+SQL> l
+
+SQL> run
+
+SQL> del
+
+SQL> select id from cartable;
+
+SQL> l
+
+SQL> /
+
+SQL> conn system/1234@xe
+
+SQL> show user
+
+SQL> conn hr/1234@xe
+
+SQL> show user
+
+SQL> select first_name, last_name, phone_number, email from employees;
+
+SQL> col first_name format A15
+SQL> col last_name format A20
+SQL> col phone_number format A20
+SQL> col email format A20
+SQL> /
+
+SQL> host
+
+# exit
+
+SQL> exit
+
+
+## CSV 데이터 가져오기
+
+HR 사용자로.. 테이블 선택 마우스 오른쪽  데이터 임포트
+-> 파일 선택, 구분자 ; 인코딩 UTF8 -> 다음 -> 다음 ->
+열정의 부분에서 데이터 한번씩 선택..후 임포트
+
+# select count(*) from bigemployees;
+300024
+
+
+## usertbl.sql
+
+
+## buytbl.sql
+
+
+DML :  Data Manipulation Language : 데이터 조작어
+SELECT ~ from
+INSERT ~ into
+UPDATE ~ set DELETE ~ from
+
+DDL : Data Definition Language : 데이터 정의어
+CREATE
+ALTER
+DROP
+RENAME
+TRUNCATE
+
+DCL : Data Control Language : 데이터 제어어
+GRANT
+REVOKE
+
+TCL : Transaction Control Language : 트랜잭션 제어어
+COMMIT
+ROLLBACK
+SAVEPOINT
+
+
+## Select Query
+
+select * from usertbl where userName='김경호';
+
+select userid, username from usertbl 
+where birthyear >= 1970 and height >= 182;
+
+select userid, username from usertbl 
+where height between 178 and 183;
+
+select username, addr from usertbl
+where addr='경남' or addr='전남' or addr='경북';
+
+select username, addr from usertbl
+where addr in ('경남', '전남', '경북');
+
+select username, height from usertbl
+where username like '김%';
+
+select username, height from usertbl
+where username like '_종신';
+
+select username, height from usertbl
+where height > 177;
+
+select username, height from usertbl
+where height > (select height from usertbl where username='김경호');
+
+-- error
+select username, height from usertbl
+where height >= (select height from usertbl where addr='경남');
+
+-- or
+select username, height from usertbl
+where height >= any (select height from usertbl where addr='경남');
+
+-- and
+select username, height from usertbl
+where height >= all (select height from usertbl where addr='경남');
+
+
+select username, height from usertbl
+where height = any (select height from usertbl where addr='경남');
+
+select username, height from usertbl
+where height in (select height from usertbl where addr='경남');
+
+
+select username, mdate from usertbl order by mdate desc;
+
+select addr from usertbl;
+
+select distinct addr from usertbl order by addr;
+
+select * from
+(select emp_no, hire_date from bigemp order by hire_date asc)
+where rownum <=5;
+
+select emp_no, hire_date from bigemp sample(0.001);
+
+select count(*) from usertbl;
+
+select * from usertbl sample(10);
+
+
+## your host computer..
+
+# scp *.sql root@192.168.1.134:/allnew/db
+
+ 

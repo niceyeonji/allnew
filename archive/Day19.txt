@@ -1,0 +1,711 @@
+Day-19
+
+### 수학관련 함수
+
+SELECT ABS(-100) FROM DUAL ;
+100
+
+SELECT CEIL(4.7), FLOOR(4.7), ROUND(4.7) FROM DUAL ;  
+5 4 5
+
+SELECT mod(15, 4) FROM DUAL ; 
+4
+
+SELECT POWER(2, 3), SQRT(9) FROM DUAL ;  
+8 3
+
+SELECT SIGN(100), sign(0), SIGN(-100.123) FROM DUAL ;  
+1 0 -1
+
+SELECT TRUNC(12345.12345, 2), TRUNC(12345.12345, -2) FROM DUAL ;  
+12345.12	12300
+
+SELECT ADD_MONTHS('2023-01-01', 5), ADD_MONTHS(sysdate, -5) FROM DUAL ;
+2023-08-30 00:00:00.000	2022-10-30 10:28:46.000
+
+SELECT TO_DATE('2023-01-01') +5, SYSDATE -5 FROM DUAL ; 
+2023-04-04 00:00:00.000	2023-03-25 10:28:56.000
+
+SELECT EXTRACT(YEAR FROM DATE '2023-01-01'), EXTRACT(DAY FROM SYSDATE) FROM DUAL ;
+2023	30
+
+YEAR
+MONTH DAY  HOUR MINUTE SECOND
+
+SELECT LAST_DAY('2023-02-01') FROM DUAL ;
+2023-02-28 00:00:00.000
+
+SELECT NEXT_DAY('2023-03-06','월요일'), NEXT_DAY(SYSDATE, '목요일') FROM DUAL ;
+2023-03-13 00:00:00.000	2023-04-06 10:34:41.000
+
+SELECT MONTHS_BETWEEN(SYSDATE, '2002-08-23') FROM DUAL ; 
+247.240047789725209080047789725209080048
+
+
+### 형 변환 함수
+
+SELECT BIN_TO_NUM(1, 0), BIN_TO_NUM(1, 1, 1, 1) FROM DUAL ;  
+2	15
+
+SELECT BIN_TO_NUM(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) FROM DUAL ;  
+65535
+
+SELECT NUMTODSINTERVAL(48, 'HOUR'), NUMTODSINTERVAL(360000, 'SECOND') FROM DUAL ;  
+2 0:0:0.0	4 4:0:0.0
+
+SELECT NUMTOYMINTERVAL(37, 'MONTH'), NUMTOYMINTERVAL(1.5, 'YEAR') FROM DUAL ;  
+3-1	1-6
+
+
+### etc
+
+SELECT ROW_NUMBER() over(ORDER BY height DESC) "키 큰 순위", 
+username, addr, height FROM USERTBL u ;
+
+SELECT ROW_NUMBER() over(ORDER BY height DESC, USERNAME ASC) "키 큰 순위", 
+username, addr, height FROM USERTBL u ;
+
+SELECT addr, ROW_NUMBER() over(PARTITION BY addr ORDER BY height DESC, USERNAME ASC) "키 큰 순위", 
+username, addr, height FROM USERTBL u ;
+
+SELECT DENSE_RANK() over(ORDER BY height DESC) "키 큰 순위", 
+username, addr, height FROM USERTBL u ;
+
+SELECT RANK() over(ORDER BY height DESC) "키 큰 순위", 
+username, addr, height FROM USERTBL u ;
+
+— 라운드 로빈..
+SELECT NTILE(2) over(ORDER BY height DESC) "반 번호", 
+username, addr, height FROM USERTBL u ;
+
+
+SELECT username, addr, height AS "키",
+	height - (LEAD(height, 1, 0) OVER (ORDER BY height DESC)) 
+	AS "다음 사람과 키 차이" 
+	FROM USERTBL u ;
+
+성시경	서울	186	4
+임재범	서울	182	0
+이승기	서울	182	5
+김경호	전남	177	1
+바비킴	서울	176	2
+은지원	경북	174	1
+김범수	경남	173	1
+조관우	경기	172	2
+윤종신	경남	170	4
+조용필	경기	166	166
+
+
+SELECT username, addr, height AS "키",
+	height - (FIRST_VALUE(height) OVER (PARTITION BY addr ORDER BY height DESC)) 
+	AS "지역별 최대키와 차이" 
+	FROM USERTBL u ;
+
+조관우	경기	172	0
+조용필	경기	166	-6
+김범수	경남	173	0
+윤종신	경남	170	-3
+은지원	경북	174	0
+성시경	서울	186	0
+이승기	서울	182	-4
+임재범	서울	182	-4
+바비킴	서울	176	-10
+김경호	전남	177	0
+
+
+SELECT username, addr, height AS "키",
+	(CUME_DIST() OVER (PARTITION BY addr ORDER BY height DESC)) * 100
+	AS "누적인원 백분율%" 
+	FROM USERTBL u ;
+
+조관우	경기	172	50
+조용필	경기	166	100
+김범수	경남	173	50
+윤종신	경남	170	100
+은지원	경북	174	100
+성시경	서울	186	25
+이승기	서울	182	75
+임재범	서울	182	75
+바비킴	서울	176	100
+김경호	전남	177	100
+
+SELECT * FROM PIVOTTEST 
+	pivot ( sum(amount)
+		FOR season
+		IN ('봄', '여름', '가을', '겨울') ) ;
+
+김범수	40	 	14		25		32
+윤종신	[null] 	 79	[null]	 	40
+
+
+
+### CLOB, BLOB 
+
+CREATE TABLE movieTBL (
+	movie_id        number(4),
+    movie_title     nvarchar2(30),
+    movie_director  nvarchar2(30),
+    movie_star      nvarchar2(30),
+    movie_script    clob,
+    movie_film      blob
+);
+
+SELECT * FROM MOVIETBL m ;
+
+## centos…
+
+# mkdir -p /root/oracle
+
+# cd /root/oracle
+
+## your host computer..
+
+# scp *.mp4 root@192.168.1.200:/root/oracle
+
+# scp *.txt root@192.168.1.200:/root/oracle
+
+# vi movieData.txt
+      1 001,쉰들러 리스트,스티븐 스필버그,리암 니슨,001.txt,001.mp4
+      2 002,쇼생크 탈출,프랭크 다라본트,톰 로빈스,002.txt,002.mp4
+      3 003,라스트 모히칸,마이클 만,다니엘 데이 루이스,003.txt,003.mp4
+
+# vi movieLoader.txt
+      1 LOAD DATA
+      2 INFILE 'movieData.txt'
+      3         INTO TABLE movieTBL
+      4         FIELDS TERMINATED BY ','
+      5         (
+      6                 movie_id        char(4),
+      7                 movie_title     char(30),
+      8                 movie_director  char(30),
+      9                 movie_star      char(30),
+     10                 scriptFname     filler char(80),
+     11                 filmFname       filler char(80),
+     12                 movie_script    lobfile(scriptFname) TERMINATED BY EOF,
+     13                 movie_film      lobfile(filmFname) TERMINATED BY EOF
+     14         )
+
+# sqlldr hr/1234@xe control=movieLoader.txt
+
+SQL*Loader: Release 11.2.0.2.0 - Production on 목 3월 30 11:55:10 2023
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+Commit point reached - logical record count 3
+
+
+### Join
+
+SELECT * FROM BUYTBL b 
+	INNER JOIN USERTBL u 
+		ON b.USERID = u.USERID 
+	WHERE b.USERID = 'JYP';
+
+
+SELECT buytbl.userid, username, prodname, addr, MOBILE1 || MOBILE2 
+	AS "연락처" FROM BUYTBL
+	INNER JOIN USERTBL
+		ON buytbl.USERID = usertbl.USERID ;
+
+
+SELECT buytbl.userid, usertbl.username, buytbl.prodname, usertbl.addr, 
+usertbl.MOBILE1 || usertbl.MOBILE2 
+	AS "연락처" FROM BUYTBL
+	INNER JOIN USERTBL
+		ON buytbl.USERID = usertbl.USERID ;
+
+
+SELECT b.userid, u.username, b.prodname, u.addr, 
+u.MOBILE1 || u.MOBILE2 
+	AS "연락처" FROM BUYTBL b
+	INNER JOIN USERTBL u
+		ON b.USERID = u.USERID ;
+
+
+SELECT b.userid, u.username, b.prodname, u.addr, 
+u.MOBILE1 || u.MOBILE2 
+	AS "연락처" FROM BUYTBL b
+	INNER JOIN USERTBL u
+		ON b.USERID = u.USERID
+	WHERE b.USERID = 'EJW';
+
+
+SELECT u.userid, u.username, b.prodname, u.addr, 
+u.MOBILE1 || u.MOBILE2 
+	AS "연락처" FROM BUYTBL b
+	INNER JOIN USERTBL u
+		ON b.USERID = u.USERID
+	ORDER BY u.USERID ;
+
+
+SELECT DISTINCT u.userid, u.username, u.addr 
+FROM BUYTBL b
+	INNER JOIN USERTBL u
+		ON b.USERID = u.USERID
+	ORDER BY u.USERID ;
+
+
+SELECT u.userid, u.username, u.addr 
+FROM usertbl u
+WHERE EXISTS (
+	SELECT * FROM BUYTBL b 
+	WHERE u.USERID = b.USERID );
+
+
+### multi table join
+
+CREATE TABLE stdtbl 
+(
+	stdname		nchar(5) NOT NULL PRIMARY KEY,
+	addr		nchar(2) NOT null
+);
+
+CREATE TABLE clubtbl
+(
+	clubname	nchar(5)	NOT NULL PRIMARY KEY,
+	roomno		nchar(4)	NOT NULL 
+);	
+
+CREATE SEQUENCE stdclubSEQ;
+
+CREATE TABLE stdclubtbl
+(
+	idnum 		number(5)	NOT NULL PRIMARY KEY,
+	stdname		nchar(5) 	NOT NULL,
+	clubname 	nchar(5) 	NOT NULL,
+FOREIGN KEY (stdname) REFERENCES stdtbl(stdname),
+FOREIGN KEY (clubname) REFERENCES clubtbl(clubname)
+);
+
+
+INSERT INTO stdtbl VALUES ('김범수','경남');
+INSERT INTO stdtbl VALUES ('성시경','서울');
+INSERT INTO stdtbl VALUES ('조용필','경기');
+INSERT INTO stdtbl VALUES ('은지원','경북');
+INSERT INTO stdtbl VALUES ('바비킴','서울');
+INSERT INTO CLUBTBL VALUES ('수영','101호');
+INSERT INTO CLUBTBL VALUES ('바둑','102호');
+INSERT INTO CLUBTBL VALUES ('축구','103호');
+INSERT INTO CLUBTBL VALUES ('봉사','104호');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '김범수','바둑');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '김범수','축구');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '조용필','축구');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '은지원','축구');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '은지원','봉사');
+INSERT INTO STDCLUBTBL VALUES (stdclubSEQ.NEXTVAL, '바비킴','봉사');
+
+
+SELECT s.stdname, s.addr, c.clubname, c.roomno
+	FROM stdtbl s
+		INNER JOIN STDCLUBTBL sc
+			ON s.stdname = sc.stdname
+		INNER JOIN CLUBTBL c 
+			ON sc.clubname = c.clubname
+	ORDER BY s.stdname;
+
+김범수  	경남	축구   	103호
+김범수  	경남	바둑   	102호
+바비킴  	서울	봉사   	104호
+은지원  	경북	봉사   	104호
+은지원  	경북	축구   	103호
+조용필  	경기	축구   	103호
+
+
+SELECT c.clubname, c.roomno, s.stdname, s.addr
+	FROM STDTBL s 
+		INNER JOIN STDCLUBTBL sc 
+			ON sc.STDNAME = s.STDNAME 
+		INNER JOIN CLUBTBL c 
+		 	ON sc.CLUBNAME = c.CLUBNAME 
+	ORDER BY c.CLUBNAME ;
+
+바둑   	102호	김범수  	경남
+봉사   	104호	은지원  	경북
+봉사   	104호	바비킴  	서울
+축구   	103호	은지원  	경북
+축구   	103호	김범수  	경남
+축구   	103호	조용필  	경기
+
+
+## outer join
+
+— 전체 회원 구매 기록
+SELECT u.userid, u.username, b.prodname, u.addr, u.mobile1 || u.mobile2 AS "연락처"
+	FROM USERTBL u 
+		LEFT OUTER JOIN BUYTBL b 
+			ON u.USERID = b.USERID 
+	ORDER BY u.USERID ;
+
+
+— 구매기록이 있는 회원 목록
+SELECT u.userid, u.username, b.prodname, u.addr, u.mobile1 || u.mobile2 AS "연락처"
+	FROM USERTBL u 
+		RIGHT OUTER JOIN BUYTBL b 
+			ON u.USERID = b.USERID 
+	ORDER BY u.USERID ;
+
+
+— 구매기록이 없는 회원 명단
+SELECT u.userid, u.username, b.prodname, u.addr, u.mobile1 || u.mobile2 AS "연락처"
+	FROM USERTBL u 
+		LEFT JOIN BUYTBL b 
+			ON u.USERID = b.USERID 
+	WHERE b.PRODNAME IS NULL
+	ORDER BY u.USERID ;
+
+
+— 회원 동아리 목록
+SELECT s.stdname, s.addr, c.clubname, c.roomno
+	FROM STDTBL s 
+		LEFT OUTER JOIN STDCLUBTBL sc 
+			ON s.STDNAME = sc.STDNAME 
+		LEFT OUTER JOIN CLUBTBL c 
+			ON sc.CLUBNAME = c.CLUBNAME 
+	ORDER BY s.STDNAME ;
+
+
+— 동아리 별 회원 목록
+SELECT c.clubname, c.roomno, s.stdname, s.addr
+	FROM STDTBL s 
+		LEFT OUTER JOIN STDCLUBTBL sc 
+			ON sc.STDNAME = s.STDNAME
+		LEFT OUTER JOIN CLUBTBL c 
+			ON sc.CLUBNAME = c.CLUBNAME
+	ORDER BY c.CLUBNAME ;
+
+
+— 회원 동아리 목록 + 동아리 별 회원 목록
+SELECT s.stdname, s.addr, c.clubname, c.roomno
+	FROM STDTBL s 
+		LEFT OUTER JOIN STDCLUBTBL sc 
+			ON s.STDNAME = sc.STDNAME 
+		LEFT OUTER JOIN CLUBTBL c 
+			ON sc.CLUBNAME = c.CLUBNAME 
+UNION 
+SELECT c.clubname, c.roomno, s.stdname, s.addr
+	FROM STDTBL s 
+		LEFT OUTER JOIN STDCLUBTBL sc 
+			ON sc.STDNAME = s.STDNAME
+		LEFT OUTER JOIN CLUBTBL c 
+			ON sc.CLUBNAME = c.CLUBNAME;
+
+
+
+### cross join
+
+SELECT count(*) AS "데이터 개수"
+	FROM hr.EMPLOYEES e 
+		CROSS JOIN hr.COUNTRIES c ;
+-- 2,675		
+
+SELECT count(*) FROM hr.EMPLOYEES;
+-- 107
+
+SELECT count(*) FROM hr.COUNTRIES;
+-- 25
+
+
+### self join
+
+SELECT a.emp AS "부하직원", b.emp AS "직속상관", b.department AS "직속상관부서"
+	FROM EMPTBL a
+		INNER JOIN EMPTBL b 
+			ON a.manager = b.EMP
+	WHERE a.emp = '우대리';
+
+우대리	이부장	재무부
+
+
+### union / union all / not in /in
+
+SELECT stdname, addr FROM STDTBL s 
+	UNION ALL
+SELECT clubname, roomno FROM CLUBTBL c ;
+
+
+SELECT username, CONCAT(mobile1, mobile2) AS "전화번호" FROM USERTBL u 
+	WHERE username NOT IN (
+		SELECT username FROM USERTBL WHERE MOBILE1 IS NULL 	
+	);
+
+
+SELECT username, CONCAT(mobile1, mobile2) AS "전화번호" FROM USERTBL u 
+	WHERE username IN (
+		SELECT username FROM USERTBL WHERE MOBILE1 IS NULL 	
+	);
+
+
+
+### pl/sql programming…
+
+SET SERVEROUTPUT ON ;
+
+DECLARE
+	var1 number(5);
+BEGIN 
+	var1 := 100;
+	IF	var1 = 100 THEN
+		dbms_output.put_line('100입니다.');
+	ELSE
+		dbms_output.put_line('100이 아닙니다.');
+	END IF;
+END ;
+
+
+
+DECLARE
+	hiredate DATE;
+	curdate	DATE;
+	wdays	number(5);
+BEGIN 
+	SELECT hire_date INTO hiredate
+		FROM hr.EMPLOYEES e 
+		WHERE EMPLOYEE_ID = 200;
+	curdate := current_date();
+	wdays := curdate - hiredate;
+	IF (wdays / 365) >= 5 THEN
+		dbms_output.put_line('입사한지 ' || wdays || '일이 지났습니다. 축하합니다!');
+	ELSE
+		dbms_output.put_line('입사한지 ' || wdays || '일밖에 안되었네요. 열심히하세요.');
+	END IF ;
+END ;
+
+
+
+DECLARE
+	pnumber number(3);
+	credit char(1);
+BEGIN 
+	pnumber := 77;
+	IF pnumber >= 90 THEN
+		credit := 'A';
+	ELSIF pnumber >= 80 THEN
+		credit := 'B';
+	ELSIF pnumber >= 70 THEN
+		credit := 'C';
+	ELSIF pnumber >= 60 THEN
+		credit := 'D';
+	ELSE 
+		credit := 'F';
+	END IF ;
+	dbms_output.put_line('취득 점수 ==> ' || pnumber || ', 학점 ==> ' || credit);
+END ;
+
+
+DECLARE
+	pnumber number(3);
+	credit char(1);
+BEGIN 
+	pnumber := 77;
+	CASE 
+		WHEN pnumber >= 90 THEN
+			credit := 'A';
+		WHEN pnumber >= 80 THEN
+			credit := 'B';
+		WHEN pnumber >= 70 THEN
+			credit := 'C';
+		WHEN pnumber >= 60 THEN
+			credit := 'D';
+		ELSE 
+			credit := 'F';
+	END CASE ;
+	dbms_output.put_line('취득 점수 ==> ' || pnumber || ', 학점 ==> ' || credit);
+END ;
+
+
+DECLARE
+	inum 	number(3);
+	hap		number(5);
+BEGIN 
+	inum := 1;
+	hap := 0;
+	WHILE inum <= 100
+	LOOP 
+		hap := hap + inum;
+		inum := inum + 1;
+	END LOOP;
+	dbms_output.put_line('합 계 : ' || hap);
+END ;
+
+
+DECLARE
+	inum 	number(3); 
+	hap		number(5); -- 합계
+BEGIN 
+	hap := 0;
+	FOR inum IN 1 .. 100
+	LOOP 
+		hap := hap + inum;
+	END LOOP;
+	dbms_output.put_line('합 계 : ' || hap);
+END ;
+
+
+DECLARE
+	inum 	number(3);
+	hap		number(5);
+BEGIN 
+	inum := 1;
+	hap := 0;
+	WHILE inum <= 100
+	LOOP 
+		IF MOD(inum, 7) = 0 THEN
+			inum := inum + 1;
+			CONTINUE ;
+		END IF ;
+		hap := hap + inum;
+		IF hap > 1000 THEN
+			EXIT ;
+		END IF ;
+		inum := inum + 1;
+	END LOOP;
+	dbms_output.put_line('합 계 : ' || hap);
+END ;
+
+
+### 1~1000까지 3의 배수의 합을 구하시오.
+
+##  정지원
+
+DECLARE
+	inum number(5);
+	hap	number(7);
+BEGIN
+	hap := 0;
+	FOR inum IN 1 .. 1000
+	LOOP
+		IF MOD(inum, 3) = 0 THEN
+			hap := hap + inum;
+		END IF;
+	END LOOP;
+	dbms_output.put_line('합 계 : ' || hap);
+END;
+
+
+## 윤성현
+
+DECLARE
+	inum	number(4);
+	hap		number(6);
+BEGIN
+	hap := 0;
+	inum := 1;
+	while inum <= 1000
+	LOOP
+		IF mod(inum, 3) = 0 then
+			hap := hap + inum;
+		END IF;
+		inum := inum + 1;
+	END LOOP;
+	dbms_output.put_line('inum : ' || inum);
+	dbms_output.put_line('합 계' || hap);	
+END;
+
+
+## 강연지
+
+DECLARE
+	inum		number(4);
+	hap		number(6); -- 합계
+BEGIN
+	inum := 1;
+	hap := 0;
+	while inum*3 <= 1000
+	LOOP
+		hap := hap + inum*3;
+		inum := inum + 1;
+	END LOOP;
+	dbms_output.put_line('합 계 : ' || hap);
+END;
+
+
+### 예외 처리
+
+DECLARE
+	v_username usertbl.username%TYPE;
+BEGIN
+	SELECT username INTO v_username FROM USERTBL u 
+		WHERE username LIKE ('김%');
+	dbms_output.put_line('김씨 고객 이름은  ' || v_username || ' 입니다.');
+	EXCEPTION 
+		WHEN NO_DATA_FOUND THEN
+			dbms_output.put_line('김씨 고객이 없습니다.');
+		WHEN TOO_MANY_ROWS THEN
+			dbms_output.put_line('김씨 고객이 너무 많아요.');
+END;
+
+
+## 사용자 정의 예외 처리
+
+DECLARE
+	v_username usertbl.username%TYPE;
+	userException EXCEPTION;
+	PRAGMA EXCEPTION_INIT(userException, -1422);
+BEGIN
+	SELECT username INTO v_username FROM USERTBL u 
+		WHERE username LIKE ('김%');
+	dbms_output.put_line('김씨 고객 이름은  ' || v_username || ' 입니다.');
+	EXCEPTION 
+		WHEN NO_DATA_FOUND THEN
+			dbms_output.put_line('김씨 고객이 없습니다.');
+		WHEN userException THEN
+			dbms_output.put_line('김씨 고객이 너무 많아요.');
+END;
+
+
+### 데이터가 없는 경우
+
+DECLARE
+	v_username usertbl.username%TYPE;
+	zeroDelete	EXCEPTION;
+BEGIN
+	v_username := '무명씨';
+	DELETE FROM USERTBL u WHERE username = v_username;
+	IF SQL%NOTFOUND THEN
+		raise zeroDelete;
+	END IF;
+	EXCEPTION 
+		WHEN zeroDelete THEN
+			dbms_output.put_line(v_username || '데이터 없음. 확인 바람.');
+END;
+
+==
+
+DECLARE
+	v_username usertbl.username%TYPE;
+	zeroDelete	EXCEPTION;
+BEGIN
+	v_username := '무명씨';
+	DELETE FROM USERTBL u WHERE username = v_username;
+	IF SQL%NOTFOUND THEN
+		RAISE_APPLICATION_ERROR(-20001,'데이터 없음. 확인 바람.');
+	END IF;
+END;
+
+
+### 동적 SQL
+
+DECLARE
+	v_sql varchar2(100);
+	v_height usertbl.height%TYPE;
+BEGIN
+	v_sql := 'select height from usertbl where userid = ''EJW'' ';
+	EXECUTE IMMEDIATE v_sql INTO v_height;
+	dbms_output.put_line('키 : ' || v_height);
+END;
+
+
+
+# cd /allnew/db
+
+# cp ~/oracle/movie* .
+
+# git add .
+
+# git commit -m “db data push”
+
+# git push
+
+# shutdown -h now
+
+

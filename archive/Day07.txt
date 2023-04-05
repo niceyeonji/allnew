@@ -1,0 +1,411 @@
+Day-07
+
+### LVM
+
+# fdisk -l | grep sd
+
+# fdisk /dev/sdb
+
+p
+d
+<enter>
+d
+p
+w
+
+# fdisk /dev/sdb
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+L
+8e
+p
+w
+
+# fdisk /dev/sdc 
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+8e
+p
+w
+
+# fdisk /dev/sdd
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+8e
+p
+w
+
+# fdisk /dev/sde
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+8e
+p
+w
+
+# fdisk -l | grep sd
+
+# apt -y install lvm2
+
+# pvcreate /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+# pvscan
+
+# vgcreate vg /dev/sdb1 /dev/sdc1 /dev/sdd1
+
+# vgdisplay
+
+# vgchange -a y vg
+
+# vgdisplay -v vg
+
+# lvcreate -l 765 vg -n lvm1
+
+# mkfs.ext4 /dev/vg/lvm1
+
+# ls /
+
+# rm -rf hdd?
+
+# mkdir /vol1
+
+# mount /dev/vg/lvm1 /vol1
+
+# df -T | grep vol
+
+# mount | grep vol
+
+# cd /vol1
+
+# dd if=/dev/zero of=data1 bs=1M count=1000
+
+# !df
+
+# vi /etc/fstab
+
+     13 /dev/vg/lvm1    /vol1   ext4    defaults        0       2
+
+# shutdown -r now
+
+# df -T | grep vol
+/dev/mapper/vg-lvm1 ext4    2.9G 1001M  1.8G   37% /vol1
+
+# lvscan
+
+# umount /vol1
+
+# lvremove /dev/vg/lvm1
+
+# lvscan
+
+# vgremove vg
+
+# vgdisplay
+
+# pvremove /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+
+
+## ex2
+
+# pvcreate /dev/sdb1 /dev/sdc1 /dev/sdd1
+
+# vgcreate vg /dev/sdb1 /dev/sdc1 /dev/sdd1
+
+# vgchange -a y vg
+
+# vgdisplay
+
+# lvcreate -l 510 vg -n lvm1
+
+# lvcreate -l 255 vg -n lvm2
+
+# lvscan
+
+# mkfs.ext4 /dev/vg/lvm1
+
+# mkfs.ext4 /dev/vg/lvm2
+
+# mkdir /vol2
+
+# mount /dev/vg/lvm1 /vol1
+
+# mount /dev/vg/lvm2 /vol2
+
+# df -T | grep vol
+
+# mount | grep vol
+
+# dd if=/dev/zero of=/vol1/data1 bs=1M count=500
+
+# dd if=/dev/zero of=/vol2/data1 bs=1M count=500
+
+# !df
+
+
+# pvcreate /dev/sde1
+
+# pvscan
+
+# vgextend vg /dev/sde1
+
+# pvscan
+
+# vgdisplay
+
+# lvscan
+
+# lvextend -l +255 /dev/vg/lvm2
+
+# lvscan
+
+# df -T | grep vol
+
+# umount /vol2
+
+# mount /dev/vg/lvm2 /vol2
+
+# df -T | grep vol
+
+# umount /vol2
+
+# resize2fs /dev/vg/lvm2
+
+# e2fsck -f /dev/vg/lvm2
+
+# resize2fs /dev/vg/lvm2
+
+# mount /dev/vg/lvm2 /vol2
+
+# !df
+
+
+## ex3
+
+# umount /vol2
+
+# umount /vol1
+
+# lvreduce -l -255 /dev/vg/lvm2
+
+# e2fsck -f /dev/vg/lvm2
+
+# resize2fs /dev/vg/lvm2
+
+# lvscan
+
+# mkfs.ext4 /dev/vg/lvm2
+
+# mount /dev/vg/lvm2 /vol2
+
+# dd if=/dev/zero of=/vol2/data bs=1M count=500
+
+# df -T | grep vol
+
+# lvextend -l +255 /dev/vg/lvm1
+
+# e2fsck -f /dev/vg/lvm1
+
+# resize2fs /dev/vg/lvm1
+
+# lvscan
+
+# mount /dev/vg/lvm1 /vol1
+
+# df -T | grep vol
+
+
+## ex4
+
+# umount /vol2
+
+# umount /vol1
+
+# df -T | grep vol
+
+# lvremove /dev/vg/lvm1
+
+# lvremove /dev/vg/lvm2
+
+# vgdisplay -v vg
+
+# lvcreate -l 1020 vg -n lvm1
+
+# lvscan
+
+# mkfs.ext4 /dev/vg/lvm1
+
+# rm -rf /vol?
+
+# mkdir /vol
+
+# mount /dev/vg/lvm1 /vol
+
+# vi /etc/fstab
+/dev/vg/lvm1    /vol    ext4    defaults        0       2
+
+# df -T | grep vol
+
+
+
+### Linux RAID
+
+# df -T | grep vol
+
+# umount /vol
+
+# df -T | grep vol
+
+# rm -rf /vol?
+
+# vi /etc/fstab에서 13번 라인 삭제
+
+# apt -y install mdadm
+
+# fdisk -l | grep sd
+
+# lvscan
+
+# lvremove /dev/vg/lvm1
+
+# vgremove vg
+
+# pvremove /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+# fdisk /dev/sdb
+d
+w
+
+# fdisk /dev/sdc
+d
+w
+
+# fdisk /dev/sdd
+d
+w
+
+# fdisk /dev/sde
+d
+w
+
+# fdisk -l | grep sd
+
+
+# mdadm --create --verbose /dev/md0 --level=linear --raid-devices=2 /dev/sdb /dev/sdc
+
+# cat /proc/mdstat
+
+# mdadm --detail /dev/md0
+
+# mkfs.ext3 /dev/md0
+
+# mkdir /md0
+
+# mount /dev/md0 /md0
+
+# df -T | grep md
+
+# dd if=/dev/zero of=test1 bs=1M count=1000
+
+# cd
+
+# !df
+
+# umount /md0
+
+# rm -rf /md0
+
+# mdadm --stop /dev/md0
+
+# cat /proc/mdstat
+
+
+
+# mdadm -C -v /dev/md0 -l 0 -n 2 /dev/sdb /dev/sdc
+
+# cat /proc/mdstat
+
+# mdadm -D /dev/md0
+
+# mkfs.ext4 /dev/md0
+
+# mkdir /md0
+
+# mount /dev/md0 /md0
+
+# df -T | grep md
+
+# dd if=/dev/zero of=test1 bs=1M count=1000
+
+# cd 
+
+# mdadm -C -v /dev/md1 -l 1 -n 2 /dev/sdd /dev/sde
+
+# cat /proc/mdstat
+
+# mkfs.ext4 /dev/md1
+
+# mkdir /md1
+
+# mount /dev/md1 /md1
+
+# df -T | grep md
+
+# dd if=/dev/zero of=/md1/test1 bs=1M count=700
+
+# cat /proc/mdstat
+
+# ll /dev/disk/by-uuid/
+
+# blkid | grep md
+
+UUID="e4d8418f-49eb-440e-897f-0b847e1dc9cf"
+
+UUID="e2914210-dd81-44c1-b01b-c21402b2d907"
+
+# vi /etc/fstab
+     13 UUID=e4d8418f-49eb-440e-897f-0b847e1dc9cf     /md0    ext4    defaults    0    2
+     14 UUID=e2914210-dd81-44c1-b01b-c21402b2d907     /md1    ext4    defaults    0    2
+
+# shutdown -r now
+
+# df -T | grep md
+
+
+# umount /md0
+
+# umount /md1
+
+# vi /etc/fstab
+13, 14번 # 주석 추가
+
+# cat /proc/mdstat
+
+# mdadm -S md127
+
+# mdadm -S md126
+
+# shutdown -h now
+
+우분투 오늘 날짜로 내보내가 ubuntu-0314.ova
+
+

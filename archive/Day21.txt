@@ -1,0 +1,595 @@
+Day-21
+
+### ruby install
+
+# apt -y install ruby
+
+# ruby -v
+
+### mongodb Atlas
+
+mongodb회원 가입 -> atlas 이동 -> Project 생성 -> 
+데이터베이스 생성 -> connect -> using compass -> 
+주소복사 -> Compass 에 붙여 넣고 접속
+
+Security
+Database Access
+admin 	SCRAM		atlasAdmin@admin	All Resources
+root 		SCRAM 	readWriteAnyDatabase@admin	All Resources
+
+Network Access
+0.0.0.0/0  (includes your current IP address)	Active
+
+로컬 Mongodb도 Compass에 추가….
+
+
+# netstat -ntlp
+
+# mongo
+
+> show dbs
+
+> db.stats()
+
+> use test
+
+
+# cd /allnew
+
+# mv db oracle
+
+# mkdir mongodb
+
+# cd mongodb
+
+# mongod --version
+
+# mongo --version
+
+# mongo
+
+> show dbs
+
+> db.stats()
+
+> use test
+
+> db.logout()
+
+> db.shutdownServer()
+
+> ^d
+
+# netstat -ntlp
+
+# systemctl start mongod
+
+# systemctl status mongod
+
+# netstat -ntlp
+
+# mongo
+
+
+### collection 생성 - ver 1, Capped collection
+
+> db.createCollection("emp",{capped: true, size:100000})
+
+> db.emp.validate()
+
+> db.emp.stats()
+
+> db.emp.drop()
+
+
+### collection 생성 - ver2
+
+> m={ename:"smith"}
+{ "ename" : "smith" }
+
+> n={empno:1101}
+{ "empno" : 1101 }
+
+> db.things.save(m)
+WriteResult({ "nInserted" : 1 })
+
+> db.things.save(n)
+WriteResult({ "nInserted" : 1 })
+
+> db.things.validate()
+
+> db.things.find()
+
+> db.things.insert({empno:1102, ename:"King"})
+WriteResult({ "nInserted" : 1 })
+
+> for(var n=1103; n<=1120; n++) db.things.save({n:n, m:"test"})
+WriteResult({ "nInserted" : 1 })
+
+> it
+
+> db.things.findOne()
+
+> db.things.find({empno:1101})
+
+> db.things.update({empno:1101},{$set:{ebith:"1999.10.1"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.things.find()
+
+> db.things.update({empno:1102},{$set:{dept:"human"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.things.remove({ename:"smith"})
+WriteResult({ "nRemoved" : 1 })
+
+> db.things.remove({})
+WriteResult({ "nRemoved" : 20 })
+
+> db.things.find()
+
+> p={eno:1001, fname:"admin", lname:"kroll", job:"manager",salary:10000, detp_name:"sales"}
+{
+	"eno" : 1001,
+	"fname" : "admin",
+	"lname" : "kroll",
+	"job" : "manager",
+	"salary" : 10000,
+	"detp_name" : "sales"
+}
+
+> db.emp.save(p)
+WriteResult({ "nInserted" : 1 })
+
+> db.emp.find()
+{ "_id" : ObjectId("642a40bbee9df723b5fe91a8"), "eno" : 1001, "fname" : "admin", "lname" : "kroll", "job" : "manager", "salary" : 10000, "detp_name" : "sales" }
+
+> p={eno:1002, fname:"root"}
+
+> db.emp.insert(p)
+
+
+## Object ID field 
+
+642a4189 / ee9df7 / 5ef3 / 746f77
+    8                      6              4           6
+
+642a4189ee9df7
+
+> db.emp.drop()
+true
+
+> for(var n = 1101; n<=1110; n++) db.things.save({eno:n, ename:"test", sal:100000})
+WriteResult({ "nInserted" : 1 })
+
+> db.things.find()
+
+> var cursur = db.things.find()
+
+> while (cursur.hasNext()) printjson(cursur.next())
+
+> var cursur = db.things.find()
+> printjson(cursur[7])
+
+> var array = db.things.find().toArray()
+> array[7]
+
+> x = new Date()
+ISODate("2023-04-03T05:19:17.327Z")
+
+> x.toString()
+Mon Apr 03 2023 14:19:17 GMT+0900 (KST)
+
+> d = ISODate()
+ISODate("2023-04-03T05:20:18.589Z")
+
+> d.getMonth()
+3
+
+> show tables;
+things
+
+> db.foo.insert({x:1,  y:new Timestamp()})
+
+> db.foo.find()
+{ "_id" : ObjectId("642a62ed70c513d2bce4a8ea"), "x" : 1, "y" : Timestamp(1680499437, 1) }
+
+> db.foo.find({},{_id:0})
+
+> function seq_no(name) { 
+var ret = db.seq_no.findAndModify({ query:{_id:name},  
+update : {$inc :{next:1}}, "new":true, upsert:true
+}); 
+return ret.next; 
+}
+
+> db.order_no.insert({_id:seq_no("order:no"), name : "jimmy"})
+WriteResult({ "nInserted" : 1 })
+
+> db.order_no.insert({_id:seq_no("order:no"), name : "Chad"})
+WriteResult({ "nInserted" : 1 })
+
+> db.order_no.find()
+{ "_id" : 1, "name" : "jimmy" }
+{ "_id" : 2, "name" : "Chad" }
+
+642a4189ee9df70001000001
+
+> db.members.insert({_id:ObjectId("642a4189ee9df70001000001"),mem_no:"T20230403", age:22, type:"ACE"})
+WriteResult({ "nInserted" : 1 })
+
+> db.members.find()
+{ "_id" : ObjectId("642a4189ee9df70001000001"), "mem_no" : "T20230403", "age" : 22, "type" : "ACE" }
+
+> db.members.insert({_id:ObjectId("642a4189ee9df70001000002"),mem_no:"T20230404", age:35, type:"GOLD"})
+WriteResult({ "nInserted" : 1 })
+
+> db.members.find()
+{ "_id" : ObjectId("642a4189ee9df70001000001"), "mem_no" : "T20230403", "age" : 22, "type" : "ACE" }
+{ "_id" : ObjectId("642a4189ee9df70001000002"), "mem_no" : "T20230404", "age" : 35, "type" : "GOLD" }
+
+> db.members.insert({_id:ObjectId("642a4189ee9df70001000003"),mem_no:"T20230405", age:39, type:"ACE"})
+WriteResult({ "nInserted" : 1 })
+
+> db.members.insert({_id:ObjectId("642a4189ee9df70001000004"),mem_no:"T20230406", age:34, type:"GOLD"})
+WriteResult({ "nInserted" : 1 })
+
+> db.members.insert({_id:ObjectId("642a4189ee9df70001000005"),mem_no:"T20230407", age:27, type:"ACE"})
+WriteResult({ "nInserted" : 1 })
+
+> db.members.find()
+
+> db.members.update({age:{$gt:33}}, {$set:{type:"GOLD"}}, {multi:true})
+WriteResult({ "nMatched" : 3, "nUpserted" : 0, "nModified" : 1 })
+
+> db.members.find()
+{ "_id" : ObjectId("642a4189ee9df70001000001"), "mem_no" : "T20230403", "age" : 22, "type" : "ACE" }
+{ "_id" : ObjectId("642a4189ee9df70001000002"), "mem_no" : "T20230404", "age" : 35, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000003"), "mem_no" : "T20230405", "age" : 39, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000004"), "mem_no" : "T20230406", "age" : 34, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000005"), "mem_no" : "T20230407", "age" : 27, "type" : "ACE" }
+
+> db.members.update({type:"GOLD"}, {$inc:{age:2}}, {multi:true})
+WriteResult({ "nMatched" : 3, "nUpserted" : 0, "nModified" : 3 })
+
+> db.members.find()
+{ "_id" : ObjectId("642a4189ee9df70001000001"), "mem_no" : "T20230403", "age" : 22, "type" : "ACE" }
+{ "_id" : ObjectId("642a4189ee9df70001000002"), "mem_no" : "T20230404", "age" : 37, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000003"), "mem_no" : "T20230405", "age" : 41, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000004"), "mem_no" : "T20230406", "age" : 36, "type" : "GOLD" }
+{ "_id" : ObjectId("642a4189ee9df70001000005"), "mem_no" : "T20230407", "age" : 27, "type" : "ACE" }
+
+> show tables;
+foo
+members
+order_no
+seq_no
+things
+
+
+# mkdir -p /allnew/mongodb/things
+
+# cd /allnew/mongodb/things/
+
+## things_create
+use test
+db.things.drop()
+
+m = { ename: "smith" }
+n = { empno: 1101 }
+
+db.things.save(m)
+db.things.save(n)
+
+db.things.validate()
+db.things.find()
+
+db.things.insert({ empno: 1102, ename: "King" })
+db.things.find()
+
+for (var n = 1103; n <= 1120; n++) db.things.save({ n: n, m: "test" })
+db.things.find()
+it
+
+# mongo < things_create
+
+
+## things_count
+
+use test
+db.things.count()
+
+# mongo < things_count 
+
+
+## things_one
+
+use test
+db.things.findOne()
+
+# mongo < things_findOne
+
+
+## things_update
+
+use test
+db.things.update({empno:1101},{$set:{ebith:"1999.10.1"}})
+db.things.find({empno:1101})
+
+# mongo < things_update
+
+
+## things_remove
+
+use test
+db.things.count()
+db.things.remove({ename:"smith"})
+db.things.find()
+db.things.count()
+
+# mongo < things_remove
+
+
+## things_removeall
+
+use test
+db.things.remove({})
+db.things.find()
+
+# mongo < things_removeall
+
+
+
+### mongo import
+
+## your host computer…
+
+# scp *.json root@192.168.1.12:/allnew/mongodb
+
+## ubuntu…
+
+# cd /allnew/mongodb
+
+# mkdir traffic primer
+
+# mv traffic_light.json traffic
+
+# mv primer-dataset.json primer
+
+# cd traffic
+
+# cat traffic_light.json | mongoimport -c traffic
+
+
+## traffic_find
+
+use test
+db.traffic.find()
+
+# mongo < traffic_find
+
+
+## traffic_findOne
+
+use test
+db.traffic.findOne()
+db.traffic.count()
+
+# mongo < traffic_findOne
+
+# cd primer
+
+
+## primer_count
+
+use test
+db.primer.findOne()
+db.primer.count()
+
+# mongo < primer_count
+
+
+## primer_find
+
+use test
+db.primer.find()
+
+# mongo < primer_find
+
+
+## primer_findany
+
+use test
+db.primer.find( { borough : "Queens" }).sort({ address:1 }).pretty()
+
+# mongo < primer_findany
+
+
+## primer_finddetail
+
+use test
+db.primer.find( { "address.zipcode": "11368" }, 
+{grades:{$elemMatch:{grade:"A"}}})
+
+# mongo < primer_finddetail
+
+# mkdir /allnew/mongodb/food
+
+# cd  /allnew/mongodb/food
+
+## food_insert
+
+use test
+db.food.drop()
+db.food.insert({"fruit":
+	["apple", "orange", "plum", "banana","peach", 
+	"mango", "pineapple", "grape", "melon","water melon",
+	"cherry","kiwi","strawberry"]})
+db.food.find()
+
+# mongo < food_insert
+
+> db.food.find()
+{ "_id" : ObjectId("642a7ffdb2a792e9d130e799"), "fruit" : [ "apple", "orange", "plum", "banana", "peach", "mango", "pineapple", "grape", "melon", "water melon", "cherry", "kiwi", "strawberry" ] }
+
+> db.food.find({}, {fruit: {$slice:5}})
+{ "_id" : ObjectId("642a7ffdb2a792e9d130e799"), "fruit" : [ "apple", "orange", "plum", "banana", "peach" ] }
+
+> db.food.find({}, {fruit: {$slice:[5, 3]}})
+{ "_id" : ObjectId("642a7ffdb2a792e9d130e799"), "fruit" : [ "mango", "pineapple", "grape" ] }
+
+> db.food.find({}, {fruit: {$slice:[-3, 2]}})
+{ "_id" : ObjectId("642a7ffdb2a792e9d130e799"), "fruit" : [ "cherry", "kiwi" ] }
+
+
+> db.members.find()
+
+> db.members.find({}, {mem_no:1, type:1})
+
+> db.members.find({}, {mem_no:1, type:1, _id:0})
+
+> db.members.insert({mem_no:"T20230401", age:42, type:"ACE"})
+
+> db.members.insert({mem_no:"T20230501", age:46, type:"ACE"})
+
+> db.members.find({}, {mem_no:1, type:1, _id:0})
+
+
+select mem_no, type from members
+where type=“ACE”
+
+> db.members.find({type:"ACE"}, {mem_no:1, type:1, _id:0})
+
+
+select mem_no, type from member
+where age >= 40;
+
+> db.members.find({age :{$gte : 40}}, {mem_no:1, type:1, _id:0})
+
+
+select mem_no, type from member
+where type != “ACE”;
+
+> db.members.find({type:{$ne:"ACE"}}, {mem_no:1, type:1, _id:0})
+
+
+select * from member
+where type = “ACE” and age = 42;
+
+> db.members.find({type:"ACE", age:42}, {_id:0})
+
+
+select * from member
+where type = “ACE” and age > 40;
+
+> db.members.find({type:"ACE", age:{$gt:40}}, {_id:0})
+
+
+select * from member
+where type = “ACE” or age > 40;
+
+> db.members.find({$or:[{type:"ACE"},{age:{$gt:40}}]}, {_id:0})
+
+
+select * from member
+where age >= 40 and age <= 50;
+
+> db.members.find({age:{$gte : 40, $lte:50}}, {_id:0})
+
+
+select * from member
+where mem_no like ’%05%’;
+
+> db.members.find({mem_no:/05/}, {_id:0})
+
+> db.members.insert({mem_no:"T20220401", age:42, type:"ACE"})
+> db.members.insert({mem_no:"T20220402", age:42, type:"ACE"})
+> db.members.insert({mem_no:"T20220403", age:42, type:"ACE"})
+
+> db.members.find({},{_id:0})
+
+
+select * from member
+where mem_no like ’T2022%’;
+
+> db.members.find({mem_no:/^T2022/}, {_id:0})
+
+> db.members.find({mem_no:/^T2022/}, {_id:0})
+
+> db.members.find({mem_no:{$regex:/^T2022/}}, {_id:0})
+
+> db.members.insert({mem_no:"t20220404", age:42, type:"ACE"})
+
+> db.members.find({mem_no:{$regex:/^T2022/}}, {_id:0})
+
+> db.members.find({mem_no:{$regex:/^T2022/i}}, {_id:0})
+
+
+select * from member
+where mem_no like ’%03’;
+
+> db.members.find({mem_no:/03$/}, {_id:0})
+
+
+select * from member
+where type=“GOLD”
+order by mem_no ASC;
+
+> db.members.find({type:”GOLD”}, {_id:0}).sort({mem_no:1})
+
+
+select * from member
+where type=“GOLD”
+order by mem_no DES;
+
+> db.members.find({type:"GOLD"}, {_id:0}).sort({mem_no:-1})
+
+
+# cd /allnew/mongodb/things
+
+# mongo < things_create
+
+
+select count() from things;
+
+> db.things.count()
+
+select count(empno) from things;
+
+> db.things.count({empno:{$exists:true}})
+
+select count(*) from members
+where age > 40;
+
+> db.members.count({age:{$gt:40}})
+
+
+select distinct type from members;
+
+> db.members.distinct("type")
+
+
+select * from member
+where rownum =1;
+
+> db.members.findOne()
+
+explain plan
+select * from members
+where type=“ACE”;
+
+> db.members.find({type:"ACE"}).explain()
+
+
+delete from members where type=“ACE”
+
+> db.members.remove({type:"ACE"})
+WriteResult({ "nRemoved" : 9 })
+
+delete from members;
+
+> db.members.remove({})
+WriteResult({ "nRemoved" : 3 })
+
+
+

@@ -1,0 +1,641 @@
+Day-14
+
+### vnc
+
+# rpm -qa | grep vnc
+
+# yum -y install tigervnc-server
+
+# cd
+
+# vncpasswd
+Password: abc123
+Verify: abc123
+Would you like to enter a view-only password (y/n)? y
+Password:
+Verify:
+
+# vncserver :1
+
+# cat .vnc/xstartup
+
+# vncserver -kill :1
+
+# vncserver :1 -geometry 1024x768 -depth 32
+
+# firewall-cmd --add-port=5901/udp
+
+# firewall-cmd --add-port=5901/tcp 
+
+# firewall-cmd --add-port=5902/udp
+
+# firewall-cmd --add-port=5902/tcp
+
+# firewall-cmd --list-ports
+
+
+호스트 컴퓨터에서 
+
+VNC Viewer 다운 받아서..
+192.168.1.134:5901 로 접속
+
+접속 암호 입력하고…..접속하시면 성공!!
+
+
+### cut command
+
+-c , -character
+-b, -bytes
+-d , -delimeter(tab)
+-f, -fields
+-z, -zero-teminated
+
+# cd work
+
+# vi test-data
+
+      1 UNIX is great os. unix is opensource. unix is free os.
+      2 learn operating system.
+      3 unix linux which one you choose.
+      4 user is easy to learn. unix is a multiuser os. learn unix. unix is powerful.
+
+# cut -c 2-4 test-data
+
+# cut -c 10- test-data
+
+# cut -c -6 test-data
+
+# cut -c 2,5,7 test-data
+
+
+# cp /etc/passwd .
+
+# cut -d ":" -f 1 passwd
+
+# cut -d ":" -f 7 passwd
+
+# cut -d ":" -f1,7 passwd
+
+
+### paste command
+
+# vi names
+
+      1 Mark Smith
+      2 Bobby Brown
+      3 Sue Miler
+      4 Jenny lgotit
+
+# vi numbers
+
+      1 555-1234
+      2 555-9876
+      3 555-6743
+      4 867-5309
+
+# paste names numbers
+
+# paste -s names numbers
+
+# paste -d., names numbers
+
+# paste -d., names numbers names
+
+# paste -s -d '\t\n' names
+
+# paste -s -d ',\n' names numbers
+
+# paste -d , -s names
+
+# paste - < names
+
+# paste - - < names
+
+# paste - - - < names
+
+# cat numbers | paste -d ":" names -
+
+# cat names | paste -d ":" - numbers
+
+# paste -d '\n' names numbers
+
+
+### string scope…
+
+echo “S{STR:offset:length}”
+
+# cd /allnew/shells/
+
+# vi string1.sh
+
+      1 #!/bin/bash
+      2
+      3 str="Hello, World, CentOS!"
+      4 echo "${str:0:5}"
+
+
+# vi string2.sh
+
+      1 #!/bin/bash
+      2
+      3 str="Hello, World, CentOS!"
+      4 echo "${str:7}"
+
+
+## string3.sh
+
+      1 #!/bin/bash
+      2
+      3 str="Hello, World, CentOS!"
+      4 echo "${str:(-7)}"
+
+
+## string4.sh
+      1 #!/bin/bash
+      2
+      3 str="Hello, World, CentOS!"
+      4 echo "${str:(-7):4}"
+
+
+## string5.sh
+      1 #!/bin/bash
+      2
+      3 str="Hello, World, CentOS!"
+      4 echo $str | cut -c 8-12
+
+
+## pattern1.sh
+      1 #!/bin/bash
+      2
+      3 str="AAABBBCCC"
+      4 echo ${str#A*B}
+
+
+## pattern2.sh
+      1 #!/bin/bash
+      2
+      3 str="AAABBBCCC"
+      4 echo ${str##A*B}
+
+
+## pattern3.sh
+      1 #!/bin/bash
+      2
+      3 str="AAABBBCCC"
+      4 echo ${str%B*C}
+
+
+## pattern4.sh
+      1 #!/bin/bash
+      2
+      3 str="AAABBBCCC"
+      4 echo ${str%%B*C}
+
+
+
+### split command
+
+# cd /work
+
+# for i in {1..100};do printf "%03d %s\n" $i $(openssl rand -hex 12);done > split-test
+
+# cat split-test
+
+# split -l 10 split-test
+
+# ll xa* | wc -l
+10
+
+
+# split -l 20 split-test
+
+# cat xaa | wc -l
+
+# head split-test
+
+# head xaa
+
+# rm -rf xa*
+
+
+# split -n 5 split-test
+
+# ll xa*
+
+# rm -rf xa*
+
+# cat xaa | wc -l
+
+
+# split -b 1k split-test
+
+# wc -l xaa
+35
+
+# wc -l xac
+30
+
+# rm -rf xa*
+
+
+## diffText
+      1 Hi!
+      2 Nice to meet you.
+      3 How are you?
+
+# head -2 diffText > catText
+
+## catText
+      1 Hello!
+      2 Nice to meet you.
+
+# diff catText diffText
+
+# cmp catText diffText
+
+
+### diff / patch command
+
+# mkdir a b
+
+# vi a/main.c
+      1 #include <stdio.h>
+      2
+      3 int main() {
+      4         return 0;
+      5 }
+      6
+
+
+# cp a/main.c b
+
+# ls *
+
+# vi b/main.c
+      1 #include <stdio.h>
+      2
+      3 int main() {
+      4         printf("Hello World~!!");
+      5         return 0;
+      6 }
+      7
+
+# diff -Naur a b
+
+# diff -Naur a b > main.patch
+
+# patch -p0 < main.patch
+patching file a/main.c
+
+# diff -Naur a
+
+# patch -p0 -R < main.patch
+patching file a/main.c
+
+# cd a
+
+# patch -p1 < ../main.patch
+patching file main.c
+
+-p0 : 현재 경로에 patch file이 존재
+
+-p1 : 상위 경로에 patch file이 존재
+
+-R : Reverse
+
+
+###  Database - mariadb in the CentOS
+
+# cd /allnew
+
+# mkdir db
+
+# yum -y install mariadb-server
+
+# systemctl start mariadb
+
+# systemctl enable mariadb
+
+# systemctl status mariadb
+
+# ps -ef | grep mysql
+
+# netstat -ntlp
+
+# mysql
+
+MariaDB [(none)]> show databases;
+
+MariaDB [(none)]> create database st_db;
+
+MariaDB [(none)]> show databases;
+
+MariaDB [(none)]> use st_db
+Database changed
+
+MariaDB [st_db]> show tables;
+Empty set (0.000 sec)
+
+MariaDB [st_db]> create table st_info (ST_ID int, NAME varchar(20), DEPT varchar(25)) default charset=utf8;
+
+MariaDB [st_db]> show tables;
+
+MariaDB [st_db]> explain st_info;
+
+MariaDB [st_db]> alter table st_info modify ST_ID int Not Null;
+
+MariaDB [st_db]> explain st_info;
+
+table schema 
+
+MariaDB [st_db]> alter table st_info add constraint pk_stinfo primary key(ST_ID);
+
+MariaDB [st_db]> explain st_info;
+
+MariaDB [st_db]> create table st_grade (ST_ID int, Linux int, DB int);
+
+MariaDB [st_db]> show tables;
+
+MariaDB [st_db]> explain st_grade;
+
+MariaDB [st_db]> alter table st_grade modify ST_ID int Not Null;
+
+MariaDB [st_db]> explain st_grade;
+
+MariaDB [st_db]> alter table st_grade add constraint pk_stgrade primary key (ST_ID);
+
+MariaDB [st_db]> explain st_grade;
+
+MariaDB [st_db]> insert into st_info values (202301, "LeeGilDong", "Game");
+
+MariaDB [st_db]> insert into st_info values (202302, "KimGilDong", "Computer");
+
+MariaDB [st_db]> insert into st_info values (202303, "HongGilDong", "Computer");
+
+MariaDB [st_db]> select * from st_info;
+
+MariaDB [st_db]> insert into st_grade values (202301, 90, 80);
+
+MariaDB [st_db]> insert into st_grade values (202302, 70, 95);
+
+MariaDB [st_db]> insert into st_grade values (202303, 80, 65);
+
+MariaDB [st_db]> select * from st_grade;
+
+MariaDB [st_db]> select NAME, DEPT from st_info where ST_ID=202301;
+
+MariaDB [st_db]> select Linux from st_grade where ST_ID=202301;
+
+MariaDB [st_db]> select st_info.NAME, st_info.DEPT, st_grade.Linux, st_grade.DB from st_info, st_grade where st_info.ST_ID=202301 and st_grade.ST_ID=202301;
+
+MariaDB [st_db]> \q
+Bye
+
+# mysqladmin version
+
+# mysqladmin status
+
+# mysqladmin password '1234'
+
+# mysql
+
+# mysql -u root -p
+Enter password:
+
+MariaDB [(none)]> \q
+Bye
+
+
+# vi select_stgrade.sql
+      1 use st_db;
+      2 select st_info.NAME, st_info.DEPT, st_grade.Linux, st_grade.DB from st_info, st_grade where st_inf        o.ST_ID=202301 and st_grade.ST_ID=202301;
+
+# mysql -u root -p < select_stgrade.sql
+Enter password:
+
+
+### mariadb 외부 접속 허용 - Workbench
+
+# mysql -u root -p
+Enter password:
+
+MariaDB [(none)]> use mysql
+
+MariaDB [mysql]> grant all privileges on *.* to 'root'@'%' identified by '1234';
+
+MariaDB [mysql]> flush privileges;
+
+MariaDB [mysql]> exit
+
+
+# vi /etc/my.cnf.d/mariadb-server.cnf
+
+     37 bind-address=0.0.0.0
+
+# systemctl restart mariadb
+
+# systemctl status mariadb
+
+# netstat -ntlp
+
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      18113/mysqld
+
+# firewall-cmd --add-port=3306/tcp
+success
+
+# firewall-cmd --add-port=3306/udp
+success
+
+# firewall-cmd --list-port
+
+# firewall-cmd --remove-port=3306/udp
+success
+
+# firewall-cmd --remove-port=3306/tcp
+success
+
+# firewall-cmd --permanent --add-port=3306/tcp
+success
+
+# firewall-cmd --permanent --add-port=3306/udp
+success
+
+# firewall-cmd --list-port
+
+# firewall-cmd --reload
+success
+
+# firewall-cmd --state
+running
+
+# firewall-cmd --list-port
+3306/tcp 3306/udp
+
+# firewall-cmd --list-all
+
+
+## WebServer - httpd in the CentOS
+
+# yum -y install httpd
+
+# systemctl start httpd
+
+# systemctl status httpd
+
+# netstat -ntlp
+
+# firewall-cmd --add-service=http
+success
+
+# firewall-cmd --list-service
+
+# ps -ef | grep http
+
+# cd /var/www/html
+
+# vi index.html
+      1 <html>
+      2 <head>
+      3 <title>Web Server</title>
+      4 </head>
+      5 <body>
+      6         <H1>Web Server Page~!!</H1>
+      7 </body>
+      8 </html>
+
+
+
+# vi /etc/httpd/conf.d/userdir.conf
+     17     # UserDir disabled
+
+     24     UserDir public_html
+
+
+# systemctl restart httpd
+
+# systemctl status httpd
+
+# su - centos
+
+$ mkdir public_html
+
+$ chmod 701 public_html/
+
+$ cd public_html/
+
+$ cp /var/www/html/index.html .
+
+$ vi index.html
+  1 <html>
+  2 <head>
+  3 <title>Centos User's Homepage~!!</title>
+  4 </head>
+  5 <body>
+  6         <H1>Welcome~!!</H1>
+  7         <H3>Centos User's Page~!!</H3>
+  8 </body>
+  9 </html>
+
+http://192.168.1.134/~centos
+
+# cd ..
+
+$ chmod 701 .
+
+$ ll
+
+$ exit
+logout
+
+# setenforce 0
+
+
+
+# yum -y install php php-gd
+
+# yum -y install php-mysqlnd
+
+# systemctl restart httpd
+
+# systemctl restart mariadb
+
+# cd /var/www/html
+
+# cat > phpinfo.php
+<?php phpinfo(); ?>
+^d
+
+# cat phpinfo.php
+<?php phpinfo(); ?>
+
+
+### gnuboard5 
+
+## your browser…
+
+http://192.168.1.134/phpinfo.php
+
+https://sir.kr/
+
+
+## Your host…
+
+# scp gnuboard5.4.5.5.tar.gz root@192.168.1.134:/var/www/html
+
+
+## centos….
+
+# mkdir gnuboard5
+
+# tar xvzf gnuboard5.4.5.5.tar.gz -C gnuboard5/
+
+# cd gnuboard5
+
+# mysql -u root -p
+
+MariaDB [(none)]> create database gnu;
+
+MariaDB [(none)]> grant all privileges on gnu.* to gnuser@localhost identified by '1234';
+
+MariaDB [(none)]> \q
+
+# mkdir data
+
+# chmod 707 data
+
+## your browser…
+
+http://192.168.1.134/gnuboard5
+
+
+
+admin / 1234 로 로그인
+
+
+게시판 관리 / 게시판 그룹 생성
+bbs0 / free board
+
+게시판 관리 / 게시판 추가
+linuxboard
+free board 선택
+
+http://192.168.1.134/gnuboard5/bbs/board.php?bo_table=free
+
+# cd ..
+
+# vi index.html
+
+      1 <html>
+      2 <head>
+      3 <title>Web Server</title>
+      4 </head>
+      5 <body>
+      6         <H1>Web Server Page~!!</H1>
+      7         <a href=http://192.168.1.134/gnuboard5/bbs/board.php?bo_table=free>Free Board</a>
+      8 </body>
+      9 </html>
+
+
+
+
+

@@ -1,0 +1,609 @@
+Day-08
+
+# df -T | grep md
+
+# rm -rf /md*
+
+# vi /etc/fstab 14번 라인 삭제
+
+# cat /proc/mdstat
+
+# mdadm -S md127
+
+# mdadm -S md126
+
+# cat /proc/mdstat
+
+
+### raid 1
+
+# mdadm -C -v /dev/md0 -l 1 -n 2 --spare-disk=1 /dev/sdb /dev/sdc /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm -D /dev/md0
+
+# mkfs.ext4 /dev/md0
+
+# mkdir /md
+
+# mount /dev/md0 /md
+
+# df -T | grep md
+
+# dd if=/dev/zero of=/md/data1 bs=1M count=800
+
+# mdadm -D /dev/md0
+
+# mdadm /dev/md0 --fail /dev/sdc
+
+# cat /proc/mdstat
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --remove /dev/sdc
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --fail /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --remove /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --add /dev/sde 
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --add /dev/sdc
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --remove /dev/sdc
+
+# mdadm /dev/md0 --remove /dev/sde
+
+# mdadm /dev/md0 --fail /dev/sde
+
+# mdadm /dev/md0 --remove /dev/sde
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --add /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm -D /dev/md0
+
+# umount /md
+
+# mdadm -S /dev/md0
+
+
+### raid 5
+
+# mdadm -C -v /dev/md0 -l 5 -n 3 /dev/sdb /dev/sdc /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm -D /dev/md0
+
+# mkfs.ext4 /dev/md0
+
+# mount /dev/md0 /md
+
+# df -T | grep md
+
+# dd if=/dev/zero of=/md/data1 bs=1M count=1500
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --fail /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --remove /dev/sdd
+
+# cat /proc/mdstat
+
+# mdadm /dev/md0 --add /dev/sde
+
+# cat /proc/mdstat
+
+# cat /proc/mdstat
+
+# umount /md
+
+# mdadm -S md0
+
+
+
+### raid 1+0
+
+# mdadm -C -v /dev/md0 -l 1 -n 2  /dev/sdb /dev/sdc
+
+# mdadm -C -v /dev/md1 -l 1 -n 2  /dev/sdd /dev/sde
+
+# cat /proc/mdstat
+
+# mdadm -C -v /dev/md2 -l 0 -n 2 /dev/md0 /dev/md1
+
+# cat /proc/mdstat
+
+# mkfs.ext4 /dev/md2
+
+# mount /dev/md2 /md
+
+# df -T | grep md
+
+# mount | grep md
+
+# dd if=/dev/zero of=/md/data1 bs=1M count=1500
+
+# mdadm -D /dev/md2
+
+# ll /dev/disk/by-uuid
+
+# blkid | grep md
+
+e927f91a-7d4c-4855-a346-c49c4e117c0b
+
+
+# vi /etc/fstab
+
+     13 UUID=e927f91a-7d4c-4855-a346-c49c4e117c0b       /md     ext4    defaults   0    2
+
+# shutdown -r now
+
+# df -T | grep md
+
+# cat /proc/mdstat
+
+# umount /md
+
+# rm -rf /md
+
+# cat /proc/mdstat
+
+# vi /etc/fstab
+     13 #UUID=  /work   ext4    defaults   0    2
+
+# mdadm -S md125
+
+# mdadm -S md126
+
+# mdadm -S md127
+
+# cat /proc/mdstat
+
+# shutdown -h now
+
+
+### lvm over raid
+
+# fdisk -l | grep sd
+
+# fdisk /dev/sdb
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+8e
+p
+w
+
+# fdisk /dev/sdc
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+t
+8e
+p
+w
+
+# fdisk -l | grep sd
+
+# pvcreate /dev/sdb1 /dev/sdc1
+
+# pvscan
+
+# vgcreate yg /dev/sdb1 /dev/sdc1
+
+# vgchange -a y yg
+
+# vgdisplay -v yg
+
+# lvcreate -l 255 yg -n lvm1
+
+# lvcreate -l 255 yg -n lvm2
+
+# lvcreate -l 255 yg -n lvm3
+
+# lvcreate -l 255 yg -n lvm4
+
+# mdadm -C -v /dev/md1 -l 1 -n 2 /dev/yg/lvm1 /dev/yg/lvm2
+
+# mdadm -C -v /dev/md2 -l 1 -n 2 /dev/yg/lvm3 /dev/yg/lvm4
+
+# mdadm -C -v /dev/md0 -l 0 -n 2 /dev/md1 /dev/md2
+
+# cd /work
+
+# ls
+
+# mv allnew/ /data
+
+# mkfs.ext4 /dev/md0
+
+# mount /dev/md0 /work
+
+# mv /data/allnew/ /work
+
+# cd /work
+
+# ls
+
+# blkid | grep md
+
+# vi /etc/fstab
+     13 UUID=c1986d9c-1738-4182-9fdb-db0463bbfb67      /work   ext4    defaults   0    2
+
+# shutdown -r now
+
+# df -T | grep md
+
+# cat /proc/mdstat
+
+
+
+# vi /etc/fstab
+맨 아래 1줄 삭제
+
+# tail -3 /etc/fstab
+
+# umount /work
+
+# cat /proc/mdstat
+
+# mdadm -S md125
+
+# mdadm -S md126
+
+# mdadm -S md127
+
+# cat /proc/mdstat
+
+
+### 파일 시스템 추가방법 : Legacy
+1. 디스크 접속
+2. fdisk -l
+3. fdisk /dev/sdX => 파티션 생성
+4. mkfs.ext4 /dev/sdX1 => 파일 시스템 생성
+5. mkdir /temp => 마운트 포인트 생성
+6. mount /dev/sdX1 /temp => 마운트
+7. vi /etc/fstab 에 추가
+
+
+### 파일 시스템 추가방법 : LVM
+1. 디스크 접속
+2. fdisk -l
+3. fdisk /dev/sdX => 파티션 생성, 타입 변경(t -> 8e)
+4. pvcreate /dev/sdX  => PV 생성
+5. vgcreate vg /dev/sdX => VG 생성
+6. vgchange -a y vg => VG 활성화
+7. vgdisplay vg => Free PE 확인 
+8. lvcreate -l 255 vg -n lvm => LV 생성
+9. mkfs.ext4 /dev/vg/lvm => 파일 시스템 생성
+10. mkdir /temp => 마운트 포인트 생성
+11. mount /dev/vg/lvm /temp => 마운트
+12. vi /etc/fstab 에 추가
+/dev/vg/lvm     /temp     ext4       defaults     1   1
+
+
+### 파일 시스템 추가방법 : RAID(mdadm)
+1. 디스크 접속
+2. fdisk -l
+3. mdadm -C -v /dev/md0 -l 1 -n 2 /dev/sdb /dev/sdc
+4. cat /proc/mdstat
+5. mkdir /temp => 마운트 포인트 생성
+6. mount /dev/md0 /temp => 마운트
+7. ls -l /dev/disk/by-uuid => UUID값 확인
+8. vi /etc/fstab에 추가
+UUID=xxxx     /temp     ext4       defaults     1   1
+
+
+# rm -rf /work
+
+# apt -y install zfsutils-linux
+
+### 파일 시스템 추가방법 : ZFS
+1. 디스크 접속
+2. fdisk -l
+	0.	zpool create work sdb sdc
+	0.	zpool list
+
+# zpool create work sdb sdc
+
+# zpool status 
+
+# zpool list
+
+# cd /work
+
+# df -T | grep work
+
+# dd if=/dev/zero of=data1 bs=1M count=1500
+
+# zfs list
+
+# df -T | grep work
+
+# zpool status -x
+
+# zpool status -v
+
+# zpool iostat work 1 2
+
+# zpool iostat -v work 1 2
+
+# cd
+
+# zpool destroy work
+
+# zpool list
+
+
+# zpool create -m /mirr allnew mirror sdb sdc
+
+# zpool list
+
+# zpool status
+
+# cd /mirr
+
+# dd if=/dev/zero of=data1 bs=1M count=1500
+
+# cd
+
+# zpool status -v allnew
+
+# zpool offline allnew sdc
+
+# zpool status -v allnew
+
+# zpool online allnew sdc
+
+# zpool status -v allnew
+
+# zpool replace allnew sdc sdd
+
+# zpool status -v allnew
+
+# zpool detach allnew sdd
+
+# zpool status -v allnew
+
+# zpool attach allnew sdb sde
+
+# zpool status -v allnew
+
+# cd /mirr
+
+# ls
+
+# file data1
+
+# zpool destroy allnew
+
+# zpool list
+
+# rm -rf /mirr
+
+
+# zpool create -m /raid allnew raidz sdb sdc sdd
+
+# zpool list
+
+# zpool status -v
+
+# cd /raid/
+
+# dd if=/dev/zero of=data1 bs=1M count=1500
+
+# dd if=/dev/zero of=disk1 bs=1M count=200
+
+# dd if=/dev/zero of=disk2 bs=1M count=200
+
+# dd if=/dev/zero of=disk3 bs=1M count=200
+
+# dd if=/dev/zero of=disk4 bs=1M count=200
+
+# zpool iostat -v allnew 1 2
+
+# zpool create -f -m /file allnew-file mirror /raid/disk1 /raid/disk2 mirror /raid/disk3 /raid/disk4
+
+# zpool list
+
+# zpool status -v allnew-file
+
+# cd /file
+
+# dd if=/dev/zero of=data bs=1M count=200
+
+# cd
+
+# zpool destroy allnew-file
+
+# zpool list
+
+# zpool export -f allnew
+
+# zpool list
+
+# zpool import -d /dev
+
+# zpool import allnew
+
+# zpool list
+
+# zpool destroy allnew
+
+# zpool list
+
+# rm -rf /raid
+
+
+### zfs 1+0
+
+# zpool create work mirror sdb sdc mirror sdd sde
+
+# zpool list
+
+# zpool status
+
+# df
+
+# shutdown -r now
+
+# cd /work
+
+# git clone http://github.com/impelfin/allnew
+
+# cd allnew
+
+
+# dumpe2fs /dev/sda3
+
+# dumpe2fs /dev/sda3 | grep superblock
+
+# e2fsck -b 32768 -y /dev/sda3
+
+
+### chapter8. booting과 종료
+
+# cd /boot
+
+# cd grub
+
+# cd
+
+# ps -ef | more
+
+
+# dmesg
+
+# more /var/log/boot.log
+
+# cd /etc/init.d
+
+# cd ../rc0.d
+
+# ls
+
+# cd ../rc1.d
+
+# ls
+
+# cd ../rc2.d
+
+# ls
+
+# cd ../rc3.d
+
+# ls
+
+# cd ../rc4.d
+
+# ls
+
+# cd ../rc5.d
+
+# ls
+
+ # cd ../rc6.d
+
+# ls
+
+
+### inetd vs stand-alone
+구동속도 : 느리다 vs 빠르다
+서버 부하 : 적다 vs 많다
+                xinetd vs vsftpd, httpd, sendmail……
+
+
+# systemctl
+
+# systemctl -a 
+
+# systemctl -t service
+
+# systemctl start cron
+
+# systemctl status cron
+
+# systemctl is-active cron
+
+
+## X11 window manager(x-widnows)
+gnome, kde, xface, lightdm
+
+/etc/init.d : 실행파일 모음 디렉토리
+
+/etc/rcX.d : 링크파일 모음 
+
+K/숫자/데몬 이름 : kill daemon
+S/숫자/데몬 이름 : start daemon
+
+0 -> 1 -> 2 -> 3 -> 5 : 부팅
+
+5 -> 3 -> 2 -> 1 -> 0 : 종료
+
+# who -r
+
+# runlevel
+
+# systemctl isolate multi-user
+
+# systemctl isolate graphical.target
+
+# systemctl isolate runlevel5
+
+# init 1
+
+
+## 종료 프로세스
+
+RAM => DISK
+
+Superblock, Kernel -> DISK
+
+# sync
+
+# shutdown 
+
+# which halt
+
+# ls -l /usr/sbin/halt
+
+# ll /usr/sbin/shutdown
+
+# last
+
+# cd /var/log
+
+# file wtmp
+
+# last
+
+# systemctl isolate poweroff
+
+
+

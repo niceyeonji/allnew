@@ -1,0 +1,555 @@
+Day-15
+
+### NFS - CentOS
+
+# cd /work
+
+# mkdir share
+
+# cp split-test share
+
+# vi /etc/exports
+
+	1 /work/share 192.168.1.*(rw,no_root_squash)
+
+# exportfs -a
+
+# exportfs -v
+
+# systemctl start nfs-server
+
+# systemctl start rpcbind
+
+# firewall-cmd --add-service=nfs
+
+# firewall-cmd --add-port=22048/udp
+
+# firewall-cmd --add-port=2049/udp
+
+# firewall-cmd --add-port=111/udp
+
+# showmount -e 192.168.1.152
+
+# rpcinfo -p 192.168.1.152
+
+—————————————————————
+# setenforce 0
+
+# systemctl stop firewalld
+—————————————————————
+# cd /work
+
+# mkdir pub
+
+# chmod 1777 pub
+
+# mount -t nfs 192.168.1.152:/work/share /work/pub
+
+# df -T
+
+# cd /work/pub
+
+# touch im134
+
+# cd ..
+
+# umont /work/pub
+
+# systemctl start firewalld
+
+# systemctl stop nfs-server
+
+# rm -rf /work/pub
+
+# rm -rf /work/share
+
+
+### 보안
+
+# cd /var/log
+
+# ls
+
+# more messages
+
+# dmesg
+
+# more boot.log
+
+## lastb => btmp
+
+## last => wtmp
+
+# systemctl status rsyslog
+
+# cat /etc/rsyslog.conf
+
+
+## iptables  => firewalld
+
+# systemctl start firewalld
+
+# service start iptables
+
+
+### Mail service
+
+# yum -y install sendmail sendmail-cf
+
+# vi /etc/mail/sendmail.mc
+
+     56 TRUST_AUTH_MECH(`EXTERNAL DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+     57 define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+
+    121 DAEMON_OPTIONS(`Port=smtp,Addr=0.0.0.0, Name=MTA')dnl
+
+# m4 /etc/mail/sendmail.mc > /etc/mail/sendmail.cf
+
+# vi /etc/mail/sendmail.cf
+    272 O DaemonPortOptions=Port=smtp, Name=MTA
+
+# vi /etc/mail/local-host-names
+      2 aaa.com         RELAY
+      3 bbb.com         RELAY
+
+# vi /etc/mail/access
+     13 aaa.com                                 RELAY
+
+# makemap hash /etc/mail/access < /etc/mail/access
+
+# vi /etc/mail/virtusertable
+     42 webmaster@aaa.com       centos
+     43 master@aaa.com          centos
+     44 root@aaa.com            centos
+
+# makemap hash /etc/mail/virtusertable < /etc/mail/virtusertable
+
+# systemctl start saslauthd
+
+# systemctl start sendmail
+
+# systemctl status sendmail
+
+# telnet 0 25
+
+ehlo localhost
+
+quit
+
+
+# rpm -qa | grep dovecot
+
+# yum -y install dovecot
+
+# vi /etc/dovecot/dovecot.conf
+
+     25 protocols = pop3
+
+     32 listen = *, ::
+
+# systemctl start dovecot
+
+# systemctl status dovecot
+
+# telnet 0 110
+
+quit
+
+# yum -y install mailx
+
+# mail root@localhost
+Subject: test Mail
+
+Hi~ This is a test mail...
+have a good lunch..
+EOT
+
+# mail
+
+& 1
+
+& q
+
+# mail
+
+& 1
+& d
+& q
+
+# mailstats
+
+# vi /etc/mail/sendmail.cf
+
+    190 O MaxMessageSize=10000000
+
+    493 O MaxRecipientsPerMessage=0
+
+   1872                 T=DNS/RFC822/X-Unix,M=10000000,
+
+# systemctl restart sendmail
+
+# systemctl status sendmail
+
+# shutdown -h now
+
+
+
+### Mysql - Ubuntu
+
+# cd /allnew
+
+# git fetch
+
+# git pull
+
+# apt -y update
+
+# apt -y upgrade
+
+# apt -y autoremove
+
+# apt -y install mysql-server
+
+# systemctl restart mysql
+
+# systemctl status mysql
+
+# systemctl enable mysql
+
+# netstat -ntlp
+
+# mysql -u root -p
+Enter password:
+
+mysql> create user 'mysql'@'%' identified by '1234';
+
+mysql> create database testdb;
+
+mysql> show databases;
+
+mysql> grant all privileges on testdb.* to 'mysql'@'%';
+
+mysql> flush privileges;
+
+mysql> show grants for 'mysql'@'%';
+
+mysql> exit
+
+# mysql -u mysql -p
+Enter password:
+
+mysql> show databases;
+
+mysql> exit
+
+# vi /etc/mysql/mysql.conf.d/mysqld.cnf
+     31 bind-address            = 0.0.0.0
+     32 mysqlx-bind-address     = 0.0.0.0
+
+# systemctl restart mysql
+
+# systemctl status mysql
+
+# netstat -ntlp
+
+워크벤치 실행 후 MySQL Connections -> 
+connection name : Ubuntu
+Hostname : 192.168.1.36
+Username : mysql
+Password : Store in Keychain 클릭 1234
+Test Connection 클릭 -> ok
+
+## testdb_stinfo-stgrade_create.sql
+use testdb;
+show tables;
+
+create table st_info(ST_ID int, NAME varchar(20), DEPT varchar(25)) 
+default charset=utf8;
+show tables;
+
+create table st_grade(ST_ID int, Linux int, DB int);
+show tables;
+
+explain st_info;
+explain st_grade;
+
+alter table st_info add constraint pk_stinfo primary key (ST_ID);
+alter table st_grade add constraint pk_stgrade primary key (ST_ID);
+
+explain st_info;
+explain st_grade;
+
+insert into st_info values (202301, "LeeGilDong", "Game");
+insert into st_info values (202302, "KimGilDong", "Computer");
+insert into st_info values (202303, "HongGilDong", "Game");
+select * from st_info;
+
+insert into st_grade values (202301, 80, 70);
+insert into st_grade values (202302, 90, 75);
+insert into st_grade values (202303, 95, 85);
+select * from st_grade;
+
+
+## testdb_stinfo-stgrade_query.sql
+use testdb;
+
+select NAME, DEPT from st_info;
+select NAME, DEPT from st_info where ST_ID=202301;
+
+select NAME, DEPT from st_info where DEPT='Game';
+
+select Linux from st_grade where ST_ID=202301;
+
+# NAME Linux DB DEPT => 202301
+select st_info.NAME, st_grade.Linux, st_grade.DB, st_info.DEPT
+from st_info, st_grade
+where st_info.ST_ID=202301 and st_grade.ST_ID=202301;
+
+update st_grade set Linux=90 where ST_ID=202301;
+
+select st_info.NAME, st_grade.Linux, st_grade.DB, st_info.DEPT
+from st_info, st_grade
+where st_info.ST_ID=202301 and st_grade.ST_ID=202301;
+
+update st_info set DEPT="Computer" where ST_ID=202301;
+
+select st_info.NAME, st_grade.Linux, st_grade.DB, st_info.DEPT
+from st_info, st_grade
+where st_info.ST_ID=202301 and st_grade.ST_ID=202301;
+
+
+## Your host computer…
+
+# scp testdb_stinfo-stgrade_create.sql root@192.168.0.36:/allnew/db
+
+# scp testdb_stinfo-stgrade_query.sql root@192.168.0.36:/allnew/db
+
+
+# cd /allnew
+
+# git add .
+
+# git commit -m “testdb”
+
+# git push
+
+
+## other server….
+
+# cd /allnew
+
+# git fetch
+
+# git pull
+
+
+## ubuntu…
+
+# cd /allnew/db
+
+# mysql -u root -p < testdb_stinfo-stgrade_create.sql
+
+# mysql -u root -p < testdb_stinfo-stgrade_query.sql
+
+
+
+## testdb_drop_table.sql
+
+use testdb;
+
+drop table st_grade;
+drop table st_info;
+
+
+## workbench data export 시 주의 사항….. 
+
+work bench 메뉴 -> server -> data export -> include create  schema…
+
+
+# /allnew/shells/allnew_backup.sh
+     1	#!/bin/bash
+     2
+     3	cd /
+     4	tar cvzf allnew.tar.gz allnew
+     5	mv allnew.tar.gz ~
+
+# crontab -e
+     24 45 17 * * * /allnew/shells/allnew_backup.sh
+
+# cd 
+
+# /allnew/shells/allnew_backup.sh
+
+# tar tvzf allnew.tar.gz
+
+
+### apache2 - Ubuntu
+
+# apt -y install apache2
+
+# systemctl status apache2
+
+# netstat -ntlp
+
+# cd /var/www/html
+
+http://192.168.1.12/
+
+# cp index.html index.html.old
+
+# vi index.html
+      1 <html>
+      2 <head>
+      3 <title>
+      4         Apache2 Home Test~!!
+      5 </title>
+      6 <body>
+      7         <h1>Apache2 WebServer Homepage~!!</h1>
+      8 </body>
+      9 </head>
+     10 </html>
+
+
+## user Home Page…
+
+# su - ubuntu
+
+$ mkdir public_html
+
+$ ll
+
+$ chmod 751 .
+
+$ cd public_html
+
+$ cp /var/www/html/index.html .
+
+# vi index.html
+      1 <html>
+      2 <head>
+      3 <title>
+      4         ubuntu Home Test~!!
+      5 </title>
+      6 <body>
+      7         <h1>Ubuntu User's Homepage~!!</h1>
+      8 </body>
+      9 </head>
+     10 </html>
+
+$ exit
+
+http://192.168.1.12/~ubuntu
+
+# cd /etc/apache2
+
+# ls
+
+# ls mods-available/
+
+# a2enmod userdir
+Enabling module userdir.
+To activate the new configuration, you need to run:
+  systemctl restart apache2
+
+# ls mods-enabled/
+
+# systemctl restart apache2
+
+
+## stand alone vs super daemon(xinetd)
+
+# systemctl stop apache2
+
+# apt -y remove apache2
+
+# netstat -ntlp
+
+
+### NGINX install
+
+# apt -y update; apt -y upgrade; apt -y autoremove
+
+# rm -rf /var/lib/apache2
+
+# apt -y install nginx
+
+# systemctl start nginx
+
+# systemctl status nginx
+
+# systemctl enable nginx
+
+# netstat -ntlp
+
+# cd /var/www/html
+
+# mv index.html index.html.apache2
+
+# mv index.nginx-debian.html index.html
+
+# cd /etc/nginx/sites-available/
+
+# ls
+
+# vi default
+
+     79 server {
+     80         listen 8100;
+     81         listen [::]:8100;
+     82
+     83         server_name example.com;
+     84
+     85         root /home/ubuntu/public_html;
+     86         index index.html;
+     87
+     88         location / {
+     89                 try_files $uri $uri/ =404;
+     90         }
+     91 }
+
+# systemctl restart nginx
+
+http://192.168.1.12:8100/
+
+
+### SWAP file
+
+# cd /
+
+# dd if=/dev/zero of=/swapfile bs=1M count=3000
+
+# mkswap /swapfile
+
+# file /swapfile
+
+# swapon /swapfile
+
+# free
+
+# swapoff /swapfile
+
+# free
+
+# chmod 0600 /swapfile
+
+# swapon /swapfile
+
+
+# vi /etc/fstab
+
+     12 /swapfile                             none            swap    sw              0       0
+
+# shutdown -r now
+
+리부팅 후에
+
+# free
+
+
+
+
+
+
+
+
+

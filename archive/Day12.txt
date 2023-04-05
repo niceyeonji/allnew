@@ -1,0 +1,635 @@
+Day-12
+
+# cd /allnew/shells
+
+# file.sh
+      1 #!/bin/bash
+      2
+      3 if [ -f /home/$1/.plan ]; then
+      4         cat /home/$1/.plan
+      5 else
+      6         echo "User $1 is not make .plan file."
+      7 fi
+
+# !ch
+
+# ./file.sh centos
+
+# cat > ~centos/.plan
+I will go to travel this weekend.
+^d
+
+# ./file.sh centos
+
+# cat >> ~centos/.plan
+destination is anywhere...hmhm
+^d
+
+# ./file.sh centos
+I will go to travel this weekend.
+destination is anywhere...hmhm
+
+
+# cp file.sh dir.sh
+
+## dir.sh
+      1 #!/bin/bash
+      2
+      3 if [ -d $1 ]; then
+      4         echo "$1 directory is exit~!!."
+      5 else
+      6         echo "$1 directory is not exit~!!."
+      7 fi
+
+# ./dir.sh /work/shells
+/work/shells directory is not exit~!!.
+
+# ./dir.sh /allnew/shells
+/allnew/shells directory is exit~!!.
+
+
+## newerfile.sh
+
+      1 #!/bin/bash
+      2
+      3 file1=$1
+      4 file2=$2
+      5
+      6 if [ $# -eq 2 ]; then
+      7         if [ $file1 -nt $file2 ]; then
+      8                 echo $file1 is newer file than $file2
+      9         else
+     10                 echo $file2 is newer file than $file1
+     11         fi
+     12 else
+     13         echo "Input two parameters...!!"
+     14 fi
+     15
+
+# !ch
+
+# touch test1 test2
+
+# ./newerfile.sh test1 test2
+test2 is newer file than test1
+
+# touch test1
+
+# ./newerfile.sh test1 test2
+test1 is newer file than test2
+
+# ./newerfile.sh test1 test2 test3
+Input two parameters...!!
+
+
+
+# vi logic.sh
+
+      1 #!/bin/bash
+      2
+      3 opt=$1
+      4
+      5 if [ $opt == 'test' -o $opt == 'aaa' ]; then
+      6         echo good
+      7 else
+      8         echo bad
+      9 fi
+     10
+
+# !ch
+
+# ./logic.sh test
+
+# ./logic.sh aaa
+
+# ./logic.sh bbb
+
+
+## logic_new.sh
+
+     1	#!/bin/bash
+     2
+     3	opt1=$1
+     4	opt2=$2
+     5
+     6	if [ $# -eq 2 ]; then
+     7		if [ $opt1 == 'test' -a $opt2 == 'aaa' ]; then
+     8			echo good
+     9		elif [ $opt1 == 'aaa' -a $opt2 == 'test' ]; then
+    10			echo good
+    11		else
+    12			echo bad
+    13		fi
+    14	else
+    15		echo "Input two parameters...!!"
+    16	fi
+    17
+
+
+# ./logic_new.sh test aaa
+good
+
+# ./logic_new.sh aaa test
+good
+
+# ./logic_new.sh test bbb
+bad
+
+# ./logic_new.sh bbb test
+bad
+
+# ./logic_new.sh bbb
+Input two parameters...!!
+
+
+## logic_new2.sh
+
+      1 #!/bin/bash
+      2
+      3 opt1=$1
+      4 opt2=$2
+      5
+      6 if [ $# -eq 2 ]; then
+      7         if [ $opt1 == 'test' -a $opt2 == 'aaa' ] || [ $opt1 == 'aaa' -a $opt2 == 'test' ]; then
+      8                 echo good
+      9         else
+     10                 echo bad
+     11         fi
+     12 else
+     13         echo "Input two parameters...!!"
+     14 fi
+     15
+
+# ./logic_new2.sh test aaa
+good
+
+# ./logic_new2.sh aaa test
+good
+
+# ./logic_new2.sh test bbb
+bad
+
+
+
+# more /etc/group
+
+# grep users /etc/group
+users:x:100:
+
+# more /etc/passwd
+
+# cd /home
+
+# useradd -u 1001 -g 100 -c "User1" -d /home/user1 -s /bin/bash -m user1
+
+# tail -3 /etc/passwd
+
+# ls /home
+
+# passwd -d user1
+
+
+KILL 
+1 - HUP
+2 - INT
+3 - QUIT
+9 - KILL 
+15 - TEM
+20 - TSTP
+
+# userdel -r user1
+
+# !tail
+
+# ls /home
+
+# vi useradd.sh
+
+      1 #!/bin/bash
+      2
+      3 i=1
+      4 uid=$1
+      5 cnt=$2
+      6
+      7 while [ $i -le $cnt ]; do
+      8         let uid+=1
+      9         useradd -u $uid -g users -d /home/user$i -s /bin/bash user$i
+     10         passwd -d user$i
+     11         let i+=1
+     12 done
+     13 echo Complete!!
+
+# !ch
+
+# ./useradd.sh 
+
+# ./useradd.sh 2000 10
+
+# tail /etc/passwd
+
+# ls /home
+
+
+## userdel.sh
+
+     1	#!/bin/bash
+     2
+     3	i=1
+     4	cnt=$1
+     5
+     6	while [ $i -le $cnt ]; do
+     7		userdel -r user$i
+     8		let i+=1
+     9	done
+    10	echo Complete!!
+
+# userdel.sh 10
+
+# tail /etc/passwd
+
+
+## test
+      1 The quick brown dog jumps over the lazy fox. NULL
+      2 This is a test, this is only a test. NULL
+      3 Romeo, Romeo!! Wherefore art thou Romeo? NULL
+EOF
+
+# vi readfile.sh
+
+      1 The quick brown dog jumps over the lazy fox.
+      1 #!/bin/bash
+      2
+      3 count=1
+      4 cat test | while read line
+      5 do
+      6         echo "Line $count : $line"
+      7         count=$[ $count + 1 ]
+      8 done
+      9 echo "Finishing processing the file."
+
+# !ch
+
+# ./readfile.sh
+Line 1 : The quick brown dog jumps over the lazu fox.
+Line 2 : This is a test, this is only a test.
+Line 3 : Romeo, Romeo!! Wherefore art thou Romeo?
+Finishing processing the file.
+
+
+## user.dat
+
+      1 romeo,3001,users,romeo test user
+      2 mica,3002,users,mica test user
+      3 andrea,3003,users,andrea test user
+
+
+# vi useradd_file.sh
+
+      1 #!/bin/bash
+      2
+      3 input="user.dat"
+      4
+      5 while IFS=',' read -r username uid gid comment
+      6 do
+      7         echo "Adding $username"
+      8         useradd -u "$uid" -g "$gid" -c "$comment" -m "$username"
+      9 done < $input
+
+
+IFS(Internal Field Separator)
+
+# !ch
+
+# ./useradd_file.sh
+
+# tail -4 /etc/passwd
+
+
+## userdel_file.sh
+     1	#!/bin/bash
+     2
+     3	input="user.dat"
+     4
+     5	while IFS=',' read -r username uid gid comment
+     6	do
+     7		userdel -r "$username"
+     8		echo "Delete $username"
+     9	done < $input
+
+# !ch
+
+# ./userdel_file.sh
+Delete romeo
+Delete mica
+Delete andrea
+
+
+## /etc/passwd file
+
+username:pw:uid:gid:comment:home:shell
+
+count : username - uid - gid - home - shell
+
+
+## user_list.sh
+     1	#!/bin/bash
+     2
+     3	input="/etc/passwd"
+     4	count=1
+     5
+     6	while IFS=':' read -r username pw uid gid comment home shell
+     7	do
+     8		echo "$count : $username - $uid - $gid - $home - $shell"
+     9		let count+=1
+    10	done < $input
+
+
+# !ch
+
+# ./user_list.sh
+1 : root - 0 - 0 - /root - /bin/bash
+2 : bin - 1 - 1 - /bin - /sbin/nologin
+3 : daemon - 2 - 2 - /sbin - /sbin/nologin
+
+
+# mkdir dir1 dir2
+# touch dir1/test1
+# touch dir1/test2
+# touch dir1/test3
+# touch dir2/test1
+# touch dir2/test2
+# touch dir2/test4
+
+# vi find_comm.sh
+      1 #!/bin/bash
+      2
+      3 dir1=$1
+      4 dir2=$2
+      5
+      6 ( cd $dir1; find . -maxdepth 1 -type f -print | sort ) > dir1-file.lst
+      7 ( cd $dir2; find . -maxdepth 1 -type f -print | sort ) > dir2-file.lst
+      8
+      9 comm dir1-file.lst dir2-file.lst
+
+# !ch
+
+# ./find_comm.sh dir1 dir2
+		./test1
+		./test2
+./test3
+	./test4
+
+# diff dir1-file.lst dir2-file.lst
+3c3
+< ./test3
+---
+> ./test4
+
+
+## getopt.sh
+      1 #!/bin/bash
+      2 #
+      3 set -- $(getopt -q ab:cd "$@")
+      4 #
+      5 echo
+      6 while [ -n "$1" ]
+      7 do
+      8         case "$1" in
+      9         -a) echo "Found the -a option" ;;
+     10         -b) param="$2"
+     11             echo "Found the -b option, with parameter value $param"
+     12             shift ;;
+     13         -c) echo "Found the -c option" ;;
+     14         --) shift
+     15             break ;;
+     16         *) echo "$1 is not an option" ;;
+     17         esac
+     18         shift
+     19 done
+     20 #
+     21 count=1
+     22 for param in "$@"
+     23 do
+     24         echo "Parameter #$count: $param"
+     25         count=$[ $count + 1 ]
+     26 done
+     27 #
+
+# !ch
+# ./getopt.sh -a -b test -c -d abc def
+
+Found the -a option
+Found the -b option, with parameter value 'test'
+Found the -c option
+-d is not an option
+Parameter #1: 'abc'
+Parameter #2: 'def'
+
+# ./getopt.sh -a -b test -c -d -f -- abc def
+
+Found the -a option
+Found the -b option, with parameter value 'test'
+Found the -c option
+-d is not an option
+Parameter #1: 'abc'
+Parameter #2: 'def'
+
+# ./getopt.sh  -a -- abc def
+
+Found the -a option
+Parameter #1: 'abc'
+Parameter #2: 'def'
+
+
+[ $# -ne 0 ]
+
+### 사용자 관리
+
+# head /etc/passwd
+
+# grep nobody /etc/passwd
+
+# cat /etc/login.defs
+
+# useradd user1
+
+# tail -3 /etc/passwd
+
+# tail -3 /etc/group
+
+# ls /home
+
+# userdel -r user1
+
+# useradd -u 1001 -g users user1
+
+# tail -3 /etc/passwd
+
+# userdel -r user1
+
+# useradd -D
+
+# cat /etc/default/useradd
+
+# vi /etc/default/useradd
+SHELL=/bin/sh
+
+# useradd -D
+
+# vi /etc/default/useradd
+SHELL=/bin/bash
+
+# useradd -D
+
+# useradd -D e 7
+
+# useradd -D 
+
+# vi /etc/default/useradd
+EXPIRE=
+
+# useradd -u 1001 -g users user1
+
+# useradd -u 1002 -g users user2
+
+# useradd -u 1003 -g users user3
+
+# tail -4 /etc/passwd
+
+# usermod -u 2003 user3
+
+# tail -4 /etc/passwd
+
+# usermod -s /bin/sh user3
+
+# tail -4 /etc/passwd
+
+# usermod -l user3333 user3
+
+# tail -4 /etc/passwd
+
+# usermod -u 1003 -s /bin/bash -l user3 user3333
+
+# tail -4 /etc/passwd
+
+# cd /home
+
+# userdel user3
+
+# tail -4 /etc/passwd
+
+# rm -rf user3
+
+# userdel -r user2
+
+# useradd -u 1002 -g users user2
+
+# groupadd -g 2000 testuser
+
+# tail -3 /etc/group
+
+# groupmod -g 3000 testuser
+
+# tail -3 /etc/group
+
+# groupmod -n testgroup testuser
+
+# tail -3 /etc/group
+
+# groupdel testgroup
+
+# tail -3 /etc/group
+
+
+# vipw
+     48 user1:x:1001:100::/home/user1:/bin/bash
+     49 user2:x:1002:100::/home/user2:/bin/bash
+     50 user3:x:1003:100::/home/user3:/bin/bash
+
+# vipw -s
+
+# pwconv
+: /etc/passwd -> /etc/shadow 동기화 
+
+# vipw -s
+
+# ll 
+
+# cp -R user2 user3
+
+# ll
+
+# chown user3 user3
+
+# chgrp users user3
+
+# ll
+
+# chown root:root user3
+
+# chown user3.users user3
+
+# ll
+
+# chown :root user3
+
+# ll
+
+# chown root: user3
+
+# ll
+
+# chgrp user3: user3
+chgrp: invalid group: `user3:'
+
+# chgrp :users user3
+chgrp: invalid group: `:users'
+
+# chown user3:users user3
+
+# ll
+
+# who
+root     pts/0        2023-03-21 08:40 (192.168.1.2)
+
+# whoami
+root
+
+# who am i
+root     pts/0        2023-03-21 08:40 (192.168.1.2)
+
+# who -r
+         run-level 5  2023-03-21 08:39
+
+# who -b
+         system boot  2023-03-21 08:38
+
+# who -H
+NAME     LINE         TIME             COMMENT
+root     pts/0        2023-03-21 08:40 (192.168.1.2)
+
+# who -q
+root
+# users=1
+
+# w
+ 17:31:14 up  8:53,  2 users,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    192.168.1.2      08:40    0.00s  0.73s  0.00s w
+
+# last
+
+# groups
+root
+
+# id
+uid=0(root) gid=0(root) groups=0(root) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+
+
+
+
+
+
+
+

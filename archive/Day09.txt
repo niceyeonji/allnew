@@ -1,0 +1,353 @@
+Day-09
+
+# more /etc/services
+
+
+## Animation of TCP/IP internet
+
+https://www.youtube.com/watch?v=hymzoUpM0K0
+
+
+DHCP : Dynamic Host Configration Protocol
+
+lp : 프린트 서버
+
+NFS : Network File System
+
+
+rdate -s time.bora.net
+
+
+## rescue.target으로 부팅
+
+부팅시에 esc 키 -> e -> 맨아래줄 $vt_handoff 삭제..
+
+systemd.unit=rescue.target -> ^x
+
+# systemctl reboot
+
+
+## emergency.target으로 부팅
+
+부팅시에 esc 키 -> e -> 맨아래줄 $vt_handoff 삭제..
+
+systemd.unit=emergency.target -> ^x
+
+# cat /etc/fstab
+# mount -o remount, rw /
+# passwd root
+# systemctl reboot
+
+ 
+### Linux C Programming..
+
+# cd /allnew/c
+
+# ls
+
+## hello.c
+#include <stdio.h>
+
+int main() {
+  printf("Hello, World~!! \n");
+
+  return 0;
+}
+
+# gcc hello.c
+
+# ls
+
+# file a.out
+
+# ./a.out
+
+# gcc -o hello hello.c
+
+# ./hello
+
+# gcc hello.c -o hello
+
+# ./hello
+
+# gcc -E hello.c
+
+# gcc -c hello.c
+
+# mkdir gcc
+
+# mv h* a* gcc
+
+# git add .
+
+# git commit -m "gcc"
+
+# git push
+
+# cd gcc
+
+# rm -rf a.out hello *.o
+
+
+## /allnew/.gitignore
+
+c/**/a.out
+c/**/hello
+c/**/*.o
+
+# git add .
+
+# git commit -m "gcc"
+
+# git push
+
+# cd /allnew/c/gcc
+
+# gcc -o hello hello.c
+
+# git fetch
+
+# git add .
+
+# git commit -m “up”
+
+현재 브랜치 main
+브랜치가 'origin/main'에 맞게 업데이트된 상태입니다.
+
+커밋할 사항 없음, 작업 폴더 깨끗함
+
+
+## main.c
+
+extern void hi() ;
+main() {
+  hi();
+}
+
+
+## hi.c
+
+#include <stdio.h>
+void hi() {
+  printf("Linux World~!!\n");
+}
+
+# gcc main.c hi.c -o test
+
+# ./test
+
+# gcc -c main.c
+
+# gcc -c hi.c
+
+# gcc main.o hi.o -o test1
+
+# ls
+
+# ./test1
+
+# git fetch
+
+# git pull
+
+
+## age.c
+#include <stdio.h>
+#include "myheader.h"
+
+void main() {
+  printf("My age is %d \n", AGE);
+}
+
+## lib/myheader.h
+#define AGE 20
+
+# gcc -o age age.c
+
+# gcc -o age age.c -I ./lib
+
+# ls
+
+# ./age
+
+## plus.c
+int plus(int x, int y) {
+  return x+y;
+}
+
+## minus.c
+int minus(int x, int y) {
+  return x-y;
+}
+
+## libmy.h
+extern int plus(int, int);
+extern int minus(int, int);
+
+# gcc -c plus.c minus.c
+
+# ar r libmy.a plus.o minus.o
+ar: creating libmy.a
+
+# ar rs libmy.a
+
+# ls
+
+# mv libmy.a lib
+
+# ls lib
+
+# file lib/libmy.a
+
+
+## calc.c
+#include <stdio.h>
+#include "libmy.h"
+
+void main() {
+  int x, y;
+  printf("Input two numbers : “);
+  scanf("%d %d", &x, &y);
+  printf("%d + %d = %d\n", x, y, plus(x, y));
+  printf("%d - %d = %d\n", x, y, minus(x, y));
+}
+
+# gcc -o calc calc.c -I ./lib -L ./lib -lmy
+
+# ./calc
+Input two numbers : 5 4
+5 + 4 = 9
+5 - 4 = 1
+
+
+### Virutalbox CentOS 8 설치 - boot iso 이용
+
+1. network와 호스트
+hostname :  centos, 이더넷 on
+
+2. 시간과 날짜
+아시아/서울 
+
+3. 사용자 설정
+
+root
+1234
+1234
+
+centos
+1234
+1234
+
+4. 설치원천
+그대로…
+
+5. 소프트웨어 선택
+서버 - GUI 사용
+
+6. 설치 목적지
+사용자 정의 => 완료
+
+/boot => 512M
+swap => 2048
+/ 
+
+
+목록에없습니까..click
+root
+1234
+
+
+# dnf -y upgrade
+
+# dnf -y install git docker make gcc perl kernel-devel elfutils-libelf-devel
+
+# yum groupinstall -y “Development Tools”
+
+# yum -y update kernel*
+
+# reboot
+
+root로 로그인 후 
+
+장치 => 게스트확장이미지 삽입 후 설치 => 공유폴더 => 공유클립보드 -> 드래그앤드랍 설정..
+
+## 장치 -> 공유폴더 -> 공유폴더 설정
+
+# mkdir /data
+
+- 다운로드 폴더를 선택하고 
+마운트 포인트 /data
+아래 자동 마운트, 항상 사용하기 선택.
+
+## 장치 -> 클립보드 공유 -> 양방향
+## 장치 -> 드래그앤드랍 -> 양방향
+
+완료 후 시스템 종료
+
+네트워크에서 NAT -> 어댑터에 브리지로 변경
+
+부팅 후 ifconfig -a 확인..
+
+# cd /etc/dconf/db/local.d/
+
+# vi 00-login-screen
+[org/gnome/login-screen]
+disable-user-list=true
+:wq!
+
+
+#  cat 00-login-screen
+
+# dconf update
+
+# systemctl restart gdm
+
+# cat > ~/.nanorc
+set linenumbers
+^d
+
+
+# cat > ~/.exrc
+set nu ai sm
+^d
+
+
+# vi ~/.bashrc
+    14	alias c='clear'
+    15	alias h='history'
+    16	alias df='df -Th'
+    17	alias grep='grep --color=auto'
+    18	alias egrep='egrep --color=auto'
+    19	alias fgrep='fgrep --color=auto'
+    20	alias ls='ls -aCF --color=auto'
+    21	alias ll='ls -alF --color=auto'
+    22	
+    23	export PS1='[\[\e[1;31m\]\u\[\e[m\]@\[\e[1;32m\]\h\[\e[m\] \[\e[1;36m\]\w\[\e[m\]]\$ '
+
+
+# cp ~/.nanorc /etc/skel
+
+# cp ~/.exrc /etc/skel
+
+# cp ~/.bashrc /etc/skel
+cp: overwrite '/etc/skel/.bashrc'? y
+
+# su - centos
+
+$ cp /etc/skel/.nanorc .
+
+$ cp /etc/skel/.exrc .
+
+$ cp /etc/skel/.bashrc .
+
+$ source .bashrc
+
+$ exit
+
+
+
+
+
+다시 Centos 종료 후 가상 시스템 내보내기
+
+CentOS-first.ova로 저장

@@ -1,0 +1,434 @@
+Day-03
+
+
+- 현재 위치 : /home/user
+
+/          /            ../../
+home /home  ../
+boot  /boot  ../../boot
+lib      /usr/lib ../../usr/lib
+ls      /usr/bin/ls   ../../usr/bin/ls
+
+
+# apt -y install ncal
+
+# cal 12 9999
+
+# id
+
+# whoami
+
+# who am i
+
+
+## linux file time
+ctime : create
+mtime : modify
+atime : access
+
+# touch test
+
+# ll
+
+# mkdir dir1
+
+# cat > test2
+hello
+^d (eod)
+
+# mkdir dir2
+
+# file test2
+
+# cat test2
+
+# file /usr/bin/passwd
+
+# cat /usr/bin/passwd 
+
+# mkdir -p a/b/c/d/e/f/g
+
+# cd a/b/c/d/e/f/g
+
+# cd
+
+# cp test1 dir1
+
+# cp test2 dir1/test2_cp => cp & rename
+
+# cp test2 dir1/test2_mv => cp & rename
+
+# cp test2 test3
+
+# cp test2 test4
+
+# ls *
+
+# mv test4 dir2
+
+# mv test3 dir6  => rename
+
+# mv dir6 dir2_mv => rename
+
+# mv dir2_mv dir2/test3_mv  => mv & rename
+
+# rmdir dir5
+
+# rmdir dir4
+
+# rmdir dir3
+
+# rmdir dir2
+
+# cd dir2
+
+# rm *
+
+# cd ..
+
+# rm -rf dir1
+
+# rm -rf a test*
+
+# cat > test1
+hello
+^d
+
+# cat 0< test1
+
+# cat 1> test2
+hello
+^d
+
+# cat test2
+
+# ls dir1
+
+# ls dir1 2> error
+
+# cat error
+
+# wc /etc/passwd
+
+# wc -l /etc/passwd
+
+# wc -w /etc/passwd
+
+# wc -c /etc/passwd
+
+# cat -n /etc/passwd
+
+# grep bash /etc/passwd | cat -n
+
+# clear ; cat -n /etc/passwd
+
+# more /etc/passwd
+
+# cp test1 test1cp
+
+# mkdir dir1
+
+# cp test1 dir1
+
+#  cp -R dir1 dir2
+
+# mv dir2 dir3
+
+# mv dir3 dir1
+
+# ls dir1
+
+# rm -rf dir1 test* 
+
+# mkdir /work
+
+# cd /work
+
+# touch test1
+
+# ll > test2
+
+# cat test2
+
+# ls -li
+
+
+### 파일시스템의 구성요소
+- Boot block : booting strap code
+- Super block : filesystem info
+- inode list : file info
+- Data block : real data
+
+FAT
+FAT32 - 4G
+NTFS
+Ext2, 3, 4 -  Linux
+
+# df -T
+
+# ll -i
+
+# cp test1 test1_cp
+
+# ll -i
+
+# cat > test1
+hello
+^d
+
+# cat test1
+
+# cat test1_cp
+
+# ln test1 test1_h
+
+# ll -i
+
+# cat > test1
+goodbye
+^d
+
+# cat test1
+
+# cat test1_h
+
+# ln -s test1 test1_s
+
+# ll -i
+
+# cat test1
+
+# cat test1_s
+
+
+hard link vs symbolic link
+————————————
+inode 원본 과 같음  <> inode 원본 과 다름
+file size 같음 <> 다름, 고정 5
+이름만 다른 파일 <> 바로가기
+같은 파일시스템에서만 생성 가능 <> 다른 파일시스템에서도 생성 가능..
+
+
+## > vs >>
+file 무 :  create <> create
+file 유 : overwrite <> append
+
+# cat > test1
+hello
+^d
+
+# cat test1
+
+# cat >> test1
+
+goodbye
+^d
+
+# cat test1
+
+$PS1 : first prompt
+$PS2 : >
+
+# cat -n << endtext > myenv
+> my home is $HOME
+> my prompt is $PS1
+> current directory is `pwd`
+> today is `date`
+> endtext
+
+# cat myenv
+
+
+
+# rm -rf test1
+
+# cat test1_h
+
+# cat test1_s
+
+# ln test1_h test1
+
+# cat test1_s
+
+# cd
+
+# ln -s /var/log logs
+
+# ls
+
+# cd logs
+
+
+# grep -c bash /etc/passwd
+
+# grep bash /etc/passwd | wc -l
+
+# grep -n bash /etc/passwd
+
+
+# whereis passwd
+
+# which passwd
+
+
+## mac Users…
+
+# cd Downloads/packages
+
+# ls
+
+# mv * ~/.atom/packages
+
+# cd ~/.atom/packages
+
+# ls
+
+
+## .ftpconfig
+{
+  "protocol":"sftp",
+  "host":"192.168.1.12",
+  "port":22,
+  "user":"root",
+  "pass":"1234",
+  "promptForPass":"false",
+  "remote":"/work",
+  "local":"",
+  "agent":"",
+  "privatekey":"",
+  "passphrase":"",
+  "hosthash":"",
+  "ignorehost":"true",
+  "connTimeout":10000,
+  "keepalive":100000,
+  "keyboardInteractive":"false",
+  "keyboardInteractiveForPass":"false",
+  "remoteCommand":"",
+  "remoteShell":"",
+  "watch":[],
+  "watchTimeout":500
+}
+
+## well-known port
+21 : ftp
+22 : ssh
+23 : telnet
+25 : smtp
+80 : http
+110 : pop3
+143 : IMAP
+
+
+# cd /work
+
+# rm -rf *
+
+
+## hello.c
+#include <stdio.h>
+
+void main() {
+  printf("Hello, World~!! \n");
+}
+
+# ls
+
+# gcc -o hello hello.c
+
+# ./hello
+
+# !gcc
+
+# ./hello
+
+# mkdir c
+
+# mv hello* c
+
+# ls c
+
+
+a++ 
+
+a = a + 1
+
+## 명령어 실행 사이클
+fetch
+decode
+excute
+save / store
+
+f -> d -> e -> s
+         f -> d -> e -> s
+                  f -> d -> e -> s
+                           f -> d -> e -> s
+
+## 시스템의 정상적인 실행 방해하는 요소.
+
+1. 잦은 입출력
+2. 순환/반복문
+
+while / for
+
+
+# vi test
+i : 현재 커서 입력. 키를 누르고 family name 입력
+a : 현재 커서 다음.
+I : 현재 라인 맨 앞.
+A : 현재 라인 맨 끝
+o : 현재 라인 아래
+O : 현재 라인 위
+
+h
+j
+k
+l
+
+:w 저장
+:wq! 저장 후 종료
+
+dd : 한줄 삭제
+yy : 한줄 복사
+3dd
+4yy
+p : 붙여 넣기, 커서 아래
+P : 붙여 넣기, 커서 위
+
+yG : 현재라인 ~ 파일 끝까지 복사
+y$ : 현재 커서 ~ 라인 끝 복사
+
+
+x : 한글자 삭제, del
+X : 한글자 삭제, back space 
+
+:0 : 0번 라인 이동
+
+( : 현재 문단 처음
+) : 현재 문단 끝
+
+[
+]
+
+r : 한글자 교체
+
+
+# cat /etc/passwd > test2
+
+/bash 순방향 검색
+//
+
+?? 역방향 검색
+
+:1,$s/:/=/
+
+:1,$s/:/=/g
+
+:w
+
+:%s/=/:/g
+
+:%s/\/home/\/export\/home/g
+
+:%s/\/export\/home/\/home/g
+
+

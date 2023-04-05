@@ -1,0 +1,365 @@
+Day-16
+
+### linux repository 
+
+## debian, ubuntu
+
+# cd /etc/apt/
+
+# cat sources.list
+#deb cdrom:[Ubuntu 22.04.1 LTS _Jammy Jellyfish_ - Release amd64 (20220809.1)]/ jammy main restricted
+
+# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
+# newer versions of the distribution.
+deb http://kr.archive.ubuntu.com/ubuntu/ jammy main restricted
+# deb-src http://kr.archive.ubuntu.com/ubuntu/ jammy main restricted
+
+# cp sources.list sources.list.old
+
+# cd /etc/apt/sources.list.d/
+
+
+
+## centos, fedora
+
+# cd /etc/yum.repos.d/
+
+
+### NGINX  - CentOS
+
+# systemctl status httpd
+
+# systemctl disable httpd
+
+# yum -y remove httpd
+
+# cp CentOS-Stream-AppStream.repo nginx.repo
+
+# vi nginx.repo
+      1 # nginx repo
+      2 #
+      3
+      4 [nginx-stable]
+      5 name=nginx stable repo
+      6 baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+      7 gpgcheck=1
+      8 enabled=1
+      9 gpgkey=http://nginx.org/key/nginx_signing.key
+     10 module_hotfixes=true
+     11
+     12 [nginx-mainline]
+     13 name=nginx mainline repo
+     14 baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+     15 gpgcheck=1
+     16 enabled=1
+     17 gpgkey=http://nginx.org/key/nginx_signing.key
+     18 module_hotfixes=true
+
+
+# yum -y install yum-utils
+
+# yum repolist
+
+# yum-config-manager —enable nginx-stable
+
+# yum-config-manager --disable nginx-stable
+
+# yum-config-manager --disable nginx-mainline
+
+# yum -y install nginx
+
+# systemctl start nginx
+
+# systemctl status nginx
+
+# systemctl enable nginx
+
+# netstat -ntlp
+
+# firewall-cmd --add-service=http
+
+# firewall-cmd --permanent --add-service=http
+
+# firewall-cmd --list-services
+
+# cd /etc/nginx/conf.d
+
+# ls
+
+# cat /etc/nginx/nginx.conf
+
+# rm -rf /var/www
+
+# cd /usr/share/nginx/html
+
+# ls
+
+http://192.168.1.134/
+
+
+
+### Oracle XE Install
+
+## SWAP 늘려주기
+
+———————————————————————————
+# dd if=/dev/zero of=/swapfile bs=1M count=2000
+
+# mkswap /swapfile
+
+# chmod 600 /swapfile
+
+# swapon /swapfile
+
+# free
+
+# vi /etc/fstab
+
+     16 /swapfile  none                    swap    defaults        0 0
+
+# shutdown -r now
+———————————————————————————
+
+Oracle Database Express Edition (XE) Release 11.2.0.2.0 (11gR2).
+
+https://www.oracle.com/database/technologies/xe-prior-release-downloads.html
+
+# cd /data
+
+# ls
+
+
+## scp 이용
+
+# scp oracle-xe-11.2.0-1.0.x86_64.rpm.zip root@192.168.1.134:/root
+
+# cd 
+
+# unzip oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+
+# rm -rf oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+
+# cd Disk1
+
+# yum -y install libnsl
+
+# dnf -y install oracle*
+
+# service oracle-xe configure
+
+<enter> : 8080
+<enter> : 1521 
+initial configuration:1234
+Confirm the password:1234
+<enter> : y
+
+# . /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+
+# vi /etc/bashrc
+
+     98 . /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+
+# firewall-cmd --permanent --add-port=8080/tcp
+
+# firewall-cmd --permanent --add-port=1521/tcp
+
+# firewall-cmd --reload
+
+# vi /etc/profile
+     87 export ORACLE_SID=XE
+     88 export ORACLE_BASE=/u01/app/oracle
+     89 export ORACLE_HOME=$ORACLE_BASE/product/11.2.0/xe
+     90 export ORACLE_TERM=xterm
+     91 export NLS_LANG=KOREAN_KOREA.AL32UTF8
+     92 export TNS_ADMIN=$ORACLE_HOME/network/admin
+     93 export ORA_NLS33=$ORACLE_HOME/ocommon/nls/admin/data
+     94 export LD_LIBRARY_PATH=$ORACLE_HOME/bin
+     95 export PATH=$PATH:$ORACLE_HOME/bin
+     96
+     97 #Java1.8
+     98 export JAVA_HOME=/usr/java/jdk1.8
+     99 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+    100 export PATH=$PATH:$JAVA_HOME/bin
+
+# netstat -ntlp
+
+http://192.168.1.134:8080/apex
+
+Workspace : internal
+
+Username : admin
+
+Password : 1234
+
+
+# sqlplus
+
+Enter user-name: SYSTEM
+Enter password:
+
+SQL> EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
+
+SQL> alter user hr account unlock identified by 1234;
+
+SQL> select * from tab;
+
+SQL> exit
+
+
+# sqlplus
+
+Enter user-name: hr
+Enter password:
+
+SQL> select * from tab;
+
+SQL> exit
+
+
+## oracle 외부 접속 허용
+
+# cd $ORACLE_HOME/network/admin
+
+# ls
+
+# vi listener.ora
+
+     16       (ADDRESS = (PROTOCOL = TCP)(HOST = centos)(PORT = 1521))
+
+# vi tnsnames.ora
+
+      5     (ADDRESS = (PROTOCOL = TCP)(HOST = centos)(PORT = 1521))
+
+# lsnrctl stop
+
+# lsnrctl start
+
+# netstat -ntlp
+
+
+## SHOP_user_create.sql
+-- USER SQL
+CREATE USER "SHOP" IDENTIFIED BY "1234"  
+DEFAULT TABLESPACE "USERS"
+TEMPORARY TABLESPACE "TEMP";
+
+-- QUOTAS
+ALTER USER "SHOP" QUOTA 10M ON "USERS";
+
+-- ROLES
+GRANT "CONNECT" TO "SHOP" ;
+GRANT "RESOURCE" TO "SHOP" ;
+
+-- SYSTEM PRIVILEGES
+
+## membertbl
+
+
+## producttbl
+
+
+## SYSTEM User…
+
+CREATE TABLE HR.indextbl
+as
+    select first_name, last_name, hire_date
+    from hr.employees;
+
+
+select * from hr.employees where first_name='Jack'; 
+
+CREATE TABLE HR.indextbl
+as
+    select first_name, last_name, hire_date
+    from hr.employees;
+    
+SELECT * from HR.indextbl;    
+
+create index idx_indextbl_firstname on HR.indextbl(FIRST_name);
+
+select * from HR.indextbl where first_name='Jack';
+
+
+## HR User…
+
+create view hr.membertbl_view 
+as
+    select membername, memberaddress 
+    from hr.membertbl;
+    
+select * from membertbl_view;
+
+
+## procedure
+
+create procedure hr.myProc as
+var1 int;
+var2 int;
+begin
+    select count(*) into var1 from hr.membertbl;
+    select count(*) into var2 from hr.producttbl;
+    DBMS_OUTPUT.PUT_LINE(var1+var2);
+end;
+
+
+## new SQL Editor…
+
+set SERVEROUTPUT ON;
+
+EXECUTE myproc;
+
+
+## Trigger
+
+insert into membertbl values ( 'Figure', '연아', '경기도 군포시 당정동');
+
+select * from membertbl;
+
+update membertbl set memberaddress = '서울 강남구 역삼동' 
+where membername='연아';
+
+select * from membertbl;
+
+Delete from membertbl 
+where membername='연아';
+
+select * from membertbl;
+
+create table deletedmembertbl (
+    memberid char(8),
+    membername nchar(5),
+    memberaddress nvarchar2(20),
+    deleteDate date -- deleted date..
+);
+
+## create trigger..
+
+create trigger trg_deletedmembertbl
+    after delete
+    on membertbl
+    for each row
+begin
+    insert into deletedmembertbl
+    values (:old.memberid, :old.membername, :old.memberaddress, SYSDATE());
+end ;
+
+
+insert into membertbl values ( 'Figure', '연아', '경기도 군포시 당정동');
+
+select * from membertbl;
+
+update membertbl set memberaddress = '서울 강남구 역삼동' 
+where membername='연아';
+
+select * from membertbl;
+
+Delete from membertbl 
+where membername='연아';
+
+select * from membertbl;
+
+select * from deletedmembertbl;
+
+
+
+

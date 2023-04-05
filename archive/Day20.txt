@@ -1,0 +1,621 @@
+Day-20
+
+### Nodejs - Centos
+
+# yum clean all
+
+# yum -y update
+
+# yum -y upgrade
+
+# yum -y groupinstall "Development Tools"
+
+# yum module list nodejs
+
+# yum -y module install nodejs
+
+# yum -y module install nodejs/development
+
+# node -v
+
+# npm -v
+
+# yum -y module remove nodejs/development
+
+# yum -y module remove nodejs
+
+
+### NVM & NodeJS - CentOS, Ubuntu(~/.bashrc)
+
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+
+# cat ~/.bashrc
+
+# source ~/.bashrc
+
+# nvm --version
+
+# nvm ls-remote
+
+# nvm ls
+
+# nvm install v18.15.0
+
+# nvm ls
+
+# nvm install v16.20.0
+
+# node -v
+
+# nvm use v18.15
+
+# node -v
+
+# nvm install v10.24.1
+
+# nvm ls
+
+# nvm alias default v16.20.0
+
+# nvm use v16.20
+
+# node -v
+
+# nvm uninstall v10.24.1
+
+# nvm uninstall v10.24.1
+
+
+### Python - CentOS
+
+# dnf install -y python39
+
+# python3 --version
+
+# alternatives --set python /usr/bin/python3
+==
+# ln -s /usr/bin/python3 /usr/bin/python
+
+# python --version
+
+# ln -s /usr/bin/pip3 /usr/bin/pip
+
+# ll /usr/bin/pip
+
+# pip --version
+
+
+https://mvnrepository.com/
+
+
+### SBT - CentOS
+
+# curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
+
+# cat sbt-rpm.repo
+
+# mv sbt-rpm.repo /etc/yum.repos.d/
+
+# yum -y install sbt
+
+# sbt -v
+
+sbt:allnew> ^d
+
+
+### scala - CentOS, Ubuntu
+
+# cd /usr/local
+
+# wget https://downloads.lightbend.com/scala/2.13.10/scala-2.13.10.tgz
+
+# tar xvzf scala-2.13.10.tgz
+
+# rm -rf scala-2.13.10.tgz
+
+# vi /etc/profile
+     97 #Java1.8
+     98 export JAVA_HOME=/usr/java/jdk1.8
+     99 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+    100 export SCALA_HOME=/usr/local/scala-2.13.10
+    101 export PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin
+
+# source /etc/profile
+
+# scala --version
+
+# mkdir -p /allnew/scala/hello
+
+# cd /allnew/scala/hello
+
+# mkdir -p src/main/scala
+
+# mkdir -p src/main/java
+
+# mkdir -p src/test/scala
+
+# mkdir -p src/test/java
+
+# vi Hello.scala
+      1 object Hello {
+      2         def main(args: Array[String]):Unit = {
+      3                 println("Hello Scala!!")
+      4         }       
+      5 } 
+
+# mv Hello.scala src/main/scala/
+
+# vi build.sbt
+      1 name := "Hello"
+      2 
+      3 version := "1.0"
+      4 
+      5 scalaVersion := "2.13.10"
+      6 
+      7 // https://mvnrepository.com/artifact/org.scala-lang/scala-library
+      8 libraryDependencies += "org.scala-lang" % "scala-library" % "2.13.10"
+      9 
+
+# sbt
+
+sbt:Hello> compile
+
+sbt:Hello> run
+[info] running Hello 
+Hello Scala!!
+
+sbt:Hello> exit
+
+# ls -R
+
+# ll target/scala-2.13/
+
+# file target/scala-2.13/hello_2.13-1.0.jar 
+
+# scala target/scala-2.13/hello_2.13-1.0.jar 
+Hello Scala!!
+
+
+## .gitignore
+…..
+## scala
+scala/**/project
+scala/**/target
+
+
+### Maven - CentOS
+
+# cd /usr/local
+
+# wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+
+# tar xvzf apache-maven-3.8.8-bin.tar.gz
+
+# rm -rf *.gz
+
+# mv apache-maven-3.8.8/ maven-3.8.8
+
+# vi /etc/profile
+     97 #Java1.8
+     98 export JAVA_HOME=/usr/java/jdk1.8
+     99 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+    100 export SCALA_HOME=/usr/local/scala-2.13.10
+    101 export MAVEN_HOME=/usr/local/maven-3.8.8
+    102 export PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin:$MAVEN_HOME/bin
+
+# source /etc/profile
+
+# mvn -v
+
+# cd /allnew
+
+# mkdir maven
+
+# cd maven
+
+# mkdir -p src/main/java
+
+# ls -R
+
+## src/main/java/HelloWorld.java
+public class HelloWorld {
+    public static void main(String args[]) {
+        System.out.println("Maven Hello World!!");
+    }
+}
+
+## pom.xml
+<project>
+    <groupId>com.moon</groupId>
+    <artifactId>HelloWorld</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>HelloWorld</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+# mvn clean
+
+# mvn compile
+
+# ll target/classes/
+
+# cd target/classes
+
+# java HelloWorld
+Maven Hello World!!
+
+# cd ../..
+
+# mvn package
+
+# java -jar target/HelloWorld-1.0.jar 
+
+ 
+## .gitignore
+…..
+## maven
+maven/target
+
+
+### Redis - CentOS
+
+# yum -y update
+
+# yum -y install epel-release
+
+# yum -y install redis
+
+# systemctl start redis
+
+# systemctl status redis
+
+# systemctl enable redis
+
+# systemctl disable redis
+
+# redis-cli ping
+
+# vi /etc/redis.conf
+     69 #bind 127.0.0.1
+     70 bind 0.0.0.0
+
+# systemctl restart redis
+
+# systemctl status redis
+
+# netstat -ntlp
+tcp        0      0 0.0.0.0:6379            0.0.0.0:*               LISTEN      39895/redis-server
+
+# redis-cli
+127.0.0.1:6379> INFO server
+127.0.0.1:6379> exit
+
+
+
+## Ubuntu 에서..
+
+# cd /allnew
+
+# git fetch
+
+# git pull
+
+
+### nodejs install - nvm
+
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+# cat ~/.bashrc
+
+# source ~/.bashrc
+
+# nvm --version
+
+# nvm ls-remote
+
+# nvm install v18.15
+
+# nvm ls
+
+# node -v
+
+# nvm install v16.20
+
+# nvm ls
+
+# node -v
+
+
+### nodejs express
+
+## .gitignore
+……
+## nodejs
+node/**/node_modules
+
+# mkdir /allnew/node
+
+# cd /allnew/node
+
+# mkdir hello
+
+# cd hello
+
+## hello.js
+
+var express = require('express')
+var app = express()
+
+app.get('/', function (req, res) {
+    res.send("Hello Node JS~!!")
+})
+
+app.listen(8000, function () {
+    console.log("8000 Port : Server Started~!!")
+})
+
+# npm init -y
+
+# ls
+
+# npm -v
+
+# npm install express
+
+# node hello.js 
+
+http://192.168.1.12:8000/
+
+^c
+
+# rm -rf node_modules
+
+# ls
+
+# npm install
+
+# npm install -g nodemon
+
+# nodemon hello.js 
+
+# npm install -g pm2
+
+# pm2 start hello.js 
+
+# pm2 status hello.js 
+
+# pm2 status hello.js 
+
+
+### python bottle
+
+# mkdir /allnew/python
+
+# cd /allnew/python
+
+# mkdir bottle
+
+# cd bottle
+
+## hello.py
+
+from bottle import route, run
+
+@route('/')
+@route('/<name>')
+def index(name="World"):
+    return 'Hello %s' % name
+run(host='0.0.0.0', port=3000, threaded=True)
+
+
+# whereis python3
+
+# ln -s /usr/bin/python3 /usr/bin/python
+
+# apt -y install python3-pip
+
+# pip install bottle
+
+# python hello.py 
+
+http://192.168.1.12:3000/
+Hello World
+
+http://192.168.1.12:3000/Python
+Hello Python
+
+^c
+
+
+
+## .gitignore
+
+## python
+python/**/.venv
+
+
+### python Fast API (venv 환경)
+
+# cd /allnew/python/fastapi
+
+# apt -y install python3-venv
+
+# python -m venv .venv
+
+# ls
+
+# source .venv/bin/activate
+
+# pip install fastapi
+
+# pip install uvicorn
+
+## main.py
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello":"World"}
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=3000)
+
+# uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+
+브라우저에서 결과 확인
+
+http://localhost:3000
+
+^c
+
+# deactivate
+
+## .gitignore
+
+## python
+python/**/.venv
+python/**/__pycache__/
+
+# source .venv/bin/activate
+
+# deactivate
+
+# source .venv/bin/activate
+
+# pip freeze > requirement.txt
+
+# deactivate
+
+# cat requirement.txt 
+
+# rm -rf .venv
+
+# python -m venv .venv
+
+# source .venv/bin/activate
+
+# pip install -r requirement.txt 
+
+# uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+
+^c
+
+# deactivate
+
+
+### MongoDB - Ubuntu
+
+# apt -y update; apt -y upgrade
+
+# wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+
+# dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+
+# rm -rf libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+
+—— windows 사용자 만 진행 ———
+
+# wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+OK
+
+# echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+# cd /etc/apt/sources.list.d/
+
+# ls
+
+# cat -n mongodb-org-4.4.list
+
+# apt -y update; apt -y upgrade
+
+# apt —fix-broken install
+
+—— windows 사용자 만 진행 ———
+
+—— mac 사용자 만 진행 ———
+
+# wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+OK
+
+# echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+
+# cd /etc/apt/sources.list.d/
+
+# ls
+
+# cat -n mongodb-org-5.0.list
+
+# apt -y update; apt -y upgrade
+
+—— mac 사용자 만 진행 ———
+
+# apt -y install mongodb-org
+
+# systemctl start mongod
+
+# systemctl status mongod
+
+# systemctl enable mongod
+
+# mongo --eval 'db.runCommand({connectionStatus: 1})'
+
+# mongod --version
+
+# netstat -ntlp
+
+# mongo
+
+^d
+bye
+
+# vi /etc/mongod.conf
+
+     23   #bindIp: 127.0.0.1
+     24   bindIp: 0.0.0.0
+
+# systemctl restart mongod
+
+# systemctl status mongod
+
+# netstat -ntlp
+
+# mongo
+
+> show dbs
+
+> db.stats()
+
+> exit
+bye
+
+# shutdown -h now
+
+우분투 내보내기……..
+
+

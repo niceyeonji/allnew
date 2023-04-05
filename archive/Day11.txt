@@ -1,0 +1,606 @@
+Day-11
+
+## windows host….
+
+윈도우 터미널에서…
+
+> bash
+# vi .ssh/config
+# exit
+
+> ubuntu
+# cd /mnt/c/Users/username/
+# vi .ssh/config
+
+
+# vi .ssh/config
+# Virtualbox CentOS
+ Host centos
+ 	HostName 192.168.1.134
+ 	User root
+
+# Virtualbox Ubuntu
+Host ubuntu
+	HostName 192.168.1.12
+	User root
+
+# ssh centos
+
+## centos…
+
+# rpm -qa | grep openjdk
+
+# yum -y remove java
+
+# yum -y remove java-1.8.0-openjdk-headless
+
+# rpm -qa | grep openjdk
+
+
+
+# ssh ubuntu
+
+## ubuntu..
+
+# apt -y update; apt -y upgrade
+
+
+### jdk1.8 - CentOS, Ubuntu
+
+## Your Host computer…
+
+# scp jdk-8u361-linux-x64.tar.gz root@192.168.1.12:/tmp
+
+## Ubuntu / Centos….
+
+# mkdir -p /usr/java
+
+# cd /usr/java
+
+# mv /tmp/jdk-8u361-linux-x64.tar.gz .
+
+# tar xvzf jdk-8u361-linux-x64.tar.gz
+
+# rm -rf *.tar.gz
+
+# mv jdk1.8.0_361/ jdk1.8
+
+# ls
+
+# vi /etc/profile
+## centos…
+     87 #Java1.8
+     88 export JAVA_HOME=/usr/java/jdk1.8
+     89 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+     90 export PATH=$PATH:$JAVA_HOME/bin
+
+## ubuntu….
+     29 #Java1.8
+     30 export JAVA_HOME=/usr/java/jdk1.8
+     31 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+     32 export PATH=$PATH:$JAVA_HOME/bin
+
+
+# source /etc/profile
+
+# source ~/.bashrc
+
+# javac -version
+
+# cd /allnew/java
+
+# javac gugudan.java
+
+# java gugudan
+Insert number(0:Exit) : 4
+4 * 1 = 4
+4 * 2 = 8
+4 * 3 = 12
+4 * 4 = 16
+4 * 5 = 20
+4 * 6 = 24
+4 * 7 = 28
+4 * 8 = 32
+4 * 9 = 36
+Insert number(0:Exit) : 0
+
+
+## ububntu…..
+
+# cd /allnew
+
+# rm -rf java/*.class
+
+# git add .
+
+# gi t commit -m “class delete”
+
+# git push
+
+
+## centos….
+
+# git fetch
+
+# git pull
+
+
+## ububntu…..
+
+# vi .gitignore
+      1 # .gitignore
+      2
+      3 ## c programing
+      4 c/**/a.out
+      5 c/**/hello
+      6 c/**/*.o
+      7 c/**/test
+      8
+      9 ## java
+     10
+     11 java/*.class
+
+# git add .
+
+# gi t commit -m “.gitignore update”
+
+# git push
+
+
+## centos….
+
+# git fetch
+
+# git pull
+
+
+## github desktop에서도 fetch 한번 하세요..
+
+
+## atom editor…
+
+## c 아래에 program 폴더 생성
+
+### Quiz1 - even / odd
+
+program : quiz1.c
+lib name : libcheckeod.a
+lib header : libcheckeod.h
+lib source : checkeod.c
+
+## program 아래에 lib 폴더 생성
+
+## lib/libcheckeod.h
+int checkeod (int);
+
+## checkeod.c
+int checkeod (int x) {
+  if (x % 2 == 0)
+    return 0;
+  else
+    return 1;
+}
+
+# gcc -c checkeod.c
+
+# ar r libcheckeod.a checkeod.o
+
+# ar rs libcheckeod.a
+
+# mv libcheckeod.a lib
+
+## quiz1.c
+#include <stdio.h>
+#include "libcheckeod.h"
+
+void main() {
+  int n;
+  printf("Input Number : ");
+  scanf("%d", &n);
+  if(checkeod(n) == 0)
+    printf("%d is even number~!! \n", n);
+  else
+    printf("%d is odd number~!! \n", n);
+}
+
+# gcc -o quiz1 quiz1.c -I ./lib -L ./lib -lcheckeod
+
+# ./quiz1
+Input Number : 5
+5 is odd number~!!
+
+# ./quiz1
+Input Number : 6
+6 is even number~!!
+
+
+
+### Quiz2 - prime number
+
+program : quiz2.c
+lib header : libcheckprime.h
+lib name : libcheckprime.a
+lib source : checkprime.c
+
+## lib/libcheckprime.h
+int checkprime(int);
+
+
+## checkprime.c
+int checkprime(int n) {
+  int i;
+  for (i=2; i <= n; i++) {
+    if (n%i == 0)
+      break;
+    else
+      continue;
+  }
+  return i;
+}
+
+
+## quiz2.c
+#include <stdio.h>
+#include "libcheckprime.h"
+
+void main()
+{
+	while (1)
+	{
+		int n;
+		printf("\ninput integer => ");
+		scanf("%d", &n);
+		if (n == 0) break;
+    if (checkprime(n) == n)
+			printf("%d is a prime number \n", n);
+		else
+      printf("%d is not prime number \n", n);
+	}
+}
+
+
+# gcc -c checkprime.c
+
+# ar r libcheckprime.a checkprime.o
+
+# ar rs libcheckprime.a
+
+# mv libcheckprime.a lib
+
+# gcc -o quiz2 quiz2.c -I ./lib -L ./lib -lcheckprime
+
+# ./quiz2
+
+input integer => 5
+5 is a prime number
+
+input integer => 4
+4 is not prime number
+
+input integer => 5
+5 is a prime number
+
+input integer => 6
+6 is not prime number
+
+input integer => 0
+
+
+## shell scripts
+
+# cd /allnew/shells
+
+## hello.sh
+
+  	 1 #!/bin/bash
+      2
+      3 echo Hello Shell Scirpt~!!
+
+# chmod +x *.sh
+
+# ./hello.sh
+
+
+## str.sh
+
+      1 #!/bin/bash
+      2
+      3 STR="Have a nice day!!"
+      4 echo $STR
+      5
+
+# !ch
+
+# ./str.sh
+
+
+## if.sh
+
+      1 #!/bin/bash
+      2
+      3 man=10
+      4 woman=20
+      5
+      6 if [ $man -lt $woman ]
+      7 then
+      8         echo woman
+      9 fi
+     10
+
+# !ch
+
+# ./if.sh
+
+
+# cp if.sh if1.sh
+
+## if1.sh
+
+      1 #!/bin/bash
+      2
+      3 echo "File name : $0 "
+      4 echo "Parameter Count : $# "
+      5 echo "All parameter : $@ "
+      6
+      7 if [ “$1” = ok ]; then
+      8         echo "good~!"
+      9 else
+     10         echo "bad~!"
+     11 fi
+
+# !ch
+
+# ./if1.sh
+
+# ./if1.sh ok
+
+# ./if1.sh bad
+
+# ./if1.sh ok bad
+
+
+## ifelif.sh
+      1 #!/bin/bash
+      2
+      3 a=0
+      4
+      5 echo -n "Input : "
+      6 read a
+      7
+      8 if [ $a -ge 90 ]; then
+      9         echo A
+     10 elif [ $a -ge 80 ]; then
+     11         echo B
+     12 elif [ $a -ge 70 ]; then
+     13         echo C
+     14 elif [ $a -ge 60 ]; then
+     15         echo D
+     16 else
+     17         echo F
+     18 fi
+     19 echo "Thank you~ bye!"
+     20
+
+# !ch
+
+# ifelif.sh
+Input : 89
+B
+Thank you~ bye!
+
+ ## case.sh
+      1 #!/bin/bash
+      2
+      3 case "$1" in
+      4         ko) echo "Seoul" ;;
+      5         us) echo "Washington" ;;
+      6         cn) echo "Beijing" ;;
+      7         jp) echo "Tokyo" ;;
+      8         *)  echo "Enter the contry name~!!"
+      9 esac
+     10
+
+# !ch
+
+
+# ./case.sh
+Enter the contry name~!!
+
+# ./case.sh ko
+Seoul
+
+# ./case.sh jp
+Tokyo
+
+# ./case.sh uk
+Enter the contry name~!!
+
+
+# cp case.sh case_new.sh
+
+# ./case_new.sh
+     1	#!/bin/bash
+     2
+     3	if [ $# -eq 0 ]; then
+     4		echo "Enter the contry name~!!"
+     5	else
+     6		case "$1" in
+     7			ko)
+     8				echo "Seoul" ;;
+     9			us)
+    10				echo "Washington" ;;
+    11			cn)
+    12				echo "Beijing" ;;
+    13			jp)
+    14				echo "Tokyo" ;;
+    15			*)
+    16				echo "Your entry => $1 is not in the list."
+    17		esac
+    18	fi
+
+# !ch
+
+# ./case_new.sh
+
+## for.sh
+      1 #!/bin/bash
+      2
+      3 for k in L I N U X
+      4 do
+      5         echo -n "$k"
+      6 done
+      7 echo
+
+
+# !ch
+
+# for.sh
+
+# cp for.sh for1.sh
+
+## for1.sh
+      1 #!/bin/bash
+      2
+      3 for k in L I N U X
+      4 do
+      5         echo "$k"
+      6 done
+
+
+# !ch
+
+# for1.sh
+
+
+## for2.sh
+      1 #!/bin/bash
+      2
+      3 row="one two three"
+      4
+      5 for mon in $row; do
+      6         for ((i=0; i<9; i++)) do
+      7                 echo "$mon $i"
+      8         done
+      9 done
+     10
+
+# !ch
+
+# ./for2.sh
+
+
+## while.sh
+      1 #!/bin/bash
+      2
+      3 a=1
+      4
+      5 while [ $a != "0" ]; do
+      6         echo -n "input : "
+      7         read a
+      8
+      9         if [ $a != "0" ]; then
+     10                 for k in 1 2 3 4 5 6 7 8 9
+     11                 do
+     12                         echo " $a * $k = `expr $a \* $k `"
+     13                 done
+     14         fi
+     15 done
+     16 echo Exit
+
+# cp while.sh while_new.sh
+
+## while_new.sh
+
+      1 #!/bin/bash
+      2
+      3 a=1
+      4
+      5 while [ $a != "0" ]; do
+      6         echo -n "input : "
+      7         read a
+      8
+      9         if [ $a != "0" ]; then
+     10                 for ((k=1; k<=9; k++)) do
+     11                         echo " $a * $k = `expr $a \* $k `"
+     12                 done
+     13         fi
+     14 done
+     15 echo Exit
+
+
+
+## while2._sh
+
+     1	#!/bin/bash
+     2
+     3	a=1
+     4
+     5	while [ $a != "0" ]; do
+     6		echo -n "input : "
+     7		read a
+     8
+     9		if [ $a -eq 0 ]; then
+    10			break;
+    11		elif [ $a -eq 1 ]; then
+    12			echo "The number of inputs must be between 2 and 9."
+    13		elif [ $a -gt 9 ]; then
+    14			echo "The number of inputs must be between 2 and 9."
+    15		else
+    16			for ((k=1; k<=9; k++)) do
+    17				echo " $a * $k = `expr $a \* $k `"
+    18			done
+    19		fi
+    20	done
+    21	echo Exit
+
+
+## while3.sh
+     1	#!/bin/bash
+     2
+     3	a=1
+     4
+     5	while [ $a != "0" ]; do
+     6		echo -n "input : "
+     7		read a
+     8
+     9		if [ $a -eq 0 ]; then
+    10			break;
+    11		elif [ $a -eq 1 -o $a -gt 9 ]; then
+    12			echo "The number of inputs must be between 2 and 9."
+    13		else
+    14			for ((k=1; k<=9; k++)) do
+    15				echo " $a * $k = `expr $a \* $k `"
+    16			done
+    17		fi
+    18	done
+    19	echo Exit
+
+
+## while4.sh
+
+      1 #!/bin/bash
+      2
+      3 row=$1
+      4
+      5 if [ $# -eq 0 ]; then
+      6         echo "This program is have to one parameter~!!"
+      7 else
+      8         while [[ 10 -gt $row ]]; do
+      9                 echo $row
+     10                 row=`echo "$row"+1|bc`
+     11         done
+     12 fi
+
+# !ch
+
+# ./while4.sh
+This program is have to one parameter~!!
+
+# ./while4.sh 6
+6
+7
+8
+9
+
+
+

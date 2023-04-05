@@ -1,0 +1,478 @@
+Day-18
+
+——————————————————————————————
+### 미니 프로젝트 1 팀회의
+——————————————————————————————
+Notion에 미니프로젝트 홈 생성 (팀장)
+팀원, 저를 초대해주세요….
+
+단톡에 Notion Link 남겨주세요…
+
+Notion에 파일을 링크를 남기실때는 파일 첨부.
+
+첨부파일 위에 캡쳐한 이미지를 넣고 파일 첨부..
+
+
+impelfin@gmail.com
+
+
+## RDMBS Table - 최소 3개
+
+# 2개의 고정 정형 데이터(참조)
+
+# NoSQL 데이터 참조 후 유동 데이터 생성
+
+# 1개의 고정 정형 데이터에 일일(결산) 데이터 저장
+——————————————————————————————
+
+“작은 프로젝지만 제대로 해야 한다.” 
+
+
+
+create table buytbl2 as (select * from buytbl);
+
+select * from buytbl2;
+
+create table buytbl3 as (select userid, prodname from buytbl);
+
+select * from buytbl3;
+
+select userid as "사용자명", sum(amount) as "총 구매수량" from buytbl group by userid;
+
+select userid as "사용자명", sum(amount * price) as "총 구매액" from buytbl group by userid;
+
+AVG()
+MIN() MAX()
+COUNT()
+COUNT(DISTICNT) 
+STEDV() 표준편차
+VARIANCE() 분산
+
+select cast(avg(amount) as number(5,3)) as "평균 구매 수량" from buytbl;
+
+select userid, cast(avg(amount) as number(5,3)) as "평균 구매 수량" from buytbl 
+group by userid;
+
+-- error
+select username, max(height), min(height) from usertbl;
+
+select username, max(height), min(height) from usertbl group by username;
+
+select username, height from usertbl
+where height = (select max(height) from usertbl)
+or height = (select min(height) from usertbl);
+
+select count(*) from usertbl;
+
+select count(mobile1) as "휴대폰 이용자" from usertbl;
+
+select userid as "사용자명", sum(amount * price) as "총 구매액" from buytbl group by userid;
+
+-- error
+select userid as "사용자명", sum(amount * price) as "총 구매액" from buytbl 
+where sum(price * amount) > 1000
+group by userid;
+
+select userid as "사용자명", sum(amount * price) as "총 구매액" from buytbl 
+group by userid
+having sum(price * amount) > 1000;
+
+
+select idnum, groupname, sum(price * amount) as "비용"
+from buytbl
+group by rollup (groupname, idnum);
+
+
+select groupname, sum(price * amount) as "비용"
+from buytbl
+group by rollup (groupname);
+
+
+select groupname, sum(price * amount) as "비용",
+grouping_ID(groupname) as "비고"
+from buytbl
+group by rollup (groupname);
+
+
+create table emptbl (emp nchar(3), manager nchar(3), department nchar(3));
+
+insert into emptbl values ('나사장', '없음', '없음');
+insert into emptbl values ('김재무', '나사장', '재무부');
+insert into emptbl values ('김부장', '김재무', '재무부');
+insert into emptbl values ('이부장', '김재무', '재무부');
+insert into emptbl values ('우대리', '이부장', '재무부');
+insert into emptbl values ('지사원', '이부장', '재무부');
+insert into emptbl values ('이영업', '나사장', '영업부');
+insert into emptbl values ('한과장', '이영업', '영업부');
+insert into emptbl values ('최정보', '나사장', '정보부');
+insert into emptbl values ('윤차장', '최정보', '정보부');
+insert into emptbl values ('이주임', '윤차장', '정보부');
+
+
+## cte1
+
+with empcte(empname, mgrname, dept, emplevel)
+as
+(
+( select emp, manager, department, 0
+    from emptbl
+    where manager = '없음' )
+UNION all
+(select emptbl.emp, emptbl.manager, emptbl.department, empcte.emplevel+1
+from emptbl inner join empcte
+    on emptbl.manager = empcte.empname)
+)
+select * from empcte order by dept, emplevel;
+
+
+## cte2
+
+with empcte(empname, mgrname, dept, emplevel)
+as
+(
+( select emp, manager, department, 0
+    from emptbl
+    where manager = '없음' )
+UNION all
+(select emptbl.emp, emptbl.manager, emptbl.department, empcte.emplevel+1
+from emptbl inner join empcte
+    on emptbl.manager = empcte.empname)
+)
+select concat(rpad('ㄴ', emplevel*2 + 1, 'ㄴ'), empName)
+AS "직원 이름", dept as "직원 부서"
+from empcte order by dept, emplevel;
+
+
+## cte3
+
+with empcte(empname, mgrname, dept, emplevel)
+as
+(
+( select emp, manager, department, 0
+    from emptbl
+    where manager = '없음' )
+UNION all
+(select emptbl.emp, emptbl.manager, emptbl.department, empcte.emplevel+1
+from emptbl inner join empcte
+    on emptbl.manager = empcte.empname
+where emplevel < 2)
+)
+select concat(rpad('ㄴ', emplevel*2 + 1, 'ㄴ'), empName)
+AS "직원 이름", dept as "직원 부서"
+from empcte order by dept, emplevel;
+
+
+## Insert 
+
+create table testtbl1 (id number(4), username nchar(3), age number(2));
+
+insert into testtbl1 values(1, '홍길동', 25);
+
+select * from testtbl1;
+
+insert into testtbl1(id, username) values (2,'설현');
+
+select * from testtbl1;
+
+-- error
+insert into testtbl1 values (3, 36, '공유');
+
+insert into testtbl1(id, age, username) values (3, 36, '공유');
+
+
+## 
+
+create table testtbl2 (
+    id          number(4),
+    username    nchar(3),
+    age         number(2),
+    nation      nchar(4) default '대한민국'
+);
+    
+create sequence idseq2 
+    start with      1
+    increment   by  1;
+    
+insert into testtbl2 values(idseq2.nextval, '유나', 25, default);
+select * from testtbl2;
+
+
+insert into testtbl2 values(11, '쯔위', 18, '대만');
+
+alter sequence idseq2
+    increment by 10;
+    
+insert into testtbl2 values(idseq2.nextval, '미나', 21, '일본');
+ 
+select * from testtbl2;
+
+alter sequence idseq2
+    increment by 1;
+
+insert into testtbl2 values(idseq2.nextval, '사나', 21, '일본');
+
+select * from testtbl2;
+
+alter sequence idseq2
+    increment by 5;
+
+insert into testtbl2 values(idseq2.nextval, '채영', 23, default);
+
+select * from testtbl2;
+
+select idseq2.currval from testtbl2;
+
+
+##
+
+create table testtbl3 (id number(3));
+
+create sequence cycleseq
+    start with      100
+    increment   by  100
+    minvalue        100
+    maxvalue        300
+    cycle           
+    nocache ;
+    
+insert into testtbl3 values (cycleseq.nextval);
+insert into testtbl3 values (cycleseq.nextval);
+insert into testtbl3 values (cycleseq.nextval);
+insert into testtbl3 values (cycleseq.nextval);
+
+select * from testtbl3;
+
+
+##
+
+create table testtbl4 ( empid number(6), firstname varchar2(20),
+    lastname varchar2(25), phone varchar2(20));
+    
+insert into testtbl4
+    select employee_id, first_name, last_name, phone_number
+    from hr.employees;
+    
+select * from testtbl4;
+ 
+
+## update
+
+update testtbl4
+    set firstname='David'
+    where empid=100;
+    
+select * from testtbl4 where empid=100;
+
+
+## delete
+
+select * from testtbl4 where lastname='King';
+
+commit;
+
+delete from testtbl4 where firstname='David' and lastname='King';
+
+select * from testtbl4;
+
+rollback;
+
+select * from testtbl4;
+
+
+create table bigtbl1
+as
+    select level as bigid, 
+        round(dbms_random.value(1, 500000), 0) as numdata
+    from dual
+    connect by level <= 500000;
+    
+create table bigtbl2
+as
+    select level as bigid, 
+        round(dbms_random.value(1, 500000), 0) as numdata
+    from dual
+    connect by level <= 500000;
+
+create table bigtbl3
+as
+    select level as bigid, 
+        round(dbms_random.value(1, 500000), 0) as numdata
+    from dual
+    connect by level <= 500000;
+    
+
+delete from bigtbl1;
+commit;
+
+drop table bigtbl2;
+
+truncate table bigtbl3;
+
+drop table bigtbl1;
+
+drop table bigtbl3;
+
+
+## merge
+
+create table member1
+as (select userid, username, addr from usertbl);
+    
+select * from member1;
+
+create table changetbl (
+    userid      char(8), 
+    username    nvarchar2(10),
+    addr        nchar(2),
+    changetype   nchar(4)
+);
+
+insert into changetbl values('TKV', '태권브이','한국','신규가입');
+insert into changetbl values('LSG', null,'제주','주소변경');
+insert into changetbl values('LJB', null,'영국','주소변경');
+insert into changetbl values('BBK', null,'탈퇴','회원탈퇴');
+insert into changetbl values('SSK', null,'탈퇴','회원탈퇴');
+
+select * from member1;
+
+merge into member1 M
+using (select changetype, userid, username, addr from changetbl) C
+on (M.userid = C.userid)
+when matched then
+    update set M.addr = C.addr
+    delete where C.changetype = '회원탈퇴'
+when not matched then
+    insert (userid, username, addr) values (C.userid, C.username, C.addr) ;
+    
+select * from usertbl;
+
+select * from member1;
+
+
+## pl/sql
+
+set SERVEROUTPUT ON;
+
+DECLARE
+    myvar1 number(3);
+    myvar2 number(5,2) := 3.14;
+    myvar3 nvarchar2(20) := '이승기 키 -> ';
+BEGIN
+    myvar1 := 5;
+    dbms_output.put_line(myvar1);
+    dbms_output.put_line(myvar1+myvar2);
+    select height into myvar1 from usertbl 
+    where username = '이승기';
+    dbms_output.put_line(myvar3 || to_char(myvar1));
+END ;
+
+5
+8.14
+이승기 키 -> 182
+
+to_char()
+to_number()
+to_date()
+
+select avg(amount) from buytbl;
+
+2.91666666666666666666666666666666666667
+
+select cast(avg(amount) as number(3)) from buytbl;
+
+3
+
+select cast(avg(amount) as number(3,2)) from buytbl;
+
+2.92
+
+select cast('2023$3$29' as date) from dual;
+
+23/03/29
+
+select cast(price as char(5)) || 'X ' || cast(amount as char(4)) || '==' as "단가 X 수량", 
+    price * amount as "구매액"
+    from buytbl;
+
+
+  
+select to_char(12345, '$999,999') from dual;
+  $12,345
+
+select to_char(12345, '$000,999') from dual;
+ $012,345
+
+select to_char(12345, 'L999,999') from dual;
+ ￦12,345
+
+select to_char(sysdate, 'yyyy/mm/dd hh:mm:ss') from dual;
+2023/03/29 04:03:04
+
+select to_char(10, 'X'), to_char(255,'XX') from dual;
+ A	 FF
+
+select to_number('0123'), to_number('1234.456') from dual;
+123	1234.456
+
+select '100' + '200' from dual;
+300
+
+select concat('100', '200') from dual;
+100200
+
+select 100 || '200' from dual;
+100200
+
+select price from buytbl where price >= '500';
+1000
+
+SELECT ASCII('A'), CHR(65), ASCIISTR('한'), UNISTR('\D55C') FROM DUAL ;
+65	A	\D55C	한
+
+SELECT LENGTH('한글'), LENGTH('AB'), LENGTH ('한글'), LENGTH('AB') FROM DUAL ;
+2	2	2	2
+
+SELECT CONCAT('이것이 ', 'Oracle이다'), '이것이' || ' ' || 'Oracle이다' FROM DUAL ; 
+이것이Oracle이다	이것이 Oracle이다
+
+SELECT INSTR('이것이 Oracle이다. 이것도 오라클이다', '이것') FROM DUAL ; 
+1
+
+SELECT INSTR('이것이 Oracle이다. 이것도 오라클이다', '이것', 2) FROM DUAL ; 
+15
+
+SELECT INSTRB('이것이 Oracle이다. 이것도 오라클이다', '이것', 2) FROM DUAL ; 
+25
+
+SELECT LOWER('abcdEFGH'), UPPER('abcdEFGH'), INITCAP('this is oracle') FROM DUAL ;  
+abcdefgh	ABCDEFGH	This Is Oracle
+
+SELECT REPLACE ('이것이 Oracle이다.', '이것이', 'This is') FROM DUAL ;
+This is Oracle이다.
+
+SELECT TRANSLATE('이것이 Oracle이다.', '이것이', 'AB') FROM DUAL ;
+ABA OracleA다.
+
+SELECT SUBSTR('대한민국만세', 3, 2) FROM DUAL ; 
+민국
+
+SELECT REVERSE('Oracle') FROM DUAL ;
+elcarO
+
+SELECT LPAD('이것이', 10, '##'), RPAD('이것이', 10, '##') FROM DUAL ;
+####이것이	이것이####
+
+SELECT LTRIM('     이것이'),RTRIM('이것이$$$', '$') FROM DUAL ; 
+이것이	이것이
+
+SELECT TRIM('    이것이    '), TRIM(BOTH '' FROM 'ㅋㅋㅋㅋ재밌어요. ㅋㅋㅋㅋ') FROM DUAL ; 
+이것이	재밌어요. 
+
+SELECT REGEXP_COUNT('이것이 오라클이다','이') FROM DUAL ; 
+3
+
+
+
+
+
+

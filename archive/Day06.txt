@@ -1,0 +1,490 @@
+Day-06
+
+## 수세리눅스 패키지 명령어
+
+zypper install 패키지명 : 패키지 설치
+zypper update 패키지명 : 패키지 업데이트
+zypper remove 패키지명 : 패키지 삭제
+zypper info 패키지명 : 해당 패키지 정보 출력
+zypper se 문자열 : 문자열과 연관된 패키지 이름 출력
+
+
+# apt -y install aptitude
+
+# aptitude update
+
+# aptitude
+
+# apt -y update; apt -y upgrade
+
+
+# apt -y install snap
+
+# snap install hello-world
+
+# snap list
+
+# snap find hello-world
+
+# hello-world
+
+# snap info hello-world
+
+# snap remove hello-world
+
+
+### tar archive
+
+# /work/allnew/shells/work.sh
+
+# ls -al / > /work/result
+
+# cp result test1
+
+# cp test1 test2
+
+# cp test1 test3
+
+# mkdir dir1
+
+# cp test? dir1
+
+# cp -R dir1 dir2
+
+# cp -R dir1 dir3
+
+# ls
+
+
+# tar cvf rmt0.tar result test* dir*
+
+# rm -rf d* t* result
+
+# ls
+
+# file rmt0.tar
+rmt0.tar: POSIX tar archive (GNU)
+
+# mkdir dir1
+
+# cp rmt0.tar dir1
+
+# cd dir1
+
+# tar tvf rmt0.tar
+
+# tar xvf rmt0.tar
+
+# touch test1
+
+# cat >> test1
+good bye
+^d
+
+# ll
+
+# rm -rf test* result dir*
+
+# tar xvf rmt0.tar
+
+# ll
+
+# cp test1 test4
+
+# tar rvf rmt0.tar test4
+
+# tar tvf rmt0.tar
+
+# cd ..
+
+# rm -rf dir1
+
+# cp rmt0.tar rmt1.tar
+
+# mkdir temp
+
+# cp *.tar temp
+
+# cd temp
+
+
+# apt -y install ncompress
+
+# compress -v rmt0.tar
+
+# file rmt0.tar.Z
+
+# uncompress -v rmt0.tar.Z
+
+
+# gzip -v rmt0.tar
+
+# gzip -v rmt1.tar
+
+# file rmt0.tar.gz
+
+# gzip -dv rmt0.tar.gz
+
+# gunzip -v rmt1.tar.gz
+
+
+# bzip2 -v rmt0.tar
+
+# bzip2 -v rmt1.tar
+
+# file rmt0.tar.bz2
+
+# bzip2 -dv rmt0.tar.bz2
+
+# bunzip2 -v rmt1.tar.bz2
+
+
+# xz -v rmt0.tar
+
+# xz -v rmt1.tar
+
+# file rmt0.tar.xz
+
+# xz -dv rmt0.tar.xz
+
+# unxz -v rmt1.tar.xz
+
+
+# zip -v rmt0.tar.zip rmt0.tar
+
+# file rmt0.tar.zip
+
+# unzip rmt0.tar.zip
+A
+
+# rm -rf rmt*
+
+https://www.apache.org
+
+
+# mv ../rmt* .
+
+# rm -rf rmt1.tar
+
+# tar xvf rmt0.tar
+
+# ls 
+
+# rm -rf rmt0.tar
+
+
+# tar cvZf rmt0.tar.Z d* t* result
+
+# file rmt0.tar.Z
+
+# zcat rmt0.tar.Z
+
+# rm -rf d* result t*
+
+# tar xvZf rmt0.tar.Z
+
+# ls
+
+
+# tar cvzf rmt0.tar.gz d* t* result
+
+# file rmt0.tar.gz
+
+# zcat rmt0.tar.gz
+
+# tar xvzf rmt0.tar.gz
+
+# rm -rf rmt*
+
+
+# tar cvjf rmt0.tar.bz2 d* t* result
+
+# file rmt0.tar.bz2
+
+# tar xvjf rmt0.tar.bz2
+
+# bzcat rmt0.tar.bz2
+
+
+# tar cvJf rmt0.tar.xz d* t* result
+
+# file rmt0.tar.xz
+
+# tar xvJf rmt0.tar.xz
+
+# xzcat rmt0.tar.xz
+
+
+# cd ..
+
+# rm -rf temp
+
+
+# tar cvzf allnew.tar.gz ./allnew
+
+# tar cvjf allnew.tar.bz ./allnew
+
+# tar cvJf allnew.tar.xz ./allnew
+
+# rm -rf allnew.tar.*
+
+# tar cvzf allnew.tar.gz ./allnew
+
+# mv allnew.tar.gz ~
+
+# cd ~
+
+# rm -rf /work/allnew
+
+# tar xvzf allnew.tar.gz -C /work
+
+# ll /work
+
+# cd /work
+
+# cd allnew/shells/
+
+# vi allnew_backup.sh
+
+      1 #!/bin/bash
+      2
+      3 cd /work
+      4 tar cvzf allnew.tar.gz /work/allnew
+      5 mv allnew.tar.gz ~
+
+# chmod u+x allnew_backup.sh
+
+# rm -rf ~/allnew.tar.gz
+
+# /work/allnew/shells/allnew_backup.sh
+
+# cd /work
+
+# crontab -e
+
+     45 17 * * * /work/allnew/shells/allnew_backup.sh
+
+# crontab -l
+
+# cd allnew
+
+# git add .
+
+# git commit -m “allnew_backup.sh”
+
+# git push
+
+github desktop에서 fetch -> pull….
+
+
+### 배포판 별 패키지 관리 도구 : binary
+
+debian : dpkg => apt-get
+redhat : rpm => yum, dnf
+suse : Yast => zypper
+
+
+### source install
+
+	0.	download 
+	0.	압축 해제
+
+	0.	./configure —prefix=/usr/bin/apr
+	0.	make
+	0.	make install
+
+
+## host computer(Windows, mac)에서..
+# cd 
+
+# cd Downloads
+
+# scp apr-1.7.2.tar.bz2 root@192.168.1.12:/work
+
+
+## 브라우저에서…
+apr-iconv-1.2.2.tar.bz2 마우스 오른쪽 링크주소 복사..
+
+# wget https://downloads.apache.org/apr/apr-iconv-1.2.2.tar.bz2
+
+# tar xvjf apr-iconv-1.2.2.tar.bz2
+
+# ls
+
+# tar xvjf apr-1.7.2.tar.bz2
+
+# cd apr-1.7.2
+
+# ./configure --prefix=/usr/local/apr
+
+# make
+
+# make install
+
+# cd /usr/local/apr
+
+# ls
+
+# cd /work
+
+# cd apr-iconv-1.2.2/
+
+# ./configure --prefix=/usr/local/apr-iconv —with-apr=/usr/local/apr
+
+# make
+
+# make install
+
+# cd /usr/local/apr-iconv
+
+# ls
+
+# cd /work
+
+# rm -rf apr*
+
+설치과정 오류 발생시.
+
+# make clean 
+
+
+
+—————————————————————————————
+
+
+가상머신 종료 후 하드디스크 4개 추가(각 1G, HDD1~4) 후 부팅
+
+# fdisk -l
+
+ 
+
+
+# more /proc/filesystems
+
+
+### filesystem의 구성요소
+	0.	boot block
+	0.	Super block
+	0.	inode list
+	0.	Data block
+
+
+/etc/fstab : 마운트 할 파일시스템 리스트
+(/etc/vfstab)
+
+/etc/mtab :  마운트 된 파일시스템 리스트
+(/etc/mnttab)
+
+
+cat /etc/fstab
+/dev/sda3  /    ext4          defaults       0          1
+
+/dev/sdb1  /work    ext4   defaults     1          2
+
+
+primary - master(HDD) : slave
+
+secondary - master(CD) : slave
+
+
+# fdisk -l
+
+	0.	partition
+# fdisk /dev/sdb
+n
+p
+1
+2048
+2097151
+p
+w
+
+	0.	create file system
+# mkfs /dev/sdb1
+
+# ll /dev/disk/by-uuid/
+
+	0.	create mount point
+# mkdir /disk1
+
+# ls -ld /disk1
+
+	0.	mounting
+# mount /dev/sdb1 /disk1
+
+# df -Th | grep disk
+# mount | grep disk
+
+	0.	/etc/fstab에 추가
+     13 /dev/sdb1       /disk1          ext4    defaults        1       2
+
+	0.	reboot
+
+# shutdown -r now
+
+# df -Th | grep disk
+
+
+# fdisk /dev/sdc
+
+n
+<enter>
+<enter>
+<enter>
++500M
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+
+p
+d
+<enter>
+d
+
+p
+
+n
+<enter>
+<enter>
+<enter>
++500M
+ 
+n
+<enter>
+<enter>
+<enter>
+<enter>
+
+p
+
+w
+
+# mkfs -t ext3 /dev/sdc1
+
+# mkfs.ext3 /dev/sdc2
+
+# mkdir /disk2_1 /disk2_2
+
+# mount /dev/sdc1 /disk2_1
+
+# mount /dev/sdc2 /disk2_2
+
+# df -Th | grep disk
+
+# mount | grep disk
+
+# vi /etc/fstab
+     14 /dev/sdc1       /disk2_1        ext3    defaults        1       2
+     15 /dev/sdc2       /disk2_2        ext3    defaults        1       2
+
+# umount /disk2_2
+# umount /disk2_1
+# umount /disk1
+
+# mount /disk1
+# mount /disk2_1
+# mount /disk2_2
+

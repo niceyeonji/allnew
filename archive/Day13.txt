@@ -1,0 +1,968 @@
+Day-13
+
+### git push WARNING message 제거 
+
+# git push
+
+(gnome-ssh-askpass:3574): Gtk-WARNING **: 08:43:29.876: cannot open display:
+error: unable to read askpass response from '/usr/libexec/openssh/gnome-ssh-askpass'
+
+# vi ~/.bashrc
+
+     14 unset SSH_ASKPASS
+
+# source ~/.bashrc
+
+# git push
+
+
+# vi /etc/sudoers
+
+    100 root    ALL=(ALL)       ALL
+    101 centos  ALL=(ALL)       ALL
+    102 user1   ALL=/sbin/useradd, /sbin/usermod
+    103 user2   ALL=/sbin/userdel, /sbin/usermod
+
+# su - user1
+
+$ useradd -u 3000 -g users testuser1
+useradd: Permission denied.
+
+$ sudo useradd -u 3000 -g users testuser1
+
+[sudo] user1의 암호: 1234
+
+$ tail -3 /etc/passwd
+user2:x:1002:100::/home/user2:/bin/bash
+user3:x:1003:100::/home/user3:/bin/bash
+testuser1:x:3000:100::/home/testuser1:/bin/bash
+
+$ sudo useradd -u 3001 -g users testuser2
+
+$ !t
+tail -3 /etc/passwd
+user3:x:1003:100::/home/user3:/bin/bash
+testuser1:x:3000:100::/home/testuser1:/bin/bash
+testuser2:x:3001:100::/home/testuser2:/bin/bash
+
+$ sudo usermod -u 3002 testuser2
+
+$ sudo usermod -u 3001 testuser1
+
+$ !t
+tail -3 /etc/passwd
+user3:x:1003:100::/home/user3:/bin/bash
+testuser1:x:3001:100::/home/testuser1:/bin/bash
+testuser2:x:3002:100::/home/testuser2:/bin/bash
+
+$ exit
+logout
+
+# su - user2
+
+$ sudo userdel -r testuser2
+
+[sudo] user2의 암호: 1234
+
+$ tail -3 /etc/passwd
+
+$ sudo userdel -r testuser1
+
+$ tail -3 /etc/passwd
+
+$ exit
+logout
+
+# su - centos
+
+$ sudo useradd -u 3001 -g users test1
+
+[sudo] centos의 암호: 1234
+
+$ sudo useradd -u 3002 -g users test2
+
+$ tail -4 /etc/passwd
+
+$ cd /home
+
+$ ll
+
+$ sudo chown user3 user2
+
+$ sudo chown user2:users user2
+
+$ sudo chown root:root user2
+
+$ ll
+
+$ sudo chown user2:users user2
+
+$ sudo userdel -r test2
+
+$ sudo userdel -r test1
+
+$ !t
+tail -4 /etc/passwd
+
+$ exit
+
+# vi /etc/sudoers
+
+:100
+
+    100 root    ALL=(ALL)       ALL
+    101
+
+
+
+### 디스크 쿼터
+
+# grep user /etc/passwd
+
+# usermod -d /allnew/user1 user1
+
+# usermod -d /allnew/user2 user2
+
+# usermod -d /allnew/user3 user3
+
+# cd /home
+
+# mv user? /allnew
+
+# cd /allnew
+
+# ls
+
+# vi /etc/fstab
+     15 UUID=9b4c2d31-ecbf-4fb1-a8e4-65cef9a89046 /allnew  xfs     defaults,usrquota,grpquota        0 2
+
+
+# mount | grep allnew
+/dev/md0 on /allnew type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,sunit=1024,swidth=2048,noquota)
+
+# mount -o remount /allnew
+
+# mount | grep allnew
+/dev/md0 on /allnew type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,sunit=1024,swidth=2048,usrquota,grpquota)
+
+# fdisk -l | grep sd
+
+# fdisk /dev/sdf
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+p
+w
+
+# fdisk -l | grep sd
+
+# mkfs.ext4 /dev/sdf1
+
+# mkdir /work
+
+# mount /dev/sdf1 /work
+
+# mount | grep /work
+
+# cd /work
+
+# ls
+
+# usermod -d /work/user1 user1
+
+# usermod -d /work/user2 user2
+
+# usermod -d /work/user3 user3
+
+# tail -4 /etc/passwd
+
+# mv /allnew/user? .
+
+# vi /etc/fstab
+
+    15	UUID=9b4c2d31-ecbf-4fb1-a8e4-65cef9a89046 /allnew  xfs     defaults,usrquota,grpquota        0 2
+    16	/dev/sdf1	/work  ext4     defaults,usrquota,grpquota        0 2
+
+# cd 
+
+# umount /allnew
+
+# umount /work
+
+# df
+
+# mount /allnew
+
+# mount /work
+
+# mount -o remount /work
+
+# mount | grep /work
+
+# ls
+
+
+# quotacheck -ugvm /work
+
+# ls
+./  ../  aquota.group  aquota.user
+
+# quotaon -uv /work
+/dev/sdf1 [/work]: user quotas turned on
+
+# edquota -u user1
+
+      4   /dev/sdf1                        48          900M          1G         12        0        0
+
+# edquota -u user1
+
+# quota -u user1
+
+# su - user1
+
+$ dd if=/dev/zero of=data1 bs=1M count=350
+
+$ dd if=/dev/zero of=data2 bs=1M count=350
+
+$ dd if=/dev/zero of=data3 bs=1M count=350
+
+$ quota -u user1
+
+$ touch test1
+
+$ ls -l > test1
+ls: 쓰기 오류: 디스크 할당량이 초과됨
+
+$ exit
+logout
+
+# repquota /work
+
+# quota -u user2
+Disk quotas for user user2 (uid 1002):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+      /dev/sdf1      48  921600 1048576              12       0       0
+
+# quota -u user3
+Disk quotas for user user3 (uid 1003): none
+
+# edquota -p user2 user3
+
+# quota -u user3
+
+# rm -rf /work/user1/data?
+
+# df | grep work
+
+# quotaoff -uv /work
+/dev/sdf1 [/work]: user quotas turned off
+
+
+# quotaon -gv /work
+/dev/sdf1 [/work]: group quotas turned on
+
+# edquota -g users
+      4   /dev/sdf1                       100          2G          3G         25        0        0
+
+# quota -g users
+
+# su - user1
+
+$ dd if=/dev/zero of=data1 bs=1M count=1000
+
+$ dd if=/dev/zero of=data2 bs=1M count=1000
+
+$ dd if=/dev/zero of=data3 bs=1M count=1000
+
+$ quota -g users
+
+# repquota -a
+
+# rm -rf /work/user1/data?
+
+# quotaoff -gv /work
+/dev/sdf1 [/work]: group quotas turned off
+
+# mv user? /home
+
+# usermod -d /home/user1 user1
+
+# usermod -d /home/user2 user2
+
+# usermod -d /home/user3 user3
+
+# mount | grep /work
+
+# mount -o remount /work
+
+# mount | grep /work
+
+# cd
+
+# umount /work
+
+# mount /work
+
+# mount | grep /work
+
+# tail -4 /etc/fstab
+/dev/mapper/cs_centos-root /                       xfs     defaults        0 0
+UUID=2ad14556-9fbc-4b03-87fd-081c9083aabc /boot                   xfs     defaults        0 0
+/dev/mapper/cs_centos-swap none                    swap    defaults        0 0
+UUID=9b4c2d31-ecbf-4fb1-a8e4-65cef9a89046 /allnew  xfs     defaults        0 2
+
+# shutdown -h now
+
+시스템 종료 후 추가한 디스크 영구 삭제…
+
+
+# mkdir /allnew/sed
+
+# cd /allnew/sed
+
+# vi myfile
+
+      1 life isn't meant to be easy, life is meant to be lived.
+      2 Try to learn & understand something new everyday in life.
+      3 Respect everyone & most important love everyone.
+      4 Don't hesitate to ask for love & don't hesitate to show love too.
+      5 Life is too short to by shy.
+      6 In life, experience will help you differentiating right from wrong.
+
+
+### sed (stream editor)
+
+sed ’s/ old / new /flag’
+
+# cp /etc/passwd .
+
+# vi passwd
+
+:%s/:/=/g
+
+:%s/=/:/g
+
+# who
+root     pts/0        2023-03-22 12:38 (192.168.1.2)
+root     seat0        2023-03-22 14:23 (login screen)
+root     tty2         2023-03-22 14:23 (tty2)
+
+# who | sed 's/pts/terminal/'
+root     terminal/0        2023-03-22 12:38 (192.168.1.2)
+root     seat0        2023-03-22 14:23 (login screen)
+root     tty2         2023-03-22 14:23 (tty2)
+
+# cat passwd | sed 's/:/=/g'
+
+# cat passwd | sed 's/:/=/g' > passwd_new
+
+# wc -l passwd
+
+# sed '45,50 s/:/=/g' passwd
+
+# head passwd
+
+# sed -n '5,10p' passwd
+
+# cat -n myfile
+
+# sed -n '3,5p' myfile
+
+# sed '3,5d' myfile
+
+# sed -n -e '1,2p' -e '4,6p' myfile
+
+# ls /allnew/shells/
+
+# ls /allnew/shells/ | sed 's/*//g'
+
+
+### awk
+
+
+
+# vi awk_testfile
+      1 name phone birth sex score
+      2 reakwon 010-1234-1234 1981-01-01 M 100
+      3 sim     010-4321-4321 1999-09-09 F 88
+      4 nara    010-1010-2020 1993-12-12 M 20
+      5 yut     010-2323-2323 1988-10-10 F 59
+      6 kim     010-1234-4321 1977-07-07 M 69
+      7 nam     010-4321-7890 1996-06-20 M 75
+
+# who
+
+# who | awk '{print $1 $5}'
+
+# who | awk '{print "User " $1 " is on terminal " $5 " " $6}'
+
+# who | awk '{print "User " $1 " is on connected " $5 " " $6}'
+
+# awk '{print $1 $2}' awk_testfile
+
+# awk '{print $1,$2}' awk_testfile
+
+# awk -F: '{print $7}' passwd | sort | uniq -c
+
+# awk -F: '{print $7}' passwd | uniq -c
+
+
+# ls -lF
+
+# ls -lF | awk '{print $5 "\t" $9}'
+
+# ls -l | awk '{Total = Total + $5; print Total "\t" $9}'
+
+# ls -l | awk '{Total += $5; print Total "\t" $9}'
+
+
+# ls -lF
+
+# ls -lF | awk '{print NF}'
+
+# ls -l | awk '{print NR ";" $0}'
+
+# ls -l | wc -l
+
+
+# cat -n awk_testfile
+
+# awk '/kwon/' awk_testfile
+
+# awk '/si/' awk_testfile
+
+# awk '{print ("Name : " $1", " "Phone : " $2)}' awk_testfile
+
+
+# awk '{if ($5 >= 80) print ($0)}' awk_testfile
+
+# awk '{if ($4 == "M") print ($1,$5)}' awk_testfile
+
+# awk '{if ($4 == "M") print ($1"\t"$5)}' awk_testfile
+
+# awk '{if ($4 == "M" &&  $5 >= 70) print ($0)}' awk_testfile
+
+
+# awk '{print("name length : " length($1), "substr(0,3) : " substr($1,0,3))}' awk_testfile
+
+
+# awk '
+> BEGIN {
+>   sum=0
+>   cnt=-1
+> }
+>
+> {
+>   sum+=$5
+>   cnt++
+> }
+>
+> END {
+>   avg=sum/cnt
+>   print("Sum : " sum", Average : " avg)
+> }' awk_testfile
+Sum : 411, Average : 68.5
+
+
+### 네트워크
+
+
+
+
+# ping 192.168.1.xxx
+
+hop
+
+LAN(Local Area Network)
+
+WAN
+
+MAN
+
+SDN : Software Define Network 
+
+NFV : Network Function Virtualization
+
+
+Uni-cast : peer to peer
+
+Multi-cast
+
+Broad-cast
+
+
+## IPv4(32bit)
+A : 8.x.x.x, n -2^8 , h - 2^24 
+B : 8.8.x.x, n - 2^16, h - 2^16 = 65534
+C : 8.8.8.x, n - 2^24, h -2^8 = 254
+D : Multi-cast
+E : Reserved
+
+IPv4 종류
+- 공인 IP
+- DHCP(Dynamic Host Configuration Protocol)
+- 사설 IP(공유기  NAT-Network Address Translation)
+127.0.0.1-loop back
+
+10.x.x.x
+172.x.x.x
+192.x.x.x
+
+# ifconfig -a
+
+FF.FF.FF -> RGB
+
+- CIDR(Classless Inter-Domain Routing)
+
+11111111.11111111.11111111.0000000
+255.255.255.0 -> 255
+0000000.0000000.0000000.11111111
+0.0.0.255
+256 -2 = 254
+
+10.0.2.0 -> Network address
+10.0.2.255 -> broadcast address
+
+슈퍼넷/서브넷
+
+11111111.11111111.11111111.1000000
+0000000.0000000.0000000.01111111
+255.255.255.128 -> 128 -2 = 126
+
+11111111.11111111.11111111.1100000
+0000000.0000000.0000000.00111111
+255.255.255.192 -> 64 -2 = 62
+
+11111111.11111111.11111111.1110000
+0000000.0000000.0000000.00011111
+255.255.255.224 -> 32 -2 = 30
+
+
+## IPv6(128bit)
+- 대륙별, 국가별, 지역별, 회사별, prefix
+- AutoConfiguration
+- Security 
+- IP header 단순, 훨씬 빠른 라우팅이 가능
+- 부가 기능 지원, QoS
+
+
+fe80::a00:27ff:fe97:2e62
+
+Uni-cast : peer to peer
+
+Multi-cast
+
+Any-cast
+
+
+# grep tftp /etc/services
+
+# cat /etc/services
+
+# uname -a
+
+# cat /etc/hostname
+centos
+
+# cat /etc/hosts
+
+# cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
+
+## 콘솔에서….
+
+# systemctl stautus NetworkManager.service
+
+# nmcli gen
+
+# nmcli net off
+
+# ifconfig -a
+
+# nmcli net on
+
+# ifconfig -a
+
+# nmcli gen
+
+# nmcli con show
+
+# nmcli con down enp0s3
+
+# nmcli con up enp0s3
+
+# nmcli dev show
+
+
+# ip addr
+
+# ip route show
+
+# route
+
+# netstat -rn
+
+
+# ifconfig -a
+
+# ifconfig enp0s3 down
+
+# ifconfig 
+
+# ifconfig enp0s3 up
+
+# ifconfig 
+
+# ifconfig enp0s3 down
+
+# ifconfig 
+
+# ifconfig enp0s3 192.168.1.134 netmask 255.255.255.0 broadcast 192.168.0.255
+
+# ifconfig enp0s3 up
+
+# ifconfig
+
+# netstat -rn
+
+# route
+
+# route add default gw 192.168.1.1 dev enp0s3
+
+# cat /etc/resolv.conf : dns 정보
+
+
+# nslookup
+> www.daum.net
+
+> www.naver.com
+
+> ^d
+
+# ping www.google.com
+
+
+# traceroute www.naver.com
+
+# traceroute www.google.com
+
+
+# yum -y install whois
+
+# whois 142.250.207.36
+
+
+# netstat -rn
+
+# netstat -ntlp
+
+# netstat -an | grep LISTEN
+
+# netstat -p | more
+
+# netstat -i
+
+# netstat -s
+
+# arp 192.168.0.1
+
+
+# tcpdump -i enp0s3
+
+# tcpdump -c 5
+
+# tcpdump -c 10 -w dump.out
+
+# file dump.out
+
+# cat dump.out
+
+# tcpdump -r dump.out
+
+# tcpdump -Xqr dump.out
+
+
+
+### telnet
+
+# yum -y install telnet-server
+
+# systemctl start telnet.socket
+
+# systemctl status telnet.socket
+
+# yum -y install telnet
+
+# telnet 0
+Trying 0.0.0.0...
+
+# firewall-cmd --add-service=telnet
+success
+
+# firewall-cmd --list-service
+cockpit dhcpv6-client ssh telnet
+
+# telnet
+telnet> open localhost
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+
+Kernel 4.18.0-448.el8.x86_64 on an x86_64
+centos login: centos
+Password:
+Last login: Wed Mar 22 10:42:51 on pts/0
+[centos@centos ~]$
+
+$ exit
+
+
+## 서비스 데몬 구동 방식 
+
+stand alone vs xinetd(슈퍼 데몬)
+
+
+### ftp
+
+# rpm -qa | grep ftp
+
+# yum -y install vsftpd
+
+# yum -y install xinetd
+
+
+## xinetd 로 구동
+
+## for M1 users…
+——————————————————————
+# apt -y install xinetd
+
+# apt -y install vsftpd
+
+# apt -y install firewalld
+——————————————————————
+
+# cd /etc/xinetd.d
+
+# cp /usr/share/doc/vsftpd/vsftpd.xinetd ./vsftpd
+
+# ls
+
+# vi vsftpd
+     4	service ftp
+     5	{
+     6		socket_type		= stream
+     7		wait			= no
+     8		user			= root
+     9		server			= /usr/sbin/vsftpd
+    10		server_args             = /etc/vsftpd/vsftpd.conf
+    11		nice			= 10
+    12		disable			= no
+    13		flags			= IPv4
+    14	}
+
+# vi /etc/vsftpd/vsftpd.conf
+    123 #listen_ipv6=YES  // ubuntu : line number 22
+
+# systemctl restart xinetd
+
+# systemctl status xinetd
+
+# firewall-cmd --add-service=ftp
+success
+
+# firewall-cmd --list-service
+cockpit dhcpv6-client ftp ssh telnet
+
+# telnet 0 21
+Trying 0.0.0.0...
+Connected to 0.
+Escape character is '^]'.
+220 (vsFTPd 3.0.3)
+quit
+
+
+## vsftpd stand-alone 으로 구동
+
+# vi vsftpd
+     12         disable                 = yes
+
+# vi /etc/vsftpd/vsftpd.conf
+   114 listen=YES        // ubuntu : line number 14
+
+# systemctl restart xinetd
+
+# systemctl status xinetd
+
+# systemctl start vsftpd
+
+# systemctl status vsftpd
+
+# telnet 0 21
+Trying 0.0.0.0...
+Connected to 0.
+Escape character is '^]'.
+220 (vsFTPd 3.0.3)
+quit
+
+# grep -n disable /etc/xinetd.d/vsftpd
+
+# grep -n listen /etc/vsftpd/vsftpd.conf
+
+# su - centos
+
+$ dd if=/dev/zero of=file1 bs=1M count=10
+
+$ dd if=/dev/zero of=file2 bs=1M count=10
+
+$ dd if=/dev/zero of=file3 bs=1M count=10
+
+$ dd if=/dev/zero of=file4 bs=1M count=10
+
+$ exit
+
+# find /home -name "file?"
+/home/centos/file1
+/home/centos/file2
+/home/centos/file3
+/home/centos/file4
+
+# passwd user1
+
+# passwd user2
+
+# passwd user3
+
+# useradd -u 1001 -g users user1
+
+
+새 터미널에서..
+
+# yum -y install ftp
+
+$ ftp 192.168.1.134
+Name (192.168.0.32:user1): centos
+
+Password: 1234
+
+ftp> ?
+
+ftp> ls
+
+ftp> bin
+
+ftp> ascii
+
+ftp> bin
+
+ftp> hash
+
+ftp> get file1
+
+ftp> !ls
+
+ftp> mget file*
+
+mget file1? n
+mget file2? y
+mget file3? y
+mget file4? y
+
+ftp> bye
+
+$ ls
+
+[centos@centos ~]$ rm -rf file?
+
+[centos@centos ~]$ ll
+
+[user1@centos ~]$ ftp 192.168.1.134
+
+Name (192.168.1.134:user1): centos
+Password: 1234
+
+ftp> bin
+
+ftp> hash
+
+ftp> put file1
+
+ftp> mput file?
+
+mput file1? n
+mput file2? y
+mput file3? y
+mput file4? y
+
+ftp> ls
+
+[centos@centos ~]$ ls
+
+ftp> bye
+
+[user1@centos ~]$ ftp
+ftp> open localhost
+
+Name (localhost:user1): anonymous
+Password:
+530 Login incorrect.
+Login failed.
+ftp> bye
+221 Goodbye.
+
+# vi /etc/vsftpd/vsftpd.conf
+
+     12 anonymous_enable=YES
+
+# systemctl restart vsftpd
+
+# systemctl status vsftpd
+
+
+[user1@centos ~]$ ftp localhost
+
+Name (localhost:user1): anonymous
+Password:
+230 Login successful.
+
+ftp> ls
+drwxr-xr-x    2 0        0               6 Jan 27  2022 pub
+
+ftp> cd pub
+
+ftp> ls
+
+ftp> bye
+221 Goodbye.
+
+# vi /etc/vsftpd/vsftpd.conf
+
+     12 anonymous_enable=NO
+
+# systemctl restart vsftpd
+
+# systemctl status vsftpd
+
+# systemctl stop vsftpd
+
+# systemctl status vsftpd
+
+# vi /etc/vsftpd/vsftpd.conf
+
+    114 listen=NO
+
+# vi /etc/xinetd.d/vsftpd
+
+     12         disable                 = no
+
+# systemctl restart xinetd
+
+# systemctl status xinetd
+
+# telnet 0 21
+
+220 (vsFTPd 3.0.3)
+quit
+

@@ -1,0 +1,427 @@
+Day-05
+
+### chapter6. process
+
+# ps -ef | more
+
+# ps -aux | more
+
+
+### reahat vs debian init
+
+/sbin/init 초기화 스크립트.
+
+systemd
+
+systemctl
+
+# systemctl restart ssh
+
+# service ssh restart
+
+
+
+## Well-known port
+
+20 ftp-data // data signal
+21 ftp // control signal
+
+22 ssh // secure shell
+
+23 telnet // not secure
+
+25 smtp // mail send
+
+80 http // HyperText Transfer Protocol
+
+110 pop3 // POP ver 3
+
+143 imap // Interim Mail Access Protocol v2
+
+
+
+3306  // mysql
+
+12017 // mongodb
+
+
+TCP/IP
+
+
+# more /etc/services
+
+
+# ps -u ubuntu
+
+# ps -fu ubuntu
+
+# ps -p 3336
+
+# ps -fp 3336
+
+# pgrep bash
+
+# pgrep -l bash
+
+# ps -fp $(pgrep -x bash)
+
+# ps -fp $(pgrep -u ubuntu bash)
+
+
+# kill -l
+
+1 - SIGHUP, logoff
+2 - SIGINT, ^c
+3 - SIGQUIT, graceful, ^\
+9 - SIGKILL, strong
+15 - SIGTERM, default 
+20  - SIGTSTP, ^z
+
+
+# top
+
+M :  mem
+P : CPU
+m : mem info
+u : user
+k : kill
+q
+
+
+# gnome-system-monitor &
+
+
+# man ls
+
+^z
+
+# jobs
+
+# man cd &
+
+# jobs
+
+# man ls &
+
+# jobs
+
+# man kill &
+
+# jobs
+
+# fg
+
+^z
+
+# jobs
+
+# fg %2
+
+# jobs
+
+# fg %1
+
+^z
+
+# jobs
+
+# sleep 1000000 &
+
+# jobs
+
+# fg %5
+
+# jobs
+
+# bg
+
+# jobs
+
+# kill %1
+
+# jobs
+
+# kill %3
+# kill %4
+# kill %5
+
+# jobs
+
+
+# nohup find / -name "*a*" > result 2>&1 &
+
+# ls
+
+
+### process priority
+PRI / NI
+
+PRI : OS(kernel), 사용자의 조작이 불가능
+NI : user 조정 가능(root), -20 ~ 19
+-20: 가장 높은 우선 순위
+19 : 가장 낮은 우선 순위
+0: default
+
+### nice vs renice
+
+nice :  nice -n [n] 프로세스 명
+보통 프로세스를 시작할 때 우선 순위 조정
+
+renice : renice -n [n] 프로세스 명
+실행중인 프로세스의 우선 순위 조정…
+renice -u 사용자명
+renice -g pid
+
+
+# ps -l
+
+# nice -n 15 bash
+
+# nice -n 15 bash
+
+# ps -fp $(pgrep -u ubuntu bash)
+
+# renice -10 4145
+
+# renice 10 -u ubuntu
+
+
+### at
+
+# apt -y install at
+
+# date
+
+# at 14:59
+at> ls -l / > /work/result
+at> <EOT>
+
+# at -l
+
+# atq
+
+# cat result
+
+# at 15:30
+
+at> ls -l / > result
+at> <EOT>
+
+# atq
+
+# at 15:33
+
+at> ls -l / > result33
+at> <EOT>
+
+# atq
+
+# at -r 2
+
+# atq
+
+# atrm 3
+
+# atq
+
+# rm -rf result
+
+=========================
+
+/etc/at.allow
+
+/etc/at.deny
+
+# ls /etc/at.*
+/etc/at.deny
+
+# rm -rf /etc/at.deny
+
+
+### cron
+
+# cd /var/spool/
+
+# ls
+
+# cd -
+
+0 1 * * * /work/work.sh
+
+0 1 * */2 *  /work/work.sh
+
+*/30 * * * * /work/work.sh
+
+0,30 * * * *  /work/work.sh
+
+*/5 * * * * /work/work.sh
+
+30 1 * * 0 /work/work.sh
+
+
+# cd /work/allnew
+
+# mkdir shells
+
+# cd shells
+
+# vi work.sh
+#!/bin/bash
+
+ls -al / > /work/result
+
+# cat work.sh
+
+# chmod u+x work.sh
+
+# ll
+
+# ./work.sh
+
+# ls /work
+
+# cat /work/result
+
+# cd /work
+
+# rm -rf result
+
+# crontab -e
+
+2번 선택
+
+*/3 * * * * /work/allnew/shells/work.sh
+
+# select-editor
+
+2번 선택
+
+# ls
+
+# cat result
+
+# git add .
+
+# git commit -m "shells"
+
+# git push
+
+# cd /work/
+
+# crontab -r
+
+# crontab -l
+
+
+분-시-일-월-요일-명령
+
+0 * * * 0 find / -name "*d*" > result 2>&1 &
+
+0,30 * * * * find / -name "*d*" > result 2>&1 &
+
+*/30 * * * * find / -name "*d*" > result 2>&1 &
+
+*/30 * * * 0,3 find / -name "*d*" > result 2>&1 &
+
+0 0 1 * * find / -name "*d*" > result 2>&1
+
+0 0 1 */2 * find / -name "*d*" > result 2>&1
+
+*/5 * * * * find / -name "*d*" > result 2>&1 &
+
+
+# rm -rf /etc/cron.allow
+
+# rm -rf /etc/cron.deny
+
+
+### chapter9. 소프트웨어 관리하기
+
+# cd /etc/apt/
+
+# more sources.list
+
+# apt-cache stats
+
+# apt-cache show vsftpd
+
+# apt-cache search vsftpd
+
+# apt-cache search xterm
+
+# apt-cache showpkg vsftpd
+
+# apt-get check
+
+# apt-get clean
+
+# apt-get autoclean
+
+# apt -y install xterm
+
+# xterm &
+
+# apt -y remove xterm
+
+# apt-get update
+
+# apt-get upgrade
+
+# apt-get -y autoremove
+
+
+
+## ubuntu iso 넣고
+
+# cd /media/root/Ubuntu 22.04.2 LTS amd64/pool/main/n/ncurses
+
+# cp libtinfo6_6.3-2_i386.deb /tmp
+
+# cd /tmp
+
+# ls
+
+# dpkg -l
+
+# eject cdrom
+
+# apt-get download xterm
+
+## 사용자가 직접 주소검색하는 경우
+
+# wget http://kr.archive.ubuntu.com/ubuntu/pool/main/x/xterm/xterm_330-1ubuntu2_amd64.deb
+
+# dpkg -i xterm_330-1ubuntu2_amd64.deb
+
+# apt-get download libtinfo5
+
+# apt-get download libutempter0
+
+# dpkg -i libtinfo5_6.3-2_amd64.deb
+
+# dpkg -i libutempter0_1.2.1-2build2_amd64.deb
+
+# dpkg -i xterm_330-1ubuntu2_amd64.deb
+
+# dpkg -r xterm
+
+# dpkg -r libtinfo5
+
+# dpkg -r libutempter0
+
+# dpkg -i libtinfo5_6.3-2_amd64.deb
+
+# dpkg -P libtinfo5
+
+# dpkg -x libtinfo5_6.3-2_amd64.deb libtinfo5
+
+# ls
+
+# cd libtinfo5
+
+# ls
+
+
+
+
+

@@ -1,0 +1,226 @@
+Day02
+
+
+
+Virtualbox -> 네트워크 -> 네트워크 어댑터 사용하기 -> 다음에 연결됨 어댑터에 브리지로 변경
+
+
+## PowerShell에서..
+
+# ipconfig 
+
+## wsl에서 
+
+# ifconfig -a
+
+
+inet 172.20.10.4
+
+
+
+## Ubuntu에서.
+
+# ifconfig -a
+
+# apt -y install net-tools
+
+# ifconfig -a
+
+enp0s3 : inet 172.20.10.6
+
+
+### install openssh-server
+
+# apt -y install openssh-server
+
+# systemctl status ssh
+
+# ufw allow ssh
+
+# nano /etc/ssh/sshd_config
+33 PermitRootLogin yes
+
+^x -> x -> y
+
+# service ssh restart
+
+
+#### allnew repository..
+
+# nano ~/.bashrc
+
+    101 alias c='clear'
+    102 alias h='history'
+    103 alias df='df -h'
+    104 alias grep='grep --color=auto'
+    105 alias egrep='egrep --color=auto'
+    106 alias fgrep='fgrep --color=auto'
+    107 alias ls='ls -aCF --color=auto'
+    108 alias ll='ls -alF --color=auto'
+    109
+    110 export PS1='[\[\e[1;31m\]\u\[\e[m\]@\[\e[1;32m\]\h\[\e[m\] \[\e[1;36m\]\w\[\
+e[m\]]\$ '
+
+^x -> y -> enter
+
+# source ~/.bashrc
+
+# cp ~/.nanorc /etc/skel
+
+# cp ~/.exrc /etc/skel
+
+# cp ~/.bashrc /etc/skel
+
+# su - ubuntu
+
+$ cp /etc/skel/.nanorc .
+
+$ cp /etc/skel/.exrc .
+
+$ cp /etc/skel/.bashrc .
+
+$ source .bashrc
+
+$ exit
+
+#  apt -y install curl git docker gcc make ssh net-tools
+
+# ifconfig -a
+
+# shutdown -h now
+
+종료 후 파일 -> 가상 시스템 내보내기
+문서 -> ubuntu-0307.ova 파일을 안전한 곳에 보관
+
+
+## ssh ip가 변경된 후 접속이 안될 때…
+
+mac의 경우
+
+# rm -rf ~/.ssh/known_hosts
+
+windows의 경우
+
+# rm -rf .ssh/known_hosts
+
+
+### linux version explain 
+
+X -> major update
+X -> minor update, even : Stable, odd : test
+X -> release, patch
+x.x.x-u10
+x.x.x-p10
+x.x.x-fc23r10
+
+
+Linux vs Ms Windows Kernel
+——————————————————————
+모노리딕 커널 <> 마이크로 커널(Multi)
+정적 로딩 <> 동적 로딩
+정적 lib <> 동적 lib (DLL)
+
+압축된 형태로 저장, 메모리(RAM) 구동시 압축 해제
+시스템 자원 관리, 리소스 관리, 장치 관리, 프로세스 등
+
+# file vmlinuz-5.19.0-35-generic
+
+# ps -f
+
+# pwd
+
+# date
+
+# man date
+
+# apt -y install rdate
+
+# rdate -p time.bora.net
+
+# rdate -s time.bora.net
+
+# date
+
+
+# cd /dev
+
+# ll
+
+c : character device
+ 
+b : block device
+
+
+bit : 정보 표현 최소 단위, on/off, 1/0 
+
+nibble : 4bit.
+
+byte : 8 bit, 문자 표현 최소 단위, a,b,c…
+
+word : 4byte(32bit), 8byte(64bit), 데이터 전송 단위, 컴퓨터 내부
+
+
+# cd 
+
+# cd -
+
+bin : binary
+
+lib : library
+
+# head /etc/passwd : 사용자 정보를 담고 있는 파일…
+username:pw:uid:gid:comment:home:shell
+	⁃	: p : u : g : c : d : s
+-k : /etc/skel 이외의 디렉토리에서 사용자 초기화 파일을 가져오고 싶을 때
+-m  : make home directory…
+
+
+# tail /etc/passwd
+
+# nano /etc/passwd
+
+# cat /etc/passwd
+
+# head -5 /etc/shadow
+
+# tail -5 /etc/shadow
+
+
+M -> C
+
+C -> M
+
+## Linux 의 패스워드 보안 정책
+Unix의 패스워드 암호화  : MD5
+Linux : SHA512
+
+shadow 패스워드 정책….
+
+WEP
+WPA
+WPA/2
+
+# cd /
+
+# ls
+
+# cd /proc
+
+# ps -ef | more
+
+# ps -aux | more
+
+# cd /tmp
+
+
+
+
+
+
+
+
+
+
+
+
+

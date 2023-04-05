@@ -1,0 +1,212 @@
+Day01
+
+- ZOOM 회의 ID: 420 746 0104
+
+암호: 2075
+
+https://open.kakao.com/o/gYdVal8e
+
+
+<회원가입 리스트>
+
+- github
+: github desktop 프로그램 다운로드 후 설치
+
+- docker hub
+docker desktop 프로그램 다운로드 후 설치
+
+- postman
+: Postman 프로그램 다운로드 후 설치
+
+- oracle 
+: mysql workbench 다운로드 후 설치
+https://dev.mysql.com/downloads/workbench/
+
+- atom
+: atom editor 다운로드 후 설치
+https://sourceforge.net/projects/atom.mirror/
+
+### Virtualbox Ubuntu
+
+- Virtualbox 다운로드 후 설치
+: www.virtualbox.org 
+
+- ubuntu  iso 다운로드 
+: ubuntu.com
+
+Ubuntu Desktop  22.04 LTS 다운
+
+
+### WSL2 & docker 설치 및 설정
+
+https://www.44bits.io/ko/post/wsl2-install-and-basic-usage
+
+위 링크 참조…
+
+
+이름 : ubuntu
+
+ISO image 선택
+
+username and Password
+Useraname : ubuntu
+Password : 1234
+Repeat Password : 1234
+Hostname : ubuntu
+
+기본메모리 : 4096M
+Processors  : 2개
+
+Virtual Hard disk : 25 GB
+
+디스플레이 탭 클릭
+
+비디오 메모리 : 64MB
+
+
+
+~ 틸드 : 사용자의 홈 디렉토리
+`` 백틱  : echo `pwd`
+@ 엣
+# 
+$ 
+% 
+^  : Ctrl +d, ^d
+* : all
+: 
+;
+‘’ 
+“”
+< : less than, 입력 리다이렉션
+> : grater than : (출력) 리다이렉션
+>>
+| : pipe
+\
+/
+// -
+// _
+?
+[ ]
+{ }
+( )
+
+Ctrl+c : ^c, cancel
+Ctrl+d :  ^d, eod, logout
+Ctrl+z : suspend, ^z
+
+
+## 리눅스의 partitioning
+
+/boot : 500MB, 커널 이미지
+SWAP : RAM * 2, 2048
+/ : 나머지 영역
+————————————————
+/home : 사용자의 홈
+/usr : 실행파일, 라이브러리 등
+/var  : 로그, 메일, www 등
+
+### windows powershell에서
+
+> ubuntu config --default-user root
+
+
+### ubuntu…
+
+# sudo passwd root
+1234
+
+1234
+1234
+
+# su -
+1234
+
+# cat > .exrc
+set nu ai sm
+^d
+
+# cat .exrc
+
+
+## 장치 -> 게스트 확장 CD 이미지 삽입
+
+# cd /media/ubuntu/VB ~~~
+
+# ls
+
+# ./VBoxLinuxAdditions.run
+
+# mkdir /data
+
+# cd
+
+## 장치 -> 공유폴더 -> 공유폴더 설정
+- 다운로드 폴더를 선택하고 
+마운트 포인트 /data
+아래 자동 마운트, 항상 사용하기 선택.
+
+
+
+## 장치 -> 클립보드 공유 -> 양방향
+## 장치 -> 드래그앤드랍 -> 양방향
+
+# shutdown -r now
+
+ubuntu 계정으로 로그인 후
+
+$ su -
+1234
+
+# cd /data
+
+# ls
+
+# apt -y update; apt -y upgrade
+
+# eject cdrom
+
+# cat > .nanorc
+set linenumbers
+^d
+
+# cat .nanorc
+
+
+# nano test
+
+^x -> y -> enter
+
+# nano /etc/gdm3/custom.conf  
+18 [security]
+19 AllowRoot=true
+
+^X -> y -> Enter
+
+# nano /etc/pam.d/gdm-password
+ 3 #auth   required        pam_succeed_if.so user != root quiet_success
+
+^X -> y -> Enter
+
+# nano /etc/gdm3/greeter.dconf-defaults
+
+disable-user-list=true
+ 29번째 줄 찾아서 주석 제거후  
+^X -> y -> <enter> : 저장 후 종료
+
+# shutdown -r now
+
+root - 1234
+
+위처럼 입력해서 root로 로그인 합니다.
+
+
+
+
+
+
+
+
+
+
+
+

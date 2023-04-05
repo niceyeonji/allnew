@@ -1,0 +1,746 @@
+Day-22
+
+# cd /allnew/mongodb/
+
+# mkdir bios
+
+# cd bios
+
+# cp /data/bios_insertMany .
+
+# chmod -x bios_insertMany
+
+# ll
+
+# mongo < bios_insertMany
+
+
+# bios_find
+use test
+
+db.bios.find().pretty()
+
+
+# bios_count
+use test
+db.bios.findOne()
+db.bios.count()
+
+
+# bios_drop
+use test
+db.bios.drop()
+
+
+# cd ../
+
+# mkdir emp
+
+
+## emp_insert
+use test
+db.emp.drop()
+
+db.emp.insert({eno:7499,ename:"ALLEN", job:"Salesman", sal:1250, depno : 30})
+db.emp.insert({eno:7698,ename:"BLAKE", job:"Salesman", sal:2250, depno : 30})
+db.emp.insert({eno:7782,ename:"CLARK", job:"Salesman", sal:2350, depno : 30})
+db.emp.insert({eno:7934,ename:"DAVID", job:"Salesman", sal:2250, depno : 30})
+db.emp.insert({eno:7902,ename:"FORD", job:"Manager", sal:3500,comm:2000, depno : 20})
+db.emp.insert({eno:7900,ename:"JAMES", job:"Analyst", sal:3800,comm:2400, depno : 20})
+db.emp.insert({eno:7566,ename:"JONES", job:"Salesman", sal:1250, depno : 30})
+db.emp.insert({eno:7654,ename:"MARTIN", job:"Manager", sal:2280,comm:2400, depno : 30})
+db.emp.insert({eno:7839,ename:"PRESIDENT", job:"CEO", sal:5000,comm:4400, depno : 10})
+
+db.emp.find()
+
+
+ ## emp_update1
+use test
+
+db.emp.find({depno:30}, {_id:0, eno:1, ename:1, depno:1})
+
+db.emp.update(
+	{depno:{$eq:30}},
+	{$set: {depno:40}},
+	{multi:true}
+)
+
+db.emp.find({depno:40}, {_id:0, eno:1, ename:1, depno:1})
+
+
+ ## emp_update2
+use test
+
+db.emp.find({}, {_id:0, eno:1, ename:1, sal:1})
+
+db.emp.update(
+	{sal:{$lt:2500}},
+	{$inc: {sal:1000}},
+	{multi:true}
+)
+
+db.emp.find({}, {_id:0, eno:1, ename:1, sal:1})
+
+
+## emp_update3
+use test
+
+db.emp.find({}, {_id:0, eno:1, ename:1, sal:1})
+
+db.emp.update(
+	{sal:{$gte:3350}},
+	{$inc: {sal:1500}},
+	{multi:true}
+)
+
+db.emp.find({}, {_id:0, eno:1, ename:1, sal:1})
+
+> db.emp.getIndexes()
+
+> db.emp.createIndex({eno:1})
+
+> db.emp.getIndexes()
+
+> db.runCommand({dropIndexes:'emp', index:{eno:1}})
+
+> db.emp.getIndexes()
+
+> db.emp.reIndex()
+
+> db.emp.runCommand({reIndex:'emp'})
+
+
+> db.emp.createIndex({eno:1, depno:-1})
+
+> db.emp.getIndexes()
+
+> db.emp.dropIndex({eno:1, depno:-1})
+
+
+> db.emp.createIndex({eno:1},{unique : true})
+
+> db.emp.getIndexes()
+
+> db.emp.insert({eno:7839, ename:"admin"})
+
+> db.emp.dropIndex({eno:1})
+
+
+> db.emp.createIndex({eno:1}, {unique:true, dropDups : true})
+
+> db.emp.insert({eno:7839, ename:"admin"})
+
+> db.emp.dropIndex({eno:1})
+
+> db.emp.insert({eno:7839, ename:"admin"})
+
+> db.emp.find({eno:7839})
+
+> db.emp.remove({ename:"admin"})
+
+> db.emp.find({eno:7839})
+
+
+> db.emp.createIndex({comm:1},{sparse:true})
+
+> db.emp.getIndexes()
+
+> db.emp.find().sort({comm:-1})
+
+
+> db.primer.getIndexes()
+
+> db.primer.createIndex({cuisine:1})
+
+> db.primer.getIndexes()
+
+> db.primer.find().sort({cuisine:1}).pretty()
+
+> db.primer.dropIndex({cuisine:1})
+
+> db.primer.getIndexes()
+
+
+> db.emp.createIndex({job:1}, {background:true})
+
+> db.emp.getIndexes()
+
+
+## emp_find1
+use test
+db.emp.dropIndex({ename:1})
+db.emp.createIndex({ename:1})
+db.emp.find({}, {_id:0, eno:1, ename:1}).hint({ename:1}).min({ename:"ALLEN"}).max({ename:"FORD"})
+
+
+## emp_find2
+use test
+db.emp.count()
+
+db.emp.find({sal:{$gte:2500}}, {_id:0})
+db.emp.find({sal:{$gte:2500}}).count()
+
+
+## emp_find3
+use test
+db.emp.count()
+
+db.emp.find({sal:{$mod:[6,0]}}, {_id:0, eno:1, ename:1, sal:1})
+
+
+### MongoDB 인증 - Ubuntu
+
+# mongo
+
+> use admin
+
+> db.createUser({user:"root", pwd:"1234", roles:[{role:"userAdminAnyDatabase", db:"admin"}]})
+
+> db.getUsers()
+
+> db.getUser("root")
+
+> db.changeUserPassword("root", passwordPrompt())
+Enter password: abcd1234
+
+> db.changeUserPassword("root", "1234")
+
+
+# vi /etc/mongod.conf
+
+     24   bindIp: 0.0.0.0
+
+
+# vi /usr/lib/systemd/system/mongod.service
+
+     11 ExecStart=/usr/bin/mongod --auth --config /etc/mongod.conf
+
+# systemctl daemon-reload
+
+# systemctl restart mongod
+
+# mongo
+
+> show dbs;
+
+> exit
+
+
+# mongo -u root -p --authenticationDatabase admin
+MongoDB shell version v5.0.15
+Enter password:
+
+> show dbs;
+
+> show tables;
+
+> show collections;
+
+> exit
+
+
+# mongo
+
+> show dbs;
+
+> db.auth("root","1234")
+
+> use admin
+
+> db.auth("root","1234");
+
+> show dbs;
+
+> use test
+
+> show tables;
+
+> show collections;
+
+> exit
+
+
+# mongo -u root -p 1234 --authenticationDatabase admin
+
+> use admin
+
+> db.createUser({user:"admin", pwd:"1234", roles:[{role:"read", db:"test"}]})
+
+> exit
+
+
+# mongo -u admin -p --authenticationDatabase admin
+MongoDB shell version v5.0.15
+Enter password: 1234
+
+> show dbs;
+
+> db.test.insert({a:"test"})
+
+> exit
+
+
+# mongo -u root -p 1234 --authenticationDatabase admin
+
+> use admin
+
+> db.getUser("admin");
+
+> db.dropUser("admin")
+
+> db.getUsers();
+
+> db.createUser({user:"admin", pwd:"1234", roles:[{role:"readWrite", db:"test"}]})
+
+> db.getUsers();
+
+
+# mongo -u admin -p --authenticationDatabase admin
+MongoDB shell version v5.0.15
+Enter password: 1234
+
+> show dbs;
+
+> use test
+
+> db.test.insert({a:"test"})
+
+> db.test.find()
+
+> exit
+
+
+### MongoDB 인증 해제 - Ubuntu
+
+# mongo -u root -p --authenticationDatabase admin
+MongoDB shell version v5.0.15
+Enter password: 1234
+
+> use admin
+
+> db.getUsers()
+
+> db.dropUser(“admin”)
+
+> db.getUsers()
+
+> db.dropUser(“root”)
+
+> exit
+
+
+# vi /usr/lib/systemd/system/mongod.service
+
+     11 ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+
+# systemctl daemon-reload
+
+# systemctl restart mongod
+
+# netstat -ntlp
+
+# mongo
+
+> show dbs;
+
+> use admin
+
+> db.getUsers()
+
+
+> use test
+
+> db.test.insert({b:30})
+
+> db.test.find()
+
+> db.test.drop()
+
+> exit
+
+
+
+## capped collection Test
+
+> db.createCollection("s_emp", {capped:true, size:8192})
+
+> db.s_emp.validate()
+
+> db.s_emp.stats()
+
+> for(var n = 1; n <= 20000; n++) db.s_emp.insert({eno: n, m:"test"})
+
+> db.s_emp.count()
+
+> db.s_emp.drop()
+
+
+> db.createCollection("s_emp")
+
+> db.s_emp.stats()
+
+> for(var n = 1; n <= 20000; n++) db.s_emp.insert({eno: n, m:"test"})
+
+> db.s_emp.count()
+
+> db.s_emp.drop()
+
+
+> db.printCollectionStats()
+
+> db.stats()
+
+> db.serverStatus().mem
+
+> db.serverStatus().extra_info
+
+
+
+## GridFS
+
+# cd /allnew/mongodb/
+
+# mkdir gridfs
+
+# cd gridfs
+
+# cp /data/*.png .
+
+# chmod -x *.png
+
+# mongofiles -d data put logo1.png
+
+# mongo
+
+> show dbs;
+
+> use data
+
+> show tables;
+
+> db.fs.files.find()
+
+> exit
+
+# ls
+
+# mongofiles -d data put logo2.png
+
+# rm -rf *.png
+
+# mongofiles -d data search logo1.png
+
+# mongofiles -d data search logo2.png
+
+# mongofiles -d data get logo1.png
+
+# mongofiles -d data get logo2.png
+
+# mongofiles -d data list
+
+# mongofiles -d data delete logo1.png
+
+# mongofiles -d data delete logo2.png
+
+
+# cp /data/001.mp4 .
+
+# mongofiles -d data put 001.mp4
+
+# mongofiles -d data list
+
+# rm -rf 001.mp4
+
+# mongofiles -d data get 001.mp4
+
+
+
+## mongodb admin command
+
+# mongo
+
+> use admin
+
+> db.adminCommand({getLog:"global"})
+
+> db.adminCommand({setParameter:1, notablescan:true})
+
+> db.adminCommand({setParameter:1, notablescan:false})
+
+
+> db.adminCommand({fsync:1})
+
+> db.fsyncLock()
+
+> db.fsyncUnlock()
+
+> db.currentOp()
+
+> exit
+
+
+
+# mkdir -p /allnew/mongodb/ord
+
+# cd /allnew/mongodb/ord
+
+
+## ord_insert
+use test
+
+db.ord.drop()
+db.ord.insert({
+    ordid: "2023-03-03",
+    customer_name: "wonam",
+    emp_name: "magee",
+    total: "219500",
+    payment_type: "Credit",
+    order_filled: "y",
+    item_id: [{
+        item_id: "1",
+        product_name: "bunny",
+        item_price: "135",
+        qty: "500",
+        price: "67500"
+    }, {
+        item_id: "2",
+        product_name: "pro ski",
+        item_price: "380",
+        qty: "400",
+        price: "152000"
+    }]
+})
+
+db.ord.find().pretty()
+
+# mongo < ord_insert
+
+
+## ord_find
+use test
+
+db.ord.find()
+
+
+## ord_drop
+use test
+
+db.ord.drop()
+
+
+# mongo < ord_find
+
+# mongo < ord_drop
+
+# cp ord_insert ord_update
+
+
+## ord_update
+use test
+
+db.ord.drop()
+db.ord.insert({
+    ordid: "2023-03-03",
+    customer_name: "wonam",
+    emp_name: "magee",
+    total: "219500",
+    payment_type: "Credit",
+    order_filled: "y"
+})
+
+db.ord.update({ord_id : "2023-03-03"},
+{ $set : {
+        item_id: [{
+            item_id: "1",
+            product_name: "bunny",
+            item_price: "135",
+            qty: "500",
+            price: "67500"
+        }, {
+            item_id: "2",
+            product_name: "pro ski",
+            item_price: "380",
+            qty: "400",
+            price: "152000"
+        }] 
+    }
+})
+
+db.ord.find().pretty()
+
+
+# cd ..
+
+# mkdir reference
+
+
+## places_insert
+use test
+db.places.drop()
+db.people.drop()
+
+db.places.insert({
+    name : "Broadway Center",
+    url : "bc.example.net"
+})
+
+db.people.insert({
+    name : "Erin",
+    places_id : db.places.findOne({name : "Broadway Center"})._id,
+    url : "bc.example.net/Erin"
+})
+
+
+## places_find1
+var peopleDoc = db.people.findOne({ name: "Erin" });
+peopleDoc.url
+var placeID = peopleDoc.places_id;
+var placeDoc = db.places.findOne({ _id: placeID });
+placeDoc.url
+
+
+## places_find2
+use test
+db.places.findOne({_id: db.people.findOne({name:"Erin"}).places_id}).url
+
+
+## users_insert
+
+use test
+db.users.drop()
+db.notes.drop()
+
+db.users.insert({"_id" : "mike", "displayname" : "Mike D"})
+db.users.insert({"_id" : "kristina", "displayname" : "Kristina C"})
+db.users.find()
+
+db.notes.insert({"_id":5, "author":"mike", "text":"MongoDB is fun!"})
+db.notes.insert({"_id":20, "author":"kristina", "text":"... and DBRefs are esay. too", 
+    "reference" : [
+        {"$ref" : "users", "$id" : "mike"},
+        {"$ref" : "notes", "$id" : 5},
+    ]
+})
+
+db.notes.find()
+
+# mongo < users_insert
+
+## users_find
+var note = db.notes.findOne({ "_id": 20 })
+note
+
+note.reference.forEach(function (ref) {
+    printjson(db[ref.$ref].findOne({ "_id": ref.$id }))
+})
+note.reference
+
+note.reference.forEach(function (ref) {
+    print(ref.$ref)
+})
+
+note.reference.forEach(function (ref) {
+    print(ref.$id)
+})
+
+
+## ord_link_manual
+use test
+db.ord.drop()
+db.ord_detail.drop()
+
+db.ord.insert({
+    ord_id: "2023-03-03",
+    customer_name: "wonam",
+    emp_name: "magee",
+    total: "253000",
+    payment_type: "Credit",
+    order_filled: "y"
+})
+db.ord.find({ord_id:"2023-03-03"},{ord_id:1, _id:1})
+
+db.ord_detail.insert({
+    ord_id : "2023-03-03",
+    item_id: [{
+        item_id: "1",
+        product_name: "bunny",
+        item_price: "135",
+        qty: "500",
+        price: "67500"
+    }, {
+        item_id: "2",
+        product_name: "pro ski",
+        item_price: "380",
+        qty: "400",
+        price: "152000"
+    }],
+    ordid_id : db.ord.findOne({ord_id : "2023-03-03"})._id
+})
+
+db.ord_detail.find({ordid_id : db.ord.findOne({ord_id:"2023-03-03"})._id},{ordid_id:1, _id:0})
+db.ord.findOne({_id : db.ord_detail.findOne().ordid_id}).total
+
+
+
+
+
+
+### mongodb atlas api Test
+
+db.testdb.find()
+{ _id: ObjectId("642bdd2bf7b44893b2755ac0"),
+  id: '1',
+  name: 'Moon' }
+{ _id: ObjectId("642bdd55f7b44893b2755ac1"),
+  id: '2',
+  name: 'Kim' }
+{ _id: ObjectId("642bdd69f7b44893b2755ac2"),
+  id: '3',
+  name: 'Lee' }
+
+# mkdir /allnew/node/atlas
+
+# cd /allnew/node/altas
+
+## atlas.js
+var axios = require('axios');
+var data = JSON.stringify({
+    "collection": "testdb",
+    "database": "test",
+    "dataSource": "Cluster0",
+    "projection": {
+        "_id": 0,
+        "id" : 1,
+        "name" : 1
+    }
+});
+
+var config = {
+    method: 'post',
+    url: 'https://us-west-2.aws.data.mongodb-api.com/app/data-bydgv/endpoint/data/v1/action/findOne',
+    headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Request-Headers': '*',
+        'api-key': 'm7ThIAG1EPMwWTz3BJ047nFTQtoBwgVW8jlbiv9u9E9Df1vfgzI9sYUMGayOuOf7',
+    },
+    data: data
+};
+
+axios(config)
+    .then(function (response) {
+        console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+# npm init -y
+
+# npm install axios
+
+# node atlas.js 
+{"document":{"id":"1","name":"Moon"}}
+
+
+
+

@@ -1,0 +1,458 @@
+Day-10
+
+## chronyd 설정
+
+# systemctl enable chronyd
+
+# systemctl restart chronyd
+
+# systemctl status chronyd
+
+# chronyc tracking
+
+# timedatectl
+
+# vi /etc/chrony.conf
+     23 allow 192.168.0.0/16
+     24 allow 192.168.1.0/16
+
+     41 server 1.kr.pool.ntp.org
+     42 server 0.asia.pool.ntp.org
+     43 server 2.asia.pool.ntp.org
+
+# systemctl restart chronyd
+
+# systemctl status chronyd
+
+# yum -y install csh ksh
+
+
+## rpm 
+
+# mkdir /work
+
+# cd /work
+
+# wget https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/xterm-331-1.el8_3.2.x86_64.rpm
+
+# ls
+
+# wget https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/xterm-resize-331-1.el8_3.2.x86_64.rpm
+
+# ls
+
+# rpm -ivh xterm-resize-331-1.el8_3.2.x86_64.rpm 
+
+# rpm -ivh xterm-331-1.el8_3.2.x86_64.rpm 
+
+콘솔에서…..
+
+# xterm &
+
+# rpm -ivh xterm-331-1.el8_3.2.x86_64.rpm
+
+# rpm -qa | grep xterm
+
+# rpm -ivh --replacepkgs xterm-331-1.el8_3.2.x86_64.rpm
+
+# rpm -qf /usr/bin/ls
+
+# rpm -qf /usr/bin/xterm
+
+# rpm -qi coreutils
+
+# rpm -qif /usr/bin/ls
+
+# rpm -ql coreutils
+
+# rpm -ql xterm
+
+# rpm -qR xterm
+
+# rpm -e xterm
+
+# rpm -e xterm-resize
+
+# rpm -qa | grep xterm
+
+
+# yum list | grep xterm
+
+# yum list installed
+
+# yum list installed | grep xterm
+
+# yum list installed xterm
+
+# yum list updates
+
+# yum install -y xterm
+
+# yum list installed xterm
+
+# yum list installed | grep xterm
+
+# yum info xterm
+
+# yum remove -y xterm
+
+# rm -rf xterm-*
+
+# shutdown -h now
+
+——————————————————————————————
+## lvm of raid 구축
+
+저장소에서 2G HDD 4개 추가 - cent1, cent2, cent3, cent4
+M1 Macbook - Virio 인터페이스로 추가해주세요.(vdb, vdc, vdd, vde)
+
+# fdisk -l
+
+# fdisk /dev/sdb
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+t
+8e
+p
+w
+
+# fdisk /dev/sdc
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+t
+8e
+p
+w
+
+# fdisk /dev/sdd
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+t
+8e
+p
+w
+
+# fdisk /dev/sde
+
+n
+<enter>
+<enter>
+<enter>
+<enter>
+t
+8e
+p
+w
+
+# fdisk -l | grep sd
+
+# pvcreate /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+# pvscan
+
+# vgcreate vg /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+# vgchange -a y vg
+
+# vgdisplay -v vg
+
+# lvcreate -l 510 vg -n lvm1
+
+# lvcreate -l 510 vg -n lvm2
+
+# lvcreate -l 510 vg -n lvm3
+
+# lvcreate -l 510 vg -n lvm4
+
+# lvscan
+
+# mdadm -C -v /dev/md1 -l 1 -n 2 /dev/vg/lvm1 /dev/vg/lvm2
+
+# mdadm -C -v /dev/md2 -l 1 -n 2 /dev/vg/lvm3 /dev/vg/lvm4
+
+# mdadm -C -v /dev/md0 -l 0 -n 2 /dev/md1 /dev/md2
+
+# mkfs.xfs /dev/md0
+
+# blkid | grep md
+
+md0 => 9b4c2d31-ecbf-4fb1-a8e4-65cef9a89046
+
+# mkdir /allnew
+
+# vi /etc/fstab
+     15 UUID=9b4c2d31-ecbf-4fb1-a8e4-65cef9a89046 /allnew  xfs     defaults        0 2
+
+# shutdown -r now
+
+재부팅 되는 지 확인 후 ….
+
+다시 시스템 종료 하고 
+
+# cd /allnew
+
+# git clone http://github.com/impelfin/allnew .
+
+# git config —global user.name impelfin
+
+# git config —global user.name
+
+# git config —global user.email impelfin@gmail.com
+
+# git config —global user.email
+
+# git init
+
+# git fetch
+
+# shutdown -h now
+
+그 다음에 가상시스템 내보내기 (centos8-allnew.ova)해주세요..
+
+
+# cd /allnew/c/gcc
+
+# gcc -o endian endian.c
+
+# ./endian
+
+
+### source 설치 방법
+
+1. ./configure —prefix=/usr/local/apr-iconv —with-apr=/usr/local/apr
+2. make
+3. make install
+
+
+# cd ..
+
+# mkdir make
+
+# cd make
+
+## test1.c
+#include <stdio.h>
+#include "a.h"
+
+void func1();
+void func2();
+void main() {
+  printf("test1 \n");
+  func1();
+  func2();
+}
+
+## test2.c
+#include <stdio.h>
+#include "a.h"
+#include "b.h"
+
+extern void func1() {
+  printf("test2 \n");
+}
+
+## test3.c
+#include <stdio.h>
+#include "b.h"
+#include "c.h"
+
+extern void func2() {
+  printf("test3 \n");
+}
+
+
+## Makefile
+test : test1.o test2.o test3.o
+	gcc -o test test1.o test2.o test3.o
+test1.o : test1.c a.h
+	gcc -c test1.c
+test2.o : test2.c a.h b.h
+	gcc -c test2.c
+test3.o : test3.c b.h c.h
+	gcc -c test3.c
+clean :
+	rm -rf test test*.o
+
+# touch a.h b.h c.h
+
+# make
+
+# ls
+
+# ./test
+
+# make clean
+
+# ls
+
+
+## Makefile
+OBJF = test1.o test2.o test3.o
+test : $(OBJF)
+	gcc -o test $(OBJF)
+test1.o : test1.c a.h
+	gcc -c test1.c
+test2.o : test2.c a.h b.h
+	gcc -c test2.c
+test3.o : test3.c b.h c.h
+	gcc -c test3.c
+clean : $(OBJF)
+	rm -rf test $(OBJF)
+
+# make clean
+
+# make
+
+
+## Makefile
+      1 OBJF = test1.o test2.o test3.o
+      2 test : $(OBJF)
+      3         gcc -o $@ $^
+      4 test1.o : test1.c a.h
+      5         gcc -c $<
+      6 test2.o : test2.c a.h b.h
+      7         gcc -c $*.c
+      8 test3.o : test3.c b.h c.h
+      9         gcc -c $<
+     10 clean : test $(OBJF)
+     11         rm -rf $^
+
+# make clean
+
+# make
+
+
+## Makefile
+      1 OBJF = test1.o test2.o test3.o
+      2 test : $(OBJF)
+      3         gcc -o $@ $^
+      4 clean : test $(OBJF)
+      5         rm -rf $^
+
+# make clean
+
+# make
+
+
+## Makefile
+      1 OBJF = test1.o test2.o test3.o
+      2 test : $(OBJF)
+      3         gcc -o $@ $^
+      4 %.o : %.c
+      5         gcc -c $^
+      6 clean : test $(OBJF)
+      7         rm -rf $^
+ 
+# make clean
+
+# make
+
+
+## Makefile
+      1 OBJF = test1.o test2.o test3.o
+      2 test : $(OBJF)
+      3         gcc -o $@ $^
+      4 .c.o :
+      5         gcc -c $<
+      6 clean : test $(OBJF)
+      7         rm -rf $^
+ 
+# make clean
+
+# make
+
+
+# cd ..
+
+# mkdir meta
+
+# cp ../gcc/hello.c .
+
+# cp hello.c test.c
+
+# cp test.c file.c
+
+# cp file.c program.c
+
+# cp program.c data.c
+
+# ls
+
+# make `basename -s .c *`
+
+# ls
+
+
+## Makefile
+      1 SRCS = $(wildcard *.c)
+      2 PROGS = $(patsubst %.c,%,$(SRCS))
+      3
+      4 all : $(PROGS)
+      5 % : %.c
+      6         gcc -o $@ $^
+      7 clean : $(PROGS)
+      8         rm -rf $^
+
+# make clean
+
+# make
+
+
+### Java jdk install
+
+# yum list java*jdk-devel
+
+# yum -y install java-1.8.0-openjdk-devel.x86_64
+
+# javac -version
+
+# cd /allnew/
+
+# mkdir java
+
+# cd java
+
+## gugudan.java
+import java.util.*;
+
+public class gugudan {
+  public static void main (String[] args) {
+    Scanner s = new Scanner(System.in);
+    do {
+      System.out.print("Insert number(0:Exit) : ");
+      int i = s.nextInt();
+
+      if(i == 0) {
+        System.exit(1);
+      } else if (i>1 && i<10) {
+        for (int j=1; j<10; j++) {
+          System.out.println(i+" * "+j+" = "+i*j);
+        }
+      } else {
+        System.out.println("Insert Number 2~9. Retype again~!!");
+      }
+    } while(true);
+  }
+}
+
+# javac gugudan.java
+
+# java gugudan
+Insert number(0:Exit) : 2
+Insert number(0:Exit) : 9
+Insert number(0:Exit) : 11
+Insert number(0:Exit) : 0
+
+

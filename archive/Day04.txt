@@ -1,0 +1,690 @@
+Day-04
+
+# cat /etc/passwd > test1
+
+# cat ~/.exrc
+
+
+### github in ubuntu
+
+# cd /work
+
+# rm -rf *
+
+# git clone http://github.com/impelfin/allnew
+
+# cd allnew
+
+# ls
+
+# git config --global user.name 
+
+# git config --global user.name "impelfin"
+
+# git config --global user.name
+
+# git config --global user.email impelfin@gmail.com
+
+# git config --global user.email
+
+# cp myenv myconfig
+
+# git init
+
+# git add .
+
+# git commit -m "myconfig"
+
+# git remote add origin https://github.com/impelfin/allnew
+
+# git push
+Username : impelfin
+Password : 
+
+————————————————
+
+# git fetch
+
+# git pull
+
+<작업 후>
+
+# git add .
+
+# git commit -m "myconfig"
+
+# git push
+
+————————————————
+
+
+# ll
+
+# id
+
+# groups
+
+
+
+## file 실행권한
+- r w x  r w x r w x
+   user   group other 
+   u           g          o
+        = a(ll)
+r : read
+w : write
+x : excute
+
+# mkdir temp
+
+# mv my* temp
+
+# ll
+
+# chmod u+x myconfig
+
+# ll
+
+# chmod go+x myconfig
+
+# ll
+
+# chmod ugo-x myconfig
+
+# ll
+
+# chmod a+x myenv
+
+# ll
+
+# chmod ug+x,go-r myconfig
+
+# ll
+
+# chmod ug=rw myconfig
+
+# ll
+
+# chmod a=rw myenv
+
+# ll
+
+# cd ..
+
+# chmod -R a=r temp
+
+# ll temp
+
+r   w  x 
+4  2  1
+7
+
+# chmod -R 644 temp
+
+# ll temp
+
+# chmod -R 755 temp
+
+# ll temp
+
+# rm -rf temp
+
+# mkdir dir1
+
+# ll
+
+# touch test1
+
+# ll
+
+# umask
+0022
+
+ 777
+ 022
+———
+ 755 => directory
+ 111
+=====
+644 => file
+
+# umask 077
+
+# umask
+
+# mkdir dir2
+
+# touch test2
+
+# ll
+
+# umask 022
+
+# umask
+
+
+### 특수 접근 권한
+
+4000 : setuid
+: 파일을 실행하는 동안 잠시 소유자의 권한을 가짐..
+
+2000 : setgid
+: 파일을 실행하는 동안 잠시 소유자 그룹의 권한을 가짐..
+
+1000 : sticky bit
+: Public directory, 수정, 삭제는 본인만, 읽기는 누구나.
+Web hard, anonymous ftp
+
+# ll /usr/bin/passwd
+
+# ll /usr/bin/write.ul
+
+# ls -ld /tmp
+
+# find . -name "t*" -print
+
+# find / -name "*.c" > c_files
+
+# wc -l c_files
+
+# find / -type d > dir_result
+
+# wc -l dir_result
+
+# rm -rf c_files dir* test*
+
+# cd
+
+# find / -perm 4755 > setuid_files
+
+# wc -l setuid_files
+37 
+
+# find / -perm 2755 > setgid_files
+
+# wc -l setgid_files
+2 4
+
+# find / -perm 1777 > stickybit_files
+
+# wc -l stickybit_files
+37
+
+
+# ssh ubuntu@192.168.1.12
+
+$ touch a.mp3 b.mp3 c.mp3 d.mp3 e.mp3
+
+$ touch 1.mpg 2.mpg 3.mpg 4.mpg 5.mpg
+
+
+# find /home -name "*.mp3"
+
+# find /home -name "*.mpg"
+
+# find /home -name "*.mp3" -exec mv {} . \;
+
+# ls
+
+# rm -rf *.mp3
+
+# ls
+ 
+# find /home -name "*.mpg" -ok rm {} \;
+< rm ... /home/ubuntu/1.mpg > ? y
+< rm ... /home/ubuntu/4.mpg > ? y
+< rm ... /home/ubuntu/3.mpg > ? y
+< rm ... /home/ubuntu/5.mpg > ? y
+< rm ... /home/ubuntu/2.mpg > ? y
+
+# find /home -name "*.mp3" -exec rm {} \;
+
+# find /home -name "*.mpg" -exec rm {} \
+
+# cd /work
+
+# cat /etc/passwd > passwd
+
+# ls
+
+# vi passwd
+
+ggVGU : 전체 대문자 변경
+
+ggVGu : 전체 대문자 변경
+
+
+### Chapter4. shell
+
+# more /etc/shells
+
+# apt -y install csh
+
+# more /etc/shells
+
+# apt -y install ksh
+
+# more /etc/shells
+
+# csh => .cshrc
+
+# ksh => .kshrc
+
+# exit
+
+# exit
+
+
+
+ISO
+
+IEEE 802.11 => WIFI
+
+IETF   => TCP, UDP, IP 
+
+POSIX
+
+ANSI => C
+
+W3C => HTML5
+
+
+
+### /etc/passwd file의 구조
+username:pw:uid:gid:comment:home-directory:shell
+ : p : u : g : c : d : s
+-k : /etc/skel이외의 곳에서 환경 설정 파일 복사
+-m : make 
+
+
+# tail /etc/group
+
+# groupadd -g 1001 user1
+
+# grep user /etc/group
+
+# tail /etc/passwd
+
+# useradd -u 1001 -g 1001 -c "User1" -d /home/user1 -s /bin/bash -k /home/ubuntu -m user1
+
+# !tail
+
+# ls /home
+
+# passwd user1
+새 암호: 1234
+잘못된 비밀번호: 암호는 8 개의 문자 보다 짧습니다
+새 암호 재입력: 1234
+passwd: 암호를 성공적으로 업데이트했습니다
+
+
+## 콘솔에서….
+
+# login
+
+ubuntu 로그인: user1
+암호: 1234
+
+$ exit
+
+
+# userdel -r user1
+
+ # ls /home
+
+# groupdel user1
+
+# tail /etc/group
+
+# tail /etc/passd
+
+# su - ubuntu
+
+$ chsh -s /bin/sh
+암호:
+
+$ grep ubuntu /etc/passwd
+
+$ exit
+
+# chsh -s /bin/bash ubuntu
+
+# grep ubuntu /etc/passwd
+
+# ps -f 
+
+# ksh
+
+# csh
+
+# ps -f
+
+# exit
+
+# ^d
+
+# ps -f
+
+# ^d
+
+# echo $PATH
+
+# echo hello
+
+# echo -n hello
+
+# printf test
+
+# printf "Hello World \n"
+
+# printf "Hello \t World \n"
+
+# printf "%d + %d = %d \n" 10 10 20
+
+# printf "%s \n" "Hello World"
+
+# mkdir temp
+
+# cp passwd test1
+
+# cp passwd test12
+
+# cp passwd test123
+
+# ls test*
+
+# ls test?
+
+# ls test??
+
+# ls test???
+
+# ls test1*
+
+# cp test1 test11
+
+# ls test1[1-2]
+
+# echo $SHELL
+
+# echo "$SHELL"
+
+# echo '$SHELL'
+
+# echo \$SHELL
+
+# echo '`pwd`'
+
+# echo "'today is' `date`"
+
+# echo '"today is" `date`'
+
+# ls -l /dev | more
+
+
+# cat > test1
+hello
+^d
+
+# cat test1
+
+# cat > test1
+goodbye
+^d
+
+# cat test1
+
+# set -o noclobber
+
+# cat test1
+
+# cat > test1
+-bash: test1: 이미 있는 파일을 덮어쓸 수 없음
+
+# set +o noclobber
+# cat > test1
+hello
+^d
+
+# rm -rf ~/error
+
+# ls abc
+
+# ls abc > error
+
+# cat error
+
+# ls abc 2> error
+
+# cat error
+
+# ls abc 2> /dev/null
+
+# cat error
+
+# cat /dev/null > error
+
+# cat error
+
+# find / -name "*.c" > result 2> error
+
+# ls . abc > ls.out 2> ls.err
+
+# cat ls.out
+
+# cat ls.err
+
+# ls . abc > ls.out 2>&1
+
+# cat ls.out
+
+
+## vi /work/allnew/c/age.c
+
+#include <stdio.h>
+
+int main() {
+  int i;
+  printf("Input your age : ");
+  scanf("%d", &i);
+  printf("Your age is %d \n", i);
+
+  return 0;
+}
+
+# cd allnew/c
+
+# gcc -o age age.c
+
+# ./age
+
+# cd ../..
+
+# rm -rf error ls* p* t* r*
+
+
+### 쉘 변수 vs 환경변수
+현재 쉘 <> 로그인쉘 & 서브쉘
+set       <>       env
+지역변수       <>       전역변수
+변수명=값       <>       export 변수명
+unset 변수명        <>       export -n 변수명
+
+
+# SOME=test
+
+# echo $SOME
+
+# set | grep SOME
+
+# env | grep SOME
+
+# export SOME
+
+# env | grep SOME
+
+# echo $SOME
+
+# csh
+
+# echo $SOME
+
+# exit
+
+# set | grep SOME
+
+# env | grep SOME
+
+# export -n SOME
+
+# set | grep SOME
+
+# env | grep SOME
+
+# csh
+
+# echo $SOME
+
+# exit
+
+# unset SOME
+
+# set | grep SOME
+
+# export SOME=test
+
+# set | grep SOME
+
+# env | grep SOME
+
+# unset SOME
+
+# env | grep SOME
+
+# set | grep SOME
+
+
+# csh
+
+# alias
+
+# alias c 'clear'
+
+# alias
+
+# c
+
+# unalias
+
+# alias
+
+# cat > ~/.cshrc
+alias c 'clear'
+alias h 'history'
+alias df 'df -h'
+^d
+
+# cat ~/.cshrc
+
+# c
+
+# source ~/.cshrc
+
+# exit
+
+# csh
+
+# c
+
+# cat > ~/.login
+banner hello
+^d
+
+# exit
+
+# apt -y install sysvbanner
+
+# csh
+
+# source .login
+
+
+# chsh -s /bin/csh ubuntu
+
+# cp ~/.cshrc /etc/skel
+
+# cp ~/.logn /etc/skel
+
+# su - ubuntu
+
+% cp /etc/skel/.cshrc .
+
+% cp /etc/skel/.login .
+
+% exit
+
+## 콘솔에서….
+
+# login
+ubuntu 로그인: ubuntu
+암호: 1234
+
+banner 뜨는지 확인
+
+# su - ubuntu
+
+% exit
+
+# chsh -s /bin/bash ubuntu
+
+
+# alias test='clear;date'
+
+# alias
+
+# test
+
+# alias
+
+# unalias test
+
+# alias
+
+# h
+
+# !!
+
+# !a
+
+# !c
+
+# !1020
+
+# export PS1='\d \T \W \$ '
+
+# export PS1='\d \T \w \$ '
+
+# source ~/.bashrc
+
+# export PS1='[\u@\h \w]\$ '
+
+# export PS1='\e[34mLinux \$ '
+
+# !source
+
+
+# more /etc/profile
+
+# more /etc/bash.bashrc
+
+# cd /etc/profile.d/
+
+# ls
+
+# source ~/.bashrc
+
+# . ~/.bashrc
+
+
+
+
