@@ -1,0 +1,4 @@
+sh.addShard("ShardReplSet/192.168.1.51:27021")
+sh.addShard("ShardReplSet/192.168.1.51:27022")
+
+exit
