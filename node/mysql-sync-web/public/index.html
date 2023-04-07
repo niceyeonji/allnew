@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>sync-mysql Example</title>
+</head>
+<body>
+  <h1>sync-mysql Example</h1>
+  <form method="post" action='/api/users/userBody' name='userForm' target='targetURL'>
+      <input type="button" value="GET /Hello" onclick='document.targetURL.location.href="/Hello"'><p>
+      <input type="button" value="Select st_info" onclick='document.targetURL.location.href="/select"'><p>
+      ST_ID <input type="text" name="id" size='10'>
+      <input type="button" value="Insert st_info" onclick='document.targetURL.location.href="/insert?ST_ID="+document.userForm.id.value+"&NAME="+document.userForm.name.value+"&DEPT="+document.userForm.dept.value'><br>
+      NAME <input type="text" name="name" size='10'>
+      <input type="button" value="Update st_info" onclick='document.targetURL.location.href="/update?ST_ID="+document.userForm.id.value+"&NAME="+document.userForm.name.value+"&DEPT="+document.userForm.dept.value'><br>
+      DEPT <input type="text" name="dept" size='10'>
+      <input type="button" value="Delete st_info" onclick='document.targetURL.location.href="/delete?ST_ID="+document.userForm.id.value'><br>
+---------------------------------------------------------<br>
+<iframe name="targetURL" class="iframe-preview center" width="90%" height="500" style="border:none;" src="http://13.209.234.117:3000/select">
+</iframe>
+</body>
+</html>
