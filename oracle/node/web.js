@@ -18,6 +18,87 @@ app.get('/', (req, res) => {
     res.send('Web Server started~!!')
 })
 
+app.get('/dbTestSelect', function (req, res) {
+    oracledb.getConnection({
+        user:dbConfig.user,
+        password: dbConfig.password,
+        connectString:dbConfig.connectString
+    },
+    function(err, connection) {
+        if (err) {
+            console.error(err.message);
+            return;
+        }
+        let query = 'select * from usertbl';
+
+        connection.execute(query, [], function(err,result) {
+            if (err) {
+                console.error(err.message);
+                doRelease(connection);
+                return;
+            }
+            console.log(result.rows);
+            doRelease(connection, result.rows);
+        });
+    });
+
+    function doRelease(connection, rowList) {
+        connection.release(function (err) {
+            if (err) {
+                console.error(err.message);
+            }
+            console.log('list size : ' + rowList.length);
+            res.send(rowList);
+        })
+    }
+})
+
+app.post('/dbTestInsert', function (req, res) {
+    oracledb.getConnection({
+        user:dbConfig.user,
+        password: dbConfig.password,
+        connectString:dbConfig.connectString
+    },
+    function(err, connection) {
+        if (err) {
+            console.error(err.message);
+            return;
+        }
+        let query = 'insert into usertbl(userid , username, birthyear, addr, mobile1, mobile2, height, mdate) ' +
+        'values(:userid , :username, :birthyear, :addr, :mobile1, :mobile2, :height, :mdate)';
+
+        let binddata = [
+            req.body.userid,
+            req.body.username,
+            Number(req.body.birthyear),
+            req.body.addr,
+            req.body.mobile1,
+            req.body.mobile2,
+            Number(req.body.height),
+            req.body.mdate
+        ];
+
+        connection.execute(query, binddata, function(err,result) {
+            if (err) {
+                console.error(err.message);
+                doRelease(connection);
+                return;
+            }
+            console.log('Row Insert : ' + result.rowsAffected);
+            doRelease(connection, result.rowsAffected);
+        });
+    });
+
+    function doRelease(connection, result) {
+        connection.release(function (err) {
+            if (err) {
+                console.error(err.message);
+            }
+            res.send(result);
+        })
+    }
+})
+
 app.all('*', function (req, res) {
     res.status(404).send('<h1>ERROR - Page is not found.</h1>');
 });
