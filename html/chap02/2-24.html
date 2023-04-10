@@ -2,72 +2,35 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>왼쪽 프레임</title>
+    <title>iframe 활용</title>
   </head>
   <body>
-    <iframe
-      src="http://www.daum.net"
-      width="20%"
-      height="680"
-      frameborder="1"
-      name="left"
-      srcdoc="<html>
-            <head></head>
-            <body>
-               <h3>왼쪽 프레임</h3>
-    <h4>화면의 20%만 차지해요..</h4>                                                    
-            </body></html>"
-    ></iframe>
-
-    <iframe
-      src="http://www.daum.net"
-      width="50%"
-      height="680"
-      frameborder="1"
-      srcdoc='<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>오른쪽 프레임</title>
-  </head>
-  <body>
-    <h3>오른쪽 프레임</h3>
-    <h4>화면의 50%만 차지해요..</h4>
-    <ul>
-      <li>
-        <a href="http://www.etnews.com" target="_self">전자신문 - _self</a>
-      </li>
-      <li><a href="http://www.w3c.org" target="left">W3C - 왼쪽 프레임</a></li>
-      <li>
-        <a href="http://www.etnews.com" target="upper"
-          >전자신문 - 상위 프레임</a
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>srcdoc 속성 활용</title>
+      </head>
+      <body>
+        <h3>2 개의 &lt;iframe&gt;을 가집니다.</h3>
+        <hr />
+        <iframe
+          name="left"
+          src="left.html"
+          width="20%"
+          height="900"
+          scrolling="no"
         >
-      </li>
-      <li><a href="http://www.w3c.org" target="lower">W3C - 아래 프레임</a></li>
-      <li><a href="http://www.daum.net" target="_top">DAUM - top</a></li>
-      <li>
-        <a href="http://www.w3c.org" target="_blank">새 창에 W3C - _blank</a>
-      </li>
-    </ul>
-    <iframe
-      name="upper"
-      src="http://www.daum.net"
-      width="100%"
-      height="300"
-      scrolling="no"
-    >
-    </iframe>
-    <iframe
-      name="lower"
-      src="http://google.org"
-      width="100%"
-      height="300"
-      scrolling="no"
-    ></iframe>
-    </body>
+        </iframe>
+        <iframe
+          name="right"
+          src="right.html"
+          width="50%"
+          height="900"
+          scrolling="no"
+        >
+        </iframe>
+      </body>
     </html>
-    </iframe>
-  </body>
-</html>'
-    ></iframe>
   </body>
 </html>
