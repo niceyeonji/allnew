@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>상품 테이블</title>
+    <style>
+      body {
+        text-align: center;
+      }
+      button {
+        background-color: rgb(248, 250, 245);
+      }
+      input[value='get select'] {
+        background-color: rgb(248, 250, 245);
+      }
+      input[value='get selectQuery'] {
+        background-color: rgb(248, 250, 245);
+      }
+      input[value='post insert'] {
+        background-color: rgb(248, 250, 245);
+      }
+      input[type='button'],
+      input[type='submit'],
+      button {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>상품 테이블</h2>
+    <hr />
+    <form action="/insert" target="targetURL" name="productForm" method="post">
+      <p>
+        <b
+          ><span style="background-color: rgb(233, 161, 215)">상품번호 : </span>
+          <input type="text" size="20" name="id" />
+        </b>
+      </p>
+      <p>
+        <b
+          ><span style="background-color: rgb(233, 161, 215)">상품이름 : </span
+          ><input type="text" size="20" name="name" />
+        </b>
+      </p>
+      <p>
+        <b
+          ><span style="background-color: rgb(233, 161, 215)">상품가격 : </span
+          ><input type="number" size="20" name="price" />
+        </b>
+      </p>
+      <p>
+        <b
+          ><span style="background-color: rgb(233, 161, 215)">아티스트 : </span
+          ><input type="text" size="20" name="arti" />
+        </b>
+      </p>
+      <input
+        type="button"
+        value="get select"
+        onclick='document.targetURL.location.href="/select"'
+      />
+      <input
+        type="button"
+        value="get selectQuery"
+        onclick='document.targetURL.location.href="/selectQuery?prodId="+document.productForm.id.value'
+      />
+      <input type="submit" value="post insert" />
+      <button type="submit" formaction="/update">post update</button>
+      <button type="submit" formaction="/delete">post delete</button>
+    </form>
+    <hr />
+    <div style="background-color: rgb(106, 224, 102); font-weight: 600">
+      상품번호 , 상품이름 , 상품가격 , 아티스트
+    </div>
+    <iframe
+      name="targetURL"
+      width="70%"
+      height="500"
+      style="border: none"
+      src="/hello"
+    ></iframe>
+  </body>
+</html>
