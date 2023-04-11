@@ -1,0 +1,1130 @@
+Day-26
+
+# mkdir -p /allnew/html
+
+# cd /var/www
+
+# mv html html_org
+
+# ln -s /allnew/html ./html
+
+# cd /allnew/html
+
+# cp /var/www/html_org/index.html .
+
+# netstat -ntlp
+
+# mkdir chap01
+
+
+## 1-1.html
+<title>웹 페이지의 구성 요소</title>
+</head>
+<body>
+<h3>Elvis Presley</h3>
+<hr>
+He was an American singer and actor. In November
+1956, he made his film debut in <span>Love Me
+Tender</span>. He is often referred to as
+"<span>the King of Rock and Roll</span>".
+</body>
+</html>
+
+
+http://192.168.1.12/chap01/1-1.html
+
+
+## 1-2.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>웹 페이지의 구성 요소</title>
+<style>
+body { background-color : linen; color : green;
+margin-left : 40px; margin-right : 40px;}
+h3 { text-align : center; color : darkred;}
+hr { height : 5px; border : solid grey;
+background-color : grey }
+span { color: blue; font-size: 20px; }
+</style>
+</head>
+<body>
+<h3>Elvis Presley</h3>
+<hr>
+He was an American singer and actor. In November
+1956, he made his film debut in <span>Love Me
+Tender</span>. He is often referred to as
+"<span>the King of Rock and Roll</span>".
+</body>
+</html>
+
+
+http://192.168.1.12/chap01/1-2.html
+
+
+## 1-3.html
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8">
+<title>웹 페이지의 구성 요소</title>
+<style>
+body { background-color : linen; color : green;
+margin-left : 40px; margin-right : 40px;}
+h3 { text-align : center; color : darkred;}
+hr { height : 5px; border : solid grey;
+background-color : grey }
+span { color: blue; font-size: 20px; }
+</style>
+<script>
+function show() { // <img>에 이미지 달기
+document.getElementById("fig").src = "ElvisPresley.png"
+}
+function hide() { // <img>에 이미지 제거
+document.getElementById("fig").src= "";
+}
+</script>
+</head>
+<body>
+<h3 onmouseover="show()" onmouseout="hide()">
+Elvis Presley</h3>
+<hr>
+<div><img id="fig" src=""></div>
+He was an American singer and actor. In November
+1956, he made his film debut in <span>Love Me
+Tender</span>. He is often referred to as
+"<span>the King of Rock and Roll</span>".
+</body>
+</html>
+
+# cd chap01/
+
+# cp /data/ElvisPresley.png .
+
+# chmod 644 *.png
+
+
+# cd ..
+
+# mkdir chap02
+
+# cd chap02
+
+## default.html
+<!DOCTYPE html>
+<!-- 이 부분은 주석문 입니다. -->
+<html>
+<head>
+    <title>
+
+    </title>
+</head>
+<body>
+    
+</body>
+</html>
+
+# cp default.html 2-1.html
+
+## 2-1.html
+
+<!DOCTYPE html>
+<!-- 이 부분은 주석문 입니다. -->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>첫 타이틀</title>
+</head>
+<body>
+    <h1>홈페이지 만들기</h1>
+    <h2>HTML 언어</h2>
+    <h3>www</h3>
+    <h4>internet</h4>
+    <h5>network</h5>
+    <h6>http protocol</h6>
+</body>
+</html>
+
+
+## 2-8.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>개발자의 포맷 그대로 출력</title></head>
+<body>
+<h3>개발자의 포맷 그대로 출력하기</h3>
+<hr>
+<p>
+&lt;p&gt; 태그를 사용하면
+여러 개의 빈 칸은 하나로,
+여러 줄은 한 줄에 붙여 출력됩니다.</p>
+<hr>
+<pre>
+그러나 &lt;pre&gt; 태그를 사용하면
+        사용자가 입력한
+                그대로 출력됩니다.
+</pre>
+</body>
+</html>
+
+
+## 2-9.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>텍스트 꾸미기</title></head>
+<body>
+<h3> 텍스트 꾸미기</h3>
+<hr>
+<p>
+<b>진하게</b><br>
+<strong>중요한</strong><br>
+<em>강조</em><br>
+<i>이탤릭으로 강조</i><br>
+<b><i>진하게 이탤릭으로 강조</i></b><br>
+보통 문자 <small>한 단계 작은 문자</small><br>
+<del>삭제</del><br>
+<ins>추가</ins><br>
+보통문자의 <sup>윗첨자</sup><br>
+보통문자의 <sub>아래첨자</sub><br>
+<mark>하이라이팅</mark><br>
+</p>
+</body>
+</html>
+
+
+## 2-10.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>&lt;div&gt;블록과 &lt;span&gt;인라인 </title>
+</head>
+<body>
+<h3>사랑</h3>
+<hr>
+<div style="background-color:skyblue; padding:20px;">
+내가 사람의 방언과 천사의 말을 할지라도
+<span style="color:red">사랑</span>이 없으면
+소리 나는 구리와 울리는 꽹과리가 되고,
+<span style="color:red">사랑</span>이 없으면 아무
+것도 아니라.
+</div>
+<p>
+~우리 서로 사랑하며 살아요~
+</p>
+</body>
+</html>
+
+# cp default.html 2-11.html
+
+
+## 2-11.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        교과목 리스트
+    </title>
+</head>
+<body>
+<a href="http://192.168.1.12/chap02/score/math.html">수학</a><br>
+<a href="http://192.168.1.12/chap02/score/science.html">과학</a><br>
+</body>
+</html>
+
+# cp default.html score/math.html
+
+# cp default.html score/science.html
+
+
+## score/math.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        수학과목
+    </title>
+</head>
+<body>
+<h1>수학 과목 페이지입니다.</h1>
+</body>
+</html>
+
+
+## score/science.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        과학과목
+    </title>
+</head>
+<body>
+<h1>과학 과목 페이지입니다.</h1>
+</body>
+</html>
+
+
+## 2-12.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <base href="http://192.168.1.12/chap02/score/">
+    <title>
+        교과목 리스트
+    </title>
+</head>
+<body>
+<a href="math.html">수학</a><br>
+<a href="science.html">과학</a><br>
+</body>
+</html>
+
+
+## host computer..
+
+# scp media.zip root@ubuntu:/allnew/html/chap02
+
+## ubuntu….
+
+# unzip media.zip
+
+# rm -rf media.zip
+
+
+## 2-13.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>이미지 삽입</title></head>
+<body>
+<h3>이미지 삽입</h3>
+<hr>
+<p> 엘비스 프레슬리의 사진입니다.</p>
+<img src="media/Elvis1.jpg" width="150" height="200"
+alt="Elvis">
+<img src="media/kitae.jpg" width="80" height="100"
+alt="황기태사진없음">
+<img src="http://t1.kakaocdn.net/kakaocorp/kakaocorp/admin
+/service/453a624d017900001.png"
+alt="사진 주소 변경됨" width="100" height="100">
+</body>
+</html>
+
+
+## 2-14.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>라면을 끓이는 순서</title>
+</head>
+<body>
+<h3>라면을 끓이는 순서</h3>
+<hr>
+<ol type="I" >
+<li>물을 끓인다.</li>
+<li>라면과 스프를 넣는다.</li>
+<li>파를 썰어 넣는다.</li>
+<li>5분 후 먹는다.</li>
+</ol>
+</body>
+</html>
+
+
+## 2-15.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>중첩 리스트 만들기</title></head>
+<body>
+<h3>내가 사는 이유</h3>
+<hr>
+<ul>
+    <li>내가 좋아하는 음식 많아요
+        <ul>
+        <li>감자탕
+        <li>스파게티
+        <li>올레국수
+    </ul>
+    <li>라면 먹기 좋아해요
+        <ol type="1" >
+            <li>물을 끓인다.
+            <li>라면과 스프를 넣는다.
+            <li>파를 썰어 넣는다.
+            <li>한 입에 다 먹는다.
+        </ol>
+    <li>여름에는 바다로
+    <li>가을에는 산으로
+</ul>
+</body>
+</html>
+
+
+## table.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        테이블 예제
+    </title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th><th>HTML</th><th>CSS</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>합계</th><th>240</th><th>250</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr>
+                <td>문준현</td><td>100</td><td>100</td>
+            </tr>
+            <tr>
+                <td>홍길동</td><td>60</td><td>60</td>
+            </tr>
+            <tr>
+                <td>황기태</td><td>80</td><td>90</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+
+## 2-17.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>표에 이미지 삽입</title></head>
+<body>
+<h3>표에 이미지 삽입</h3>
+<hr>
+<table>
+<caption>좋아하는 과일</caption>
+    <tbody>
+        <tr>
+        <td><img src="media/apple.png" width="120" height="110"></td>
+        <td><img src="media/banana.png" width="120" height="110"></td>
+        <td><img src="media/mango.png" width="120" height="110"></td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+
+## 2-18.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>표에 이미지 삽입</title></head>
+<body>
+<h3>표에 이미지 삽입</h3>
+<hr>
+<table>
+<caption>좋아하는 과일</caption>
+    <tbody>
+        <tr>
+        <td>
+            <a href="media/apple.png"><img src="media/apple.png" width="120" height="110"></a>
+        </td>
+        <td>
+            <a href="media/banana.png"><img src="media/banana.png" width="120" height="110"></a>
+        </td>
+        <td>
+            <a href="media/mango.png"><img src="media/mango.png" width="120" height="110"></a>
+        </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+
+## 2-19.html
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8">
+<title>링크 만들기</title></head>
+<body>
+<h3>링크 만들기</h3>
+<hr>
+포털 사이트
+<ul>
+<li><a href="http://www.naver.com">네이버</a></li>
+<li><a href="http://www.daum.net">다음</a></li>
+</ul>
+신문 사이트
+<ul>
+<li><a href="http://www.etnews.com">
+<img src="media/iconetnews.png" alt="전자신문">
+</a>
+</li>
+</ul>
+<hr>
+<a href="2-17.html">예제 2-17로 이동</a>
+</body>
+</html>
+
+
+## 2-20.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>링크의 target 속성 활용</title>
+  </head>
+  <body>
+    <h3>링크의 target 속성 활용</h3>
+    <hr />
+    <ul>
+      <li>
+        <a href="http://www.w3.org" target="_blank">W3C(새 윈도우, _blank)</a>
+      </li>
+      <li>
+        <a href="http://www.etnews.com" target="_self"
+          >전자신문(현재 윈도우, _self)</a
+        >
+      </li>
+      <li>
+        <a href="http://www.naver.com" target="_parent"
+          >네이버(부모 윈도우, _parent)</a
+        >
+      </li>
+      <li>
+        <a href="http://www.mk.co.kr" target="_top"
+          >매일경제신문(브라우저 윈도우, _top)</a
+        >
+      </li>
+    </ul>
+  </body>
+</html>
+
+
+## 2-21.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>링크 만들기</title>
+  </head>
+  <body>
+    <h3>Elvis Presley</h3>
+    <hr />
+    <ul>
+      <li><a href="#love">Love me tender</a></li>
+      <li><a href="#can">Can't help falling in love</a></li>
+      <li><a href="#it">It's now or never</a></li>
+    </ul>
+
+    <h3 id="love">Love me tender</h3>
+    Love me tender, Love me sweet, Never let me go.<br />
+    You have made my life complete, <br />
+    And I love you so.<br />
+    Love me tender, Love me true, <br />
+    All my dreams fulfilled.<br />
+    For my darling I love you, And I always will.<br />
+    <h3 id="can">Can't help falling in love</h3>
+    Love me tender, Love me sweet, Never let me go.<br />
+    You have made my life complete, And I love you so.<br />
+    Love me tender, Love me true, All my dreams fulfilled.<br />
+    For my darling I love you, And I always will.<br />
+    <h3 id="it">It''s now or never</h3>
+    It's now or never, Come hold me tight<br />
+    Kiss me my darling, Be mine tonight<br />
+    Tomorrow will be too late,<br />
+    It's now or never. My love won't wait.<br />
+  </body>
+</html>
+
+
+## 2-22.html
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>iframe을 가지는 웹 페이지</title>
+  </head>
+  <body>
+    <h3>2 개의 &lt;iframe&gt;을 가집니다.</h3>
+    <hr />
+    <iframe src="http://www.daum.net" width="200" height="150"> </iframe>
+    <iframe src="http://www.naver.com" width="200" height="100"> </iframe>
+  </body>
+</html>
+
+## 2-23.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>srcdoc 속성 활용</title>
+  </head>
+  <body>
+    <h3>srcdoc에 HTML 문서 작성</h3>
+    <hr />
+    <iframe
+      src="http://www.daum.net"
+      width="200"
+      height="80"
+      frameborder="0"
+      srcdoc="
+      <html>
+        <head></head>
+        <body>
+        hello<br>
+        hello<br>
+        hello<br>
+        </body>
+    </html>"
+    ></iframe>
+  </body>
+</html>
+
+
+## 2-24.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>iframe 활용</title>
+  </head>
+  <body>
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>srcdoc 속성 활용</title>
+      </head>
+      <body>
+        <h3>2 개의 &lt;iframe&gt;을 가집니다.</h3>
+        <hr />
+        <iframe
+          name="left"
+          src="left.html"
+          width="20%"
+          height="900"
+          scrolling="no"
+        >
+        </iframe>
+        <iframe
+          name="right"
+          src="right.html"
+          width="50%"
+          height="900"
+          scrolling="no"
+        >
+        </iframe>
+      </body>
+    </html>
+  </body>
+</html>
+
+
+## left.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>왼쪽 프레임</title>
+  </head>
+  <body>
+    <h3>왼쪽 프레임</h3>
+    <h4>화면의 20%만 차지해요..</h4>
+    <ul>
+      <li>
+        <a href="http://www.etnews.com" target="_self">전자신문 - _self</a>
+      </li>
+      <li>
+        <a href="http://www.w3c.org" target="right">W3C - 오른쪽 프레임</a>
+      </li>
+      <li>
+        <a href="http://www.etnews.com" target="upper"
+          >전자신문 - right&upper</a
+        >
+      </li>
+      <li>
+        <a href="http://www.w3c.org" target="lower">W3C - right & lower </a>
+      </li>
+    </ul>
+  </body>
+</html>
+
+
+## right.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>오른쪽 프레임</title>
+  </head>
+  <body>
+    <h3>오른쪽 프레임</h3>
+    <h4>화면의 50%만 차지해요..</h4>
+    <ul>
+      <li>
+        <a href="http://www.etnews.com" target="_self">전자신문 - _self</a>
+      </li>
+      <li><a href="http://www.w3c.org" target="left">W3C - 왼쪽 프레임</a></li>
+      <li>
+        <a href="http://www.etnews.com" target="upper"
+          >전자신문 - 상위 프레임</a
+        >
+      </li>
+      <li><a href="http://www.w3c.org" target="lower">W3C - 아래 프레임</a></li>
+      <li><a href="http://www.daum.net" target="_top">DAUM - top</a></li>
+      <li>
+        <a href="http://www.w3c.org" target="_blank">새 창에 W3C - _blank</a>
+      </li>
+    </ul>
+    <iframe
+      name="upper"
+      src="http://www.daum.net"
+      width="100%"
+      height="300"
+      scrolling="no"
+    >
+    </iframe>
+    <iframe
+      name="lower"
+      src="http://google.org"
+      width="100%"
+      height="300"
+      scrolling="no"
+    >
+    </iframe>
+  </body>
+</html>
+
+
+# cd ..
+
+# mkdir chap03
+
+# cd chap03
+
+## 3-01.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>HTML5 문서 구조 시맨틱 태그 사용</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      header {
+        width: 100%;
+        height: 15%;
+        background: yellow;
+      }
+      nav {
+        width: 15%;
+        height: 70%;
+        float: left;
+        background: orange;
+      }
+      section {
+        width: 70%;
+        height: 70%;
+        float: left;
+        background: olivedrab;
+      }
+      aside {
+        width: 15%;
+        height: 70%;
+        float: left;
+        background: orange;
+      }
+      footer {
+        width: 100%;
+        height: 15%;
+        clear: both;
+        background: plum;
+      }
+    </style>
+  </head>
+  <body>
+    <header>header</header>
+    <nav>nav</nav>
+    <section>section</section>
+    <aside>aside</aside>
+    <footer>footer</footer>
+  </body>
+</html>
+
+
+## 3-02.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Elvis Presley</title>
+  </head>
+  <body>
+    <header>
+      <h1><a href="https://www.facebook.com/elvis">Elvis Presley</a></h1>
+    </header>
+    <section>
+      <article>
+        <h2>
+          <a href="https://ko.wikipedia.org/wiki/엘비스_프레슬리">
+            Who is Elvis?</a
+          >
+        </h2>
+        <p>
+          엘비스 프레슬리는 20세기 가장 잘 알려진 미국 가수 중 한 명이었다.
+          하나의 문화 아이콘으로, 엘비스의 음악들은 세계적으로 선풍적인 인기를
+          끌었으며 "로큰롤의 제왕"으로 불리곤한다. 그는 미시시피 주의 투펄로에서
+          태어났다.
+        </p>
+      </article>
+      <article>
+        <h2>
+          <a href="http://www.biography.com/people/elvis-presley-9446466">
+            His music and life</a
+          >
+        </h2>
+        <p>
+          Presley received his first guitar as a gift from his mother on his
+          11th birthday in 1946 and had his first taste of musical success a few
+          years later when he won a talent show at Humes High School in Memphis.
+        </p>
+      </article>
+      <nav>
+        <a href="">&laquo; Previous Entries</a>
+      </nav>
+    </section>
+    <nav>
+      <ul>
+        <li>
+          <h2>Archives</h2>
+          <ul>
+            <li><a href="http://www.elvisthemusic.com/">Elvis The Music</a></li>
+            <li>
+              <a href="http://www.graceland.com/">Elvis Home Graceland</a>
+            </li>
+            <li>
+              <a href="http://www.last.fm/music/Elvis+Presley"
+                >Free Listening, Video</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <footer>
+      <p>Copyright 2015 Elvis</p>
+    </footer>
+  </body>
+</html>
+
+
+## 3-03.html
+<!DOCTYPE html>
+<!-- 참고: https://ko.wikipedia.org/wiki/볼프강_아마데우스_모차르트 -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>시맨틱 태그로 구조화 연습</title>
+  </head>
+  <body>
+    <header>
+      <h1>볼프강 아마데우스 모차르트</h1>
+      <p>
+        모차르트(1756년 1월 27일 ~ 1791년 12월 5일)는 1756년 1월 27일
+        잘츠부르크에서 태어난 천재적인 오스트리아의 작곡가를 소개한다.
+      </p>
+      <figure>
+        <img
+          width="140"
+          height="200"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Wolfgang-amadeus-mozart_1.jpg/500px-Wolfgang-amadeus-mozart_1.jpg"
+        />
+        <figcaption>1770년대 초상화</figcaption>
+      </figure>
+    </header>
+    <nav>
+      <h2>목차</h2>
+      <ul>
+        <li><a href="#life">생애</a></li>
+        <li><a href="#death">죽음</a></li>
+        <li><a href="#music">음악</a></li>
+        <li><a href="#legend">모차르트의 죽음에 얽힌 전설</a></li>
+      </ul>
+    </nav>
+    <section>
+      <article id="life">
+        <h2>생애</h2>
+        <p>
+          모차르트는 1756년 1월 27일 잘츠부르크에서 태어나서, 궁정 음악가였던
+          아버지 에게 피아노와 바이올린을 배웠고, 다섯살 때 이미 작곡을 하기
+          시작했으며, 1764년에서 1765년 사이에 바흐로부터 처음으로 교향곡을
+          작곡하는 법을 배웠는데 이것이 모차르트가 수많은 교향곡을 남기는 계기가
+          되었다. 모차르트는 빈에서 1784년에 14세인 베토벤을 만나 베토벤을
+          교육시키는데 전념하기도 했다.
+        </p>
+      </article>
+      <article id="death">
+        <h2>죽음</h2>
+        <p>
+          모차르트는 1791년 12월 5일 오전 0시 55분경에 갑자기 병으로 죽었으며
+          모차르트가 완성하지 못한 작품 레퀴엠은 프란츠 크사버 쥐스마이어(Franz
+          Xaver Süssmayr)가 완성시켰다.
+        </p>
+      </article>
+      <article id="music">
+        <h2>음악</h2>
+        <p>
+          오페라, 교향곡, 행진곡, 관현악용 무곡, 피아노 협주곡, 바이올린 협주곡,
+          교회용 성악곡, 칸타타, 미사곡 등 다양한 장르를 아우르며 600 여곡을
+          작곡하여 후대에 남겼다.
+        </p>
+      </article>
+    </section>
+    <aside id="legend">
+      <h3>모차르트의 죽음에 얽힌 전설</h3>
+      <p>
+        모차르트의 장례식 날 비가 오고 천둥이 쳤다고 하나 New Groove에 따르면
+        사실은 구름 한 점 없는 쾌청한 날이었다고 한다.
+      </p>
+    </aside>
+    <footer>
+      <p>2017년 10월 7일 작성, 위키피디어 참고</p>
+    </footer>
+  </body>
+</html>
+
+
+## host computer..
+
+# scp media.zip root@ubuntu:/allnew/html/chap03
+
+## ubuntu….
+
+# unzip media.zip
+
+# rm -rf media.zip
+
+
+## 3-07.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>로그인 폼</title>
+  </head>
+  <body>
+    <h3>로그인 폼</h3>
+    <hr />
+    <form name="fo" method="get">
+      사용자 ID : <input type="text" size="15" value="" /><br />
+      비밀 번호 : <input type="password" size="15" value="" />
+      <input type="submit" value="완료" />
+      <input
+        type="button"
+        value="Daum"
+        onclick='document.location.href="http://www.daum.net"'
+      />
+      <button type="submit">버튼</button>
+    </form>
+  </body>
+</html>
+
+
+## naver.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>네이버 검색</title>
+  </head>
+  <body>
+    <h3>네이버 검색</h3>
+    <hr />
+    <img
+      src="https://www.pennmike.com/news/photo/202303/61924_85527_5827.jpg"
+      width="150"
+      height="50"
+    />
+    <form
+      name="sform"
+      action="https://search.naver.com/search.naver"
+      method="get"
+    >
+      <input name="query" type="text" />
+      <button type="submit">"검색"</button>
+    </form>
+  </body>
+</html>
+
+
+## 3-08.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>텍스트 입력 폼</title>
+  </head>
+  <body>
+    <h3>자기 소개서 작성</h3>
+    <hr />
+    <form>
+      이름 : <input type="text" value="" /><br />
+      암호 : <input type="password" value="" maxlength="4" /><br />
+      자소서 :
+      <textarea cols="20" rows="5">
+이곳에 자기소개서 작성
+</textarea
+      >
+    </form>
+  </body>
+</html>
+
+
+## 3-10.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>버튼이 있는 입력 폼</title>
+</head>
+<body>
+<h3>버튼을 만들자</h3>
+<hr>
+<form>
+검색: <input type="text" size="10" value="">
+<input type="button" value="Q1">
+<button type="button">Q2</button><br>
+submit 버튼 : <input type="submit" value="전송1">
+<button type="submit">전송2</button><br>
+reset 버튼 : <input type="reset" value="리셋1">
+<button type="reset">리셋2</button><br>
+이미지버튼 : <input type="image" src="media/button.png"
+alt="이미지 버튼">
+<button type="button">
+<img src="media/button.png" alt="이미지 버튼">
+</button>
+</form>
+</body>
+</html>
+
+
+## 3-11.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>체크 박스 만들기</title>
+  </head>
+  <body>
+    <h3>먹고 싶은 것 모두 체크하세요</h3>
+    <hr />
+    <form>
+      짜장면 <input type="checkbox" value="1" checked /> 짬뽕
+      <input type="checkbox" value="2" /> 탕수육
+      <input type="checkbox" value="3" />
+    </form>
+  </body>
+</html>
+
+
+## 3-16.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>색 입력</title>
+  </head>
+  <body>
+    <h3>컬러다이얼로그로 색 입력</h3>
+    <hr />
+    <form>
+      색 선택
+      <input
+        type="color"
+        value="#00BFFF"
+        onchange="document.body.style.color=this.value"
+      />
+    </form>
+  </body>
+</html>
+
+
+
+# mkdir /allnew/html
+
+# scp mysql.tar.gz root@ubuntu:/allnew/html
+
+# tar xzvf mysql.tar.gz
+
+# cd mysql
+
+# npm init -y
+
+# npm install express body-parser cookie-parser morgan circular-json request sync-mysql dotenv
+
+# npm install -g nodemon
+
+# nodemon app.js
+
+
+## .gitignore
+…
+## html
+html/mysql/node_modules
+html/mysql/package-lock.json
+
+——————————————————————————————
+
+## host computer..
+
+# scp media.zip root@ubuntu:/allnew/html/chap03
+
+## ubuntu….
+
+# cd /allnew/html
+
+# tar xvzf mysql.tar.gz 
+
+# cd mysql
+
+——————————————————————————————
+
+# npm init -y
+
+# npm install express body-parser cookie-parser morgan circular-json request sync-mysql dotenv
+
+# npm install -g nodemon
+
+# nodemon app.js
+
+——————————————————————————————
+<input type="button" value="GET /Hello" onclick='document.targetURL.location.href="/Hello"'>&nbsp;&nbsp;
+
+<input type="button" value="Select st_info" onclick='document.targetURL.location.href="/select"'>&nbsp;&nbsp;
+
+
+——————————————————————————————
+<iframe name="targetURL" class="iframe-preview center" width="90%" height="500" style="border:none;" src=“/Hello">
+

@@ -1,0 +1,467 @@
+Day-24
+
+### mongodb backup and recovery
+
+# systemctl start mongod
+
+# systemctl status mongod
+
+# cd /allnew/mongodb
+
+# mkdir backup
+
+# cd backup
+
+# mongodump --db test --collection emp --out .
+
+# ls test
+
+# file test/emp.bson
+
+# file test/emp.metadata.json
+
+# cat -n test/emp.metadata.json
+
+# mongodump -d test -c things -o .
+
+# ls test
+
+
+## .gitignore
+…..
+mongodb/backup
+
+
+# mongodump
+dump 폴더 생성 후 전체 데이터베이스 백업
+
+# mongo < /allnew/mongodb/bios/bios_drop
+
+# mongorestore -d test -c bios --drop ./dump/test/bios.bson
+
+# mongorestore -d test --drop ./test
+
+# mongorestore --objcheck --drop .
+
+
+# mongoexport -d test -c things -o things.csv
+
+# file things.csv
+
+# cat things.csv
+
+
+## Your Host computer…
+
+# scp seoul.csv root@192.168.1.12:/allnew/mongodb/backup
+
+
+## ubuntu…
+
+# mongoimport -d test -c seoul --type csv --headerline --file seoul.csv
+
+# mongo
+
+> use test
+
+> show tables;
+
+> db.seoul.find()
+
+> db.seoul.find().count()
+
+> exit
+
+—————————————————————————————————
+
+### replicaset
+
+# echo replica > /proc/sys/kernel/hostname
+ 
+# cd /allnew
+
+# git fetch
+
+# git pull
+
+
+# apt -y update; apt -y upgrade
+
+# mkdir /replica
+
+# cd /replica/
+
+# wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2004-4.4.5.tgz
+
+# ls
+
+# tar xvzf mongodb-linux-x86_64-ubuntu2004-4.4.5.tgz
+
+# rm -rf *.tgz
+
+# mv mongodb-linux-x86_64-ubuntu2004-4.4.5/ mongodb
+
+# mkdir data
+
+
+# mkdir -pv /replica/data/master
+
+# mkdir -pv /replica/data/slave1
+
+# mkdir -pv /replica/data/slave2
+
+# mkdir -pv /replica/data/arbiter
+
+
+# touch /replica/data/master/master.log
+
+# touch /replica/data/slave1/slave1.log
+
+# touch /replica/data/slave2/slave2.log
+
+# touch /replica/data/arbiter/arbiter.log
+
+
+# cp /etc/mongod.conf ./master.conf
+
+
+## master.conf
+
+# master.conf
+
+storage:
+  dbPath: /replica/data/master
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /replica/data/master/master.log
+
+net:
+  port: 10000
+  bindIp: 127.0.0.1
+
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+replication:
+  replSetName: "replica"
+
+
+# cp master.conf slave1.conf
+
+
+## slave1.conf
+
+# slave1.conf
+
+storage:
+  dbPath: /replica/data/slave1
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /replica/data/slave1/slave1.log
+
+net:
+  port: 10001
+  bindIp: 127.0.0.1
+
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+replication:
+  replSetName: "replica"
+
+
+# cp slave1.conf slave2.conf 
+
+
+## slave2.conf
+
+# slave2.conf
+
+storage:
+  dbPath: /replica/data/slave2
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /replica/data/slave2/slave2.log
+
+net:
+  port: 10002
+  bindIp: 127.0.0.1
+
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+replication:
+  replSetName: "replica"
+
+
+# cp slave1.conf arbiter.conf
+
+
+## arbiter.conf
+
+# arbiter.conf
+
+storage:
+  dbPath: /replica/data/arbiter
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /replica/data/arbiter/arbiter.log
+
+net:
+  port: 10003
+  bindIp: 127.0.0.1
+
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+replication:
+  replSetName: "replica"
+
+
+# /replica/mongodb/bin/mongod --config /replica/master.conf &
+[1] 5991
+
+# /replica/mongodb/bin/mongod --config /replica/slave1.conf &
+[2] 6037
+
+# /replica/mongodb/bin/mongod --config /replica/slave2.conf &
+[3] 6081
+
+# /replica/mongodb/bin/mongod --config /replica/arbiter.conf &
+[4] 6127
+
+# netstat -ntlp | grep mongo
+
+# /replica/mongodb/bin/mongo --port 10000
+
+> exit
+
+—————————————————————————————————
+
+## rs_start
+
+rsconf = {
+    _id: "replica",
+    members: [
+        { _id: 0, host: "127.0.0.1:10000", priority: 2 },
+        { _id: 1, host: "127.0.0.1:10001", priority: 1 },
+        { _id: 2, host: "127.0.0.1:10002", priority: 1 },
+        { _id: 3, host: "127.0.0.1:10003", priority: 1, arbiterOnly: true }
+    ]
+}
+
+rs.initiate(rsconf)
+
+rs.status()
+
+
+# /replica/mongodb/bin/mongo --port 10000 < rs_start
+
+
+# /replica/mongodb/bin/mongo --port 10000
+
+replica:PRIMARY> rs.status()
+
+replica:PRIMARY> use test
+
+replica:PRIMARY> show collections;
+
+replica:PRIMARY> db.things.insert({empno:1101, ename : "tom", dept:"account"})
+
+replica:PRIMARY> show collections;
+
+replica:PRIMARY> db.things.find()
+
+replica:PRIMARY> exit
+
+—————————————————————————————————
+
+## start_mongodb.sh
+
+#!/bin/bash
+
+/replica/mongodb/bin/mongod --config /replica/master.conf &
+/replica/mongodb/bin/mongod --config /replica/slave1.conf &
+/replica/mongodb/bin/mongod --config /replica/slave2.conf &
+/replica/mongodb/bin/mongod --config /replica/arbiter.conf &
+sleep 2s
+
+ps -ef | grep mongo
+sleep 3s
+netstat -ntlp | grep mongo
+
+/replica/mongodb/bin/mongo localhost:10000 < rs_start
+
+
+## stop_mongodb.sh
+
+#!/bin/bash
+
+master=$(ps -ef | grep 'master')
+slave1=$(ps -ef | grep 'slave1')
+slave2=$(ps -ef | grep 'slave2')
+arbiter=$(ps -ef | grep 'arbiter')
+
+second1=$(echo ${master} | cut -d " " -f2)
+second2=$(echo ${slave1} | cut -d " " -f2)
+second3=$(echo ${slave2} | cut -d " " -f2)
+second4=$(echo ${arbiter} | cut -d " " -f2)
+
+for var in $second1 $second2 $second3 $second4
+do
+    echo $var
+    if [ -n ${var} ]; then                 
+        result=$(kill -9 ${var})
+        echo process is killed.
+    else
+        echo running process not found.
+    fi
+done
+
+# chmod +x *.sh
+
+# ./stop_mongodb.sh
+
+# ./start_mongodb.sh
+
+—————————————————————————————————
+
+# /replica/mongodb/bin/mongo localhost:10000
+
+replica:PRIMARY> rs.status()
+
+replica:PRIMARY> show collections;
+
+
+# /replica/mongodb/bin/mongo localhost:10001
+
+replica:SECONDARY> rs.status()
+
+replica:SECONDARY> show collections;
+Error 발생
+
+replica:SECONDARY> rs.secondaryOk()
+
+replica:SECONDARY> show collections;
+things
+
+replica:SECONDARY> db.things.find()
+
+replica:SECONDARY> db.things.insert({empno:1102, ename:"Jones", dept:"sales"})
+Error 발생
+
+replica:SECONDARY> exit
+
+—————————————————————————————————
+
+# /replica/mongodb/bin/mongo localhost:10000
+
+replica:PRIMARY> use test
+
+replica:PRIMARY> db.things.insert({empno:1102, ename:"Jones", dept:"sales"})
+
+replica:PRIMARY> db.things.find()
+
+replica:PRIMARY> db.printReplicationInfo()
+
+replica:PRIMARY> db.printSecondaryReplicationInfo()
+
+—————————————————————————————————
+
+replica:PRIMARY> use admin
+
+replica:PRIMARY> db.shutdownServer()
+server should be down...
+> exit
+bye
+
+# netstat -ntlp | grep mongo
+
+—————————————————————————————————
+
+# /replica/mongodb/bin/mongo localhost:10001
+replica:PRIMARY> exit
+bye
+
+# /replica/mongodb/bin/mongo localhost:10002
+replica:SECONDARY> exit
+bye
+
+# /replica/mongodb/bin/mongo localhost:10001
+
+replica:PRIMARY> db.printReplicationInfo()
+
+replica:PRIMARY> use test
+
+replica:PRIMARY> db.things.insert({empno:1103, ename: "Robert", dept:"sales"})
+
+replica:PRIMARY> db.things.find()
+
+replica:PRIMARY> exit
+
+—————————————————————————————————
+
+# /replica/mongodb/bin/mongod --config /replica/master.conf &
+
+# netstat -ntlp | grep mongo
+
+# /replica/mongodb/bin/mongo localhost:10000
+
+replica:PRIMARY> rs.isMaster()
+
+replica:PRIMARY> db.printReplicationInfo()
+
+replica:PRIMARY> use test
+
+replica:PRIMARY> db.things.find()
+
+replica:PRIMARY> exit
+bye
+
+# /replica/mongodb/bin/mongo localhost:10001
+
+replica:SECONDARY> exit
+bye
+
+—————————————————————————————————
+
+# cd /allnew/mongodb
+
+# mkdir replica
+
+# cd replica
+
+# cp /replica/rs* .
+
+# cp /replica/*.sh .
+
+# cp /replica/*.conf .
+
+# git add .
+
+# git commit -m "replica"
+
+# git push
+
+# shutdown -h now
+
+
+
+
+
