@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>admin, root Page</title>
+  </head>
+  <body>
+    <h3>admin, root Page</h3>
+    <hr />
+    <form action="/insert" name="userForm" method="post" target="targetURL">
+      <p>Userid : <input type="text" size="15" name="id" /></p>
+      <p>Password : <input type="password" size="15" name="pw" /></p>
+      <input
+        type="button"
+        value="get select"
+        onclick='document.targetURL.location.href="/select"'
+      />&nbsp;&nbsp;
+      <input
+        type="button"
+        value="get selectQuery"
+        onclick='document.targetURL.location.href="/selectQuery?userid="+document.userForm.id.value'
+      />&nbsp;&nbsp;
+      <input type="submit" value="post insert" />
+      <button type="submit" formaction="/update">post update</button
+      >&nbsp;&nbsp;
+      <button type="submit" formaction="/delete">post delete</button>
+    </form>
+    <hr />
+    <iframe
+      name="targetURL"
+      width="70%"
+      height="500"
+      style="border: none"
+      src="/hello"
+    ></iframe>
+  </body>
+</html>
