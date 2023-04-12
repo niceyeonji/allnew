@@ -3,16 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <title>Login</title>
+    <link type="text/css" rel="stylesheet" href="mystyle.css" />
   </head>
   <body>
-    <h3>Login</h3>
+    <div class="blur"><h3>Login</h3></div>
     <hr />
-    <form action="/login" name="userForm" method="post">
-      <p>Userid : <input type="text" size="15" name="id" /></p>
-      <p>Password : <input type="password" size="15" name="pw" /></p>
-      <input type="submit" value="로그인" />&nbsp;&nbsp;
-      <input type="reset" value="취소" /><br /><br />
-    </form>
-    <a href="register.html">회원가입</a>
+    <div class="box">
+      <form action="/login" name="userForm" method="post">
+        <p>Userid &nbsp;&nbsp; : <input type="text" size="15" name="id" /></p>
+        <p>Password : <input type="password" size="15" name="pw" /></p>
+      <div class="inner">
+        <input type="submit" value="LOGIN" />&nbsp;&nbsp;
+        <input type="reset" value="CANCEL" /><br /><br />
+      </form>
+      <a href="register.html" style="text-decoration: none"><b>JOIN</b></a>
+    </div>
+  </div>
+    <hr />
+    <div class="img">@Ungdii95</div>
   </body>
 </html>

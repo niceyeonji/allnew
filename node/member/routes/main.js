@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mysql = require('sync-mysql');
-const CircularJSON = require('circular-json');
 const env = require('dotenv').config({path: '../../.env'});
 
 var connection = new mysql({
