@@ -9,7 +9,7 @@ body {
 
 h3 {
   color: white;
-  font-size: 30px;
+  font-size: 35px;
   background-image: url('https://ogq-sticker-global-cdn-z01.afreecatv.com/sticker/17659a9995901e6/11.png'),
     url('https://ogq-sticker-global-cdn-z01.afreecatv.com/sticker/17659a9995901e6/11.png');
   background-position: left top, right top;
@@ -71,7 +71,7 @@ div.box {
   border-color: white;
   border-radius: 15px;
   margin: 70px;
-  border-width: 2px;
+  border-width: 3px;
   padding: 40px;
 }
 
