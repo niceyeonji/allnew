@@ -2,9 +2,13 @@ table {
   /* 이중 테두리 제거 */
   border-collapse: collapse;
 }
-td,
-mini th {
-  /* 모든 셀에 적용 */
+th {
+  text-align: center;
+  padding: 5px;
+  height: 15px;
+  width: 100px;
+}
+td {
   text-align: left;
   padding: 5px;
   height: 15px;
@@ -23,4 +27,8 @@ tbody tr:nth-child(even) {
 tbody tr:hover {
   /* 마우스가 올라오면 pink 배경 */
   background: pink;
+}
+h3 {
+  color: purple;
+  margin-left: 20px;
 }

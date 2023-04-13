@@ -1,10 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const mysql = require('../../auth/node_modules/sync-mysql/lib');
-const env = require('../../auth/node_modules/dotenv/lib/main').config({
-  path: '../../.env',
-});
+const mysql = require('sync-mysql');
+const env = require('dotenv').config({path: '../../.env'});
 
 var connection = new mysql({
   host: process.env.host,
@@ -24,52 +21,238 @@ app.get('/hello', (req, res) => {
   res.send('Hello World~!!');
 });
 
-// request 1, query 0
+// request O, query X
 app.get('/select', (req, res) => {
   const result = connection.query('select * from user');
   console.log(result);
-  res.send(result);
+  // res.send(result);
+  res.writeHead(200);
+  if (result.length == 0) {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+            <h3>데이터가 존재하지 않습니다.</h3>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  } else {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+        <table border="1" style="margin:auto;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+    for (var i = 0; i < result.length; i++) {
+      template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+    }
+    template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  }
 });
 
-// request 1, query 0
+// request O, query X
 app.post('/select', (req, res) => {
   const result = connection.query('select * from user');
   console.log(result);
-  res.send(result);
+  // res.send(result);
+  res.writeHead(200);
+  if (result.length == 0) {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+            <h3>데이터가 존재하지 않습니다.</h3>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  } else {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+        <table border="1" style="margin:auto;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+    for (var i = 0; i < result.length; i++) {
+      template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+    }
+    template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  }
 });
 
-// request 1, query 1
-app.post('/selectQuery', (req, res) => {
-  const userid = req.body.userid;
-  const result = connection.query('select * from user where userid=?', [
-    userid,
-  ]);
-  console.log(result);
-  res.send(result);
-});
-
-// request 1, query 1
+// request O, query O
 app.get('/selectQuery', (req, res) => {
-  const userid = req.query.userid;
-  // console.log(req.body);
-  const result = connection.query('select * from user where userid=?', [
-    userid,
-  ]);
-  // console.log(res);
-  // res.send(res);
+  const id = req.query.id;
+  const result = connection.query('select * from user where userid=?', [id]);
   console.log(result);
-  res.send(result);
+  // res.send(result);
+  res.writeHead(200);
+  if (result.length == 0) {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+            <h3>데이터가 존재하지 않습니다.</h3>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  } else {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+        <table border="1" style="margin:auto;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+    for (var i = 0; i < result.length; i++) {
+      template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+    }
+    template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  }
 });
 
-// request 1, query 1
+// request O, query O
+app.post('/selectQuery', (req, res) => {
+  const id = req.body.id;
+  // console.log(req.body);
+  const result = connection.query('select * from user where userid=?', [id]);
+  console.log(result);
+  // res.send(result);
+  res.writeHead(200);
+  if (result.length == 0) {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+            <h3>데이터가 존재하지 않습니다.</h3>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  } else {
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+            <meta charset="utf-8">
+            <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        </head>
+        <body>
+        <table border="1" style="margin:auto;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+    for (var i = 0; i < result.length; i++) {
+      template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+    }
+    template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+        `;
+    res.end(template);
+  }
+});
+
+// request O, query O
 app.post('/insert', (req, res) => {
   const {id, pw} = req.body;
   const result = connection.query('insert into user values (?, ?)', [id, pw]);
   console.log(result);
-  res.redirect('selectQuery?userid=' + req.body.id);
+  res.redirect('/selectQuery?id=' + req.body.id);
 });
 
-// request 1, query 1
+// request O, query O
 app.post('/update', (req, res) => {
   const {id, pw} = req.body;
   const result = connection.query('update user set passwd=? where userid=?', [
@@ -77,12 +260,12 @@ app.post('/update', (req, res) => {
     id,
   ]);
   console.log(result);
-  res.redirect('selectQuery?userid=' + req.body.id);
+  res.redirect('/selectQuery?id=' + req.body.id);
 });
 
-// request 1, query 1
+// request O, query O
 app.post('/delete', (req, res) => {
-  const {id, pw} = req.body;
+  const id = req.body.id;
   const result = connection.query('delete from user where userid=?', [id]);
   console.log(result);
   res.redirect('/select');
