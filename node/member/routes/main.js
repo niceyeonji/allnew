@@ -28,7 +28,38 @@ app.get('/hello', (req, res) => {
 app.get('/select', (req, res) => {
   const result = connection.query('select * from user');
   console.log(result);
-  res.send(result);
+  // res.send(result);
+  res.writeHead(200);
+  var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+                <link type="text/css" rel="stylesheet" href="mystyle.css" />
+            <meta charset="utf-8">
+        </head>
+        <body>
+        <table border="1" style="margin:auto; text-align:center;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+  for (var i = 0; i < result.length; i++) {
+    template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+  }
+  template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+    `;
+  res.end(template);
 });
 
 // request 1, query 0
@@ -50,15 +81,48 @@ app.post('/selectQuery', (req, res) => {
 
 // request 1, query 1
 app.get('/selectQuery', (req, res) => {
+  console.log(req.query);
   const userid = req.query.userid;
-  // console.log(req.body);
   const result = connection.query('select * from user where userid=?', [
     userid,
   ]);
-  // console.log(res);
-  // res.send(res);
-  console.log(result);
-  res.send(result);
+  console.log(result.length);
+  if (result.length == 0) {
+    res.send('데이터가 존재하지 않습니다');
+  } else {
+    console.log(result);
+    res.writeHead(200);
+    var template = `
+        <!doctype html>
+        <html>
+        <head>
+            <title>Result</title>
+                <link type="text/css" rel="stylesheet" href="mystyle.css" />
+            <meta charset="utf-8">
+        </head>
+        <body>
+        <table border="1" style="margin:auto; text-align:center;">
+        <thead>
+            <tr><th>User ID</th><th>Password</th></tr>
+        </thead>
+        <tbody>
+        `;
+    for (var i = 0; i < result.length; i++) {
+      template += `
+        <tr>
+            <td>${result[i]['userid']}</td>
+            <td>${result[i]['passwd']}</td>
+        </tr>
+        `;
+    }
+    template += `
+        </tbody>
+        </table>
+        </body>
+        </html>
+    `;
+    res.send(template);
+  }
 });
 
 // request 1, query 1
