@@ -2,36 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>User Authentication</title>
+    <title>Login</title>
+    <link type="text/css" rel="stylesheet" href="mystyle.css" />
   </head>
   <body>
-    <h3>User Authentication</h3>
+    <div class="blur"><h3>Login</h3></div>
     <hr />
-    <form action="/insert" name="userForm" method="post" target="targetURL">
-      <p>Userid : <input type="text" size="15" name="id" /></p>
-      <p>Password : <input type="password" size="15" name="pw" /></p>
-      <input
-        type="button"
-        value="get select"
-        onclick='document.targetURL.location.href="/select"'
-      />&nbsp;&nbsp;
-      <input
-        type="button"
-        value="get selectQuery"
-        onclick='document.targetURL.location.href="/selectQuery?userid="+document.userForm.id.value'
-      />&nbsp;&nbsp;
-      <input type="submit" value="post insert" />
-      <button type="submit" formaction="/update">post update</button
-      >&nbsp;&nbsp;
-      <button type="submit" formaction="/delete">post delete</button>
-    </form>
+    <div class="box">
+      <form action="/login" name="userForm" method="post">
+        <pre><p>    Userid  : <input type="text" size="15" name="id" /></p></pre>
+        <pre><p>Password  : <input type="password" size="15" name="pw" /></p></pre>
+        
+      <div class="inner">
+        <input type="submit" value="LOGIN" />&nbsp;&nbsp;
+        <input type="reset" value="CANCEL" /><br /><br />
+      </form>
+      <a href="register.html" style="text-decoration: none">JOIN</a>
+    </div>
+  </div>
     <hr />
-    <iframe
-      name="targetURL"
-      width="70%"
-      height="500"
-      style="border: none"
-      src="/hello"
-    ></iframe>
+    <div class="img">@Ungdii95</div>
   </body>
 </html>
