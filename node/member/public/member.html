@@ -7,11 +7,21 @@
   </head>
   <body>
     <div class="blur"><h3>User Authentication</h3></div>
+    <nav id="menubar">
+      <ul>
+        <li><a href="main.html">Home</a></li>
+        <li><a href="aboutme.html">About Me</a></li>
+        <li overflow:hidden;></li>
+        <li overflow:hidden;></li>
+        <li overflow:hidden;></li>
+        <li><a href="index.html">Logout</a></li>
+      </ul>
+    </nav>
     <hr />
     <div class="box">
       <form action="/insert" target="targetURL" name="userForm" method="post">
-        <p>Userid : <input type="text" size="15" name="id" /></p>
-        <p>Password : <input type="password" size="15" name="pw" /></p>
+        <pre><p>    Userid   : <input type="text" size="15" name="id" /></p></pre>
+        <pre><p>Password  : <input type="password" size="15" name="pw" /></p></pre>
         <br />
         <input
           type="button"
@@ -29,13 +39,15 @@
       </form>
     </div>
     <hr />
-    <iframe
-      name="targetURL"
-      width="70%"
-      height="500"
-      style="border: none"
-      src="/hello"
-    ></iframe>
+    <div class="box">
+      <iframe
+        name="targetURL"
+        width="70%"
+        height="500"
+        style="border: none"
+        src="/hello"
+      ></iframe>
+    </div>
     <hr />
     <div class="img">@Ungdii95</div>
   </body>
