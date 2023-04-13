@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Josefin+Sans:wght@200&family=Merriweather:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Josefin+Sans:wght@200&family=Merriweather:ital@1&family=Noto+Serif+KR&display=swap');
+
+body {
+  /* background-color: rgb(227, 168, 235); */
+  background-color: white;
+  text-align: center;
+  color: white;
+  font: bold 20px 'Josefin Sans', sans-serif;
+  background-image: url('https://blog.kakaocdn.net/dn/sZ7ux/btqDSzwx1NN/c0FYKBDM9WacVK61NpYar1/img.jpg');
+}
+
+p {
+  font: bold 20px 'Josefin Sans', sans-serif;
+}
+
+h3 {
+  color: white;
+  font: bold 40px 'Josefin Sans', sans-serif;
+  background-image: url('https://ogq-sticker-global-cdn-z01.afreecatv.com/sticker/17659a9995901e6/11.png'),
+    url('https://ogq-sticker-global-cdn-z01.afreecatv.com/sticker/17659a9995901e6/11.png');
+  background-position: left top, right top;
+  background-repeat: no-repeat, no-repeat;
+  background-size: auto 100%, auto 100%;
+  padding: 0 50px;
+  line-height: 100px;
+}
+
+hr {
+  border: 2px solid white;
+}
+
+input {
+  color: white;
+  background-color: rgb(239, 192, 248);
+  border: 3px solid white;
+  border-radius: 15px;
+  padding: 5px 15px;
+  font: bold 15px 'Josefin Sans', sans-serif;
+  cursor: pointer;
+}
+
+input:hover {
+  background: rgba(219, 116, 240, 0.616);
+}
+
+button {
+  color: white;
+  background-color: rgb(239, 192, 248);
+  border: 3px solid white;
+  border-radius: 15px;
+  padding: 5px 15px;
+  font: bold 15px 'Josefin Sans', sans-serif;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(219, 116, 240, 0.616);
+}
+
+a {
+  font: bold 20px 'Josefin Sans', sans-serif;
+  color: white;
+}
+
+input[type='text'] {
+  background-color: rgb(221, 174, 228);
+}
+
+input[type='password'] {
+  background-color: rgb(221, 174, 228);
+}
+
+div.box {
+  background: rgba(224, 161, 240, 0.589);
+  border-style: solid;
+  border-color: white;
+  border-radius: 15px;
+  margin: 70px;
+  border-width: 3px;
+  padding: 40px;
+}
+
+div.box2 {
+  background: rgba(224, 161, 240, 0.589);
+  border-style: solid;
+  border-color: white;
+  border-radius: 15px;
+  margin: 20px;
+  border-width: 3px;
+  padding: 30px;
+  height: 1000px;
+}
+
+div.box-inner {
+  border-style: none;
+  text-align: center;
+  margin: 10px;
+  padding: 10px;
+}
+
+div.blur {
+  text-shadow: 3px 3px 6px rgb(224, 118, 245);
+}
+
+div.img {
+  background-image: url('https://ogq-sticker-global-cdn-z01.afreecatv.com/sticker/17659a9995901e6/11.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  padding: 0 50px;
+  line-height: 100px;
+}
+
+#menubar {
+  background: rgba(204, 105, 207, 0.185);
+}
+#menubar ul {
+  /* 여백과 패딩 모두 0 */
+  margin: 0;
+  padding: 0;
+  width: 90%; /* 모든 아이템(<li>)을 한 줄에 품을 수 있는 폭 */
+  display: flex;
+  justify-content: space-evenly;
+}
+#menubar ul li {
+  display: inline-block; /* 새 줄로 넘어가지 않게 */
+  list-style-type: none; /* 마커 삭제 */
+  padding: 0px 15px; /* top=bottom=0, left=right=15px */
+}
+
+#menubar ul li a {
+  color: white;
+  text-decoration: none; /* 링크 보이지 않게 */
+}
+#menubar ul li a:hover {
+  color: rgb(219, 116, 240); /* 마우스 올라 갈 때 색 */
+}
