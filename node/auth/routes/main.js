@@ -28,7 +28,7 @@ function template_nodata(res) {
         <link type="text/css" rel="stylesheet" href="mystyle.css" />
     </head>
     <body>
-        <h3>데이터가 존재하지 않습니다.</h3>
+        <h2>데이터가 존재하지 않습니다.</h2>
     </body>
     </html>
     `;
