@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Random 숫자 추출</title>
+  </head>
+
+  <body>
+    <h3>Random 숫자 추출</h3>
+    <hr />
+    <script>
+      let n = prompt('Random 숫자최댓값을 입력하세요.', 3);
+      n = parseInt(n); //문자열을 숫자로 바꿈
+      let x = Math.floor(Math.random() * 3 + 1);
+      document.write('Random value : ' + x);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>while 문</title>
+  </head>
+  <body>
+    <h3>while 문으로 달력 출력</h3>
+    <hr />
+    <script>
+      while (1) {
+        let n = prompt('원하는 달의 일수를 입력하세요. (28, 30, 31 중 택일)');
+        n = parseInt(n);
+        if (n == 30 || n == 31 || n == 28) {
+          let i = 1;
+          while (i <= n) {
+            if (i < 10)
+              document.write('&nbsp;&nbsp;' + i + '&nbsp;&nbsp;&nbsp;');
+            else document.write(i + '&nbsp;&nbsp;&nbsp;');
+            if (i % 7 == 0) document.write('<br>');
+            i++;
+          }
+          break;
+        } else {
+          alert('제대로 입력해~!!');
+          continue;
+        }
+      }
+    </script>
+  </body>
+</html>

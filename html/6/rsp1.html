@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>가위 바위 보 게임</title>
+  </head>
+  <body>
+    <h3>가위 바위 보 게임</h3>
+    <hr />
+    <script>
+      while (1) {
+        let n = prompt('가위(1) 바위(2) 보(3)!', 3);
+        let x = Math.floor(Math.random() * 3 + 1);
+        if (n == 1 || n == 2 || n == 3) {
+          document.write('User : ' + n + '<br>');
+          document.write('Com : ' + x + '<br>');
+          if (x == n) {
+            document.write('비겼습니다.');
+          } else if (n == 1 && x == 2) {
+            document.write('졌습니다.');
+          } else if (n == 1 && x == 3) {
+            document.write('이겼습니다.');
+          } else if (n == 2 && x == 1) {
+            document.write('졌습니다.');
+          } else if (n == 2 && x == 3) {
+            document.write('이겼습니다.');
+          } else if (n == 3 && x == 1) {
+            document.write('졌습니다.');
+          } else if (n == 3 && x == 2) {
+            document.write('이겼습니다.');
+          }
+          break;
+        } else {
+          alert('너 틀렸어. 1,2,3만 써.');
+        }
+      }
+    </script>
+  </body>
+</html>

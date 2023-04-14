@@ -159,7 +159,8 @@ app.post('/select', (req, res) => {
 app.get('/selectQuery', (req, res) => {
   const id = req.query.id;
   if (id == '') {
-    res.send('User-id를 입력하세요.');
+    // res.send('User-id를 입력하세요.')
+    res.write("<script>alert('User-id를 입력하세요.')</script>");
   } else {
     const result = connection.query('select * from user where userid=?', [id]);
     console.log(result);
@@ -176,7 +177,8 @@ app.get('/selectQuery', (req, res) => {
 app.post('/selectQuery', (req, res) => {
   const id = req.body.id;
   if (id == '') {
-    res.send('User-id를 입력하세요.');
+    // res.send('User-id를 입력하세요.');
+    res.write("<script>alert('User-id를 입력하세요.')</script>");
   } else {
     const result = connection.query('select * from user where userid=?', [id]);
     console.log(result);
@@ -193,7 +195,8 @@ app.post('/selectQuery', (req, res) => {
 app.post('/insert', (req, res) => {
   const {id, pw} = req.body;
   if (id == '' || pw == '') {
-    res.send('User-id와 Password를 입력하세요.');
+    // res.send('User-id와 Password를 입력하세요.');
+    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
   } else {
     let result = connection.query('select * from user where userid=?', [id]);
     if (result.length > 0) {
@@ -226,7 +229,8 @@ app.post('/insert', (req, res) => {
 app.post('/update', (req, res) => {
   const {id, pw} = req.body;
   if (id == '' || pw == '') {
-    res.send('User-id와 Password를 입력하세요.');
+    // res.send('User-id와 Password를 입력하세요.');
+    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
   } else {
     const result = connection.query('select * from user where userid=?', [id]);
     console.log(result);
@@ -248,7 +252,7 @@ app.post('/update', (req, res) => {
 app.post('/delete', (req, res) => {
   const id = req.body.id;
   if (id == '') {
-    res.send('User-id를 입력하세요.');
+    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
   } else {
     const result = connection.query('select * from user where userid=?', [id]);
     console.log(result);

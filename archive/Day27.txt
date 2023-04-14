@@ -1,0 +1,191 @@
+Day-27
+
+### mysql user authentication
+
+## create_user.sql
+
+use testdb;
+
+create table user(userid char(8), passwd char(8)) default charset=utf8;
+
+show tables;
+
+alter table user add constraint pk_userid primary key(userid);
+
+explain user;
+
+insert into user values ('root','1234');
+
+select * from user;
+
+
+# cd /allnew/node
+
+# mkdir auth
+
+# cd auth
+
+## app.js
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+app.set('port', process.env.PORT || 8000);
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+var main = require('./routes/main.js');
+app.use('/', main);
+
+app.listen(app.get('port'), () => {
+    console.log('8000 Port : Server Started...')
+});
+
+# mkdir public routes
+
+
+## public/index.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>User Authentication</title>
+  </head>
+  <body>
+    <h3>User Authentication</h3>
+    <hr />
+    <form action="/insert" target="targetURL" name="userForm" method="post">
+      <p>Userid : <input type="text" size="15" name="id" /></p>
+      <p>Password : <input type="password" size="15" name="pw" /></p>
+      <input
+        type="button"
+        value="get select"
+        onclick='document.targetURL.location.href="/select"'
+      />&nbsp;&nbsp;
+      <input
+        type="button"
+        value="get selectQuery"
+        onclick='document.targetURL.location.href="/selectQuery?id="+document.userForm.id.value'
+      />&nbsp;&nbsp;
+      <input type="submit" value="사용자 추가" />
+    </form>
+    <hr />
+    <iframe
+      name="targetURL"
+      width="70%"
+      height="500"
+      style="border: none"
+      src="/hello"
+    ></iframe>
+  </body>
+</html>
+
+
+## routes/main.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('sync-mysql');
+const env = require('dotenv').config({ path: "../../.env" });
+
+var connection = new mysql({
+    host: process.env.host,
+    user: process.env.user,
+    password: process.env.password,
+    database: process.env.database
+});
+
+const app = express()
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/hello', (req, res) => {
+    res.send(‘Hello World~!!')
+})
+
+// request O, query X
+app.get('/select', (req, res) => {
+    const result = connection.query('select * from user');
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query X
+app.post('/select', (req, res) => {
+    const result = connection.query('select * from user');
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.get('/selectQuery', (req, res) => {
+    const id = req.query.id;
+    const result = connection.query("select * from user where userid=?", [id]);
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.post('/selectQuery', (req, res) => {
+    const id = req.body.id;
+    const result = connection.query("select * from user where userid=?", [id]);
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.post('/insert', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("insert into user values (?, ?)", [id, pw]);
+    console.log(result);
+    res.redirect('/selectQuery?userid=' + req.body.id);
+})
+
+// request O, query O
+app.post('/update', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("update user set passwd=? where userid=?", [pw, id]);
+    console.log(result);
+    res.redirect('/selectQuery?userid=' + req.body.id);
+})
+
+// request O, query O
+app.post('/delete', (req, res) => {
+    const id = req.body.id;
+    const result = connection.query("delete from user where userid=?", [id]);
+    console.log(result);
+    res.redirect('/select');
+})
+
+module.exports = app;
+
+
+# npm init -y
+
+# npm install express body-parser cookie-parser morgan sync-mysql dotenv
+
+# npm install -g nodemon
+
+# nodemon app.js
+
+^c
+
+# cp -r auth templete
+
+# cd templete
+
+# rm -rf node_modules/ package-lock.json 
+
+# cd ../auth
+
+# nodemon app.js
+

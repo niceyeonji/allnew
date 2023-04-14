@@ -1,0 +1,285 @@
+Day-28
+
+# cd /allnew/node
+
+# cp -r auth member
+
+# cd auth/public
+
+# cp index.html member.html
+
+———————————————————————————————
+
+main.html // user의 로그인 성공화면 페이지
+
+register.html // user의 회원 가입 페이지
+
+member.html // admin, root의 로그인 성공화면 페이지
+
+error.html // 로그인 실패 시 화면, 링크를 만들어서 로그인 재시도.
+
+———————————————————————————————
+
+// select
+if (result.length == 0) {
+        res.redirect('error.html')
+}
+ //정상 처리됨
+
+// insert, update, delete
+if(result.affectedRows > 0){
+  //정상 처리됨
+  
+ }else{
+ 	//에러 처리
+ }
+
+console.log(result);
+
+result[0].userid
+result[0].passwd
+
+## app.js
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+app.set('port', process.env.PORT || 8000);
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+var main = require('./routes/main.js');
+app.use('/', main);
+
+app.listen(app.get('port'), () => {
+    console.log('8000 Port : Server Started...')
+});
+
+
+## public/index.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h3>Login</h3>
+    <hr />
+    <form action="/login" name="userForm" method="post">
+      <p>Userid : <input type="text" size="15" name="id" /></p>
+      <p>Password : <input type="password" size="15" name="pw" /></p>
+      <input type="submit" value="로그인" />&nbsp;&nbsp;
+      <input type="reset" value="취소" /><br /><br />
+    </form>
+    <a href="register.html">회원가입</a>
+  </body>
+</html>
+
+
+## public/member.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>User Authentication</title>
+  </head>
+  <body>
+    <h3>User Authentication</h3>
+    <hr />
+    <form action="/insert" target="targetURL" name="userForm" method="post">
+      <p>Userid : <input type="text" size="15" name="id" /></p>
+      <p>Password : <input type="password" size="15" name="pw" /></p>
+      <input
+        type="button"
+        value="get select"
+        onclick='document.targetURL.location.href="/select"'
+      />&nbsp;&nbsp;
+      <input
+        type="button"
+        value="get selectQuery"
+        onclick='document.targetURL.location.href="/selectQuery?id="+document.userForm.id.value'
+      />&nbsp;&nbsp; <input type="submit" value="post insert" />&nbsp;&nbsp;
+      <button type="submit" formaction="/update">post update</button
+      >&nbsp;&nbsp;
+      <button type="submit" formaction="/delete">post delete</button>
+    </form>
+    <hr />
+    <iframe
+      name="targetURL"
+      width="70%"
+      height="500"
+      style="border: none"
+      src="/hello"
+    ></iframe>
+  </body>
+</html>
+
+
+## public/register.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Register</title>
+  </head>
+  <body>
+    <h3>Register</h3>
+    <hr />
+    <form action="/register" name="userForm" method="post">
+      <p>Userid : <input type="text" size="15" name="id" /></p>
+      <p>Password : <input type="password" size="15" name="pw" /></p>
+      <input type="submit" value="회원가입" />&nbsp;&nbsp;
+      <input type="reset" value="취소" />
+    </form>
+  </body>
+</html>
+
+
+## public/main.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Main Page</title>
+  </head>
+  <body>
+    <h3>Main Page</h3>
+    <hr />
+    <img
+      src="https://tecoble.techcourse.co.kr/static/715b91aab894cf4240578d9b4ec613b8/b9fcf/linux-distribution.png"
+    />
+  </body>
+</html>
+
+
+## public/error.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login Failed</title>
+  </head>
+  <body>
+    <h3>Login Failed</h3>
+    <h4>로그인에 실패하셨습니다.</h4>
+    <a href="index.html">다시 시도하기</a>
+  </body>
+</html>
+
+
+## routes/main.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('sync-mysql');
+const env = require('dotenv').config({ path: "../../.env" });
+
+var connection = new mysql({
+    host: process.env.host,
+    user: process.env.user,
+    password: process.env.password,
+    database: process.env.database
+});
+
+const app = express()
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/hello', (req, res) => {
+    res.send('Hello World~!!')
+})
+
+// login
+app.post('/login', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("select * from user where userid=? and passwd=?", [id, pw]);
+    if (result.length == 0) {
+        res.redirect('error.html')
+    }
+    if (id == 'admin' || id == 'root') {
+        console.log(id + " => Administrator Logined")
+        res.redirect('member.html')
+    } else {
+        console.log(id + " => User Logined")
+        res.redirect('main.html')
+
+    }
+})
+
+// register
+app.post('/register', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("insert into user values (?, ?)", [id, pw]);
+    console.log(result);
+    res.redirect('/');
+})
+
+// request O, query X
+app.get('/select', (req, res) => {
+    const result = connection.query('select * from user');
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query X
+app.post('/select', (req, res) => {
+    const result = connection.query('select * from user');
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.get('/selectQuery', (req, res) => {
+    const id = req.query.id;
+    const result = connection.query("select * from user where userid=?", [id]);
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.post('/selectQuery', (req, res) => {
+    const id = req.body.id;
+    // console.log(req.body);
+    const result = connection.query("select * from user where userid=?", [id]);
+    console.log(result);
+    res.send(result);
+})
+
+// request O, query O
+app.post('/insert', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("insert into user values (?, ?)", [id, pw]);
+    console.log(result);
+    res.redirect('/selectQuery?id=' + req.body.id);
+})
+
+// request O, query O
+app.post('/update', (req, res) => {
+    const { id, pw } = req.body;
+    const result = connection.query("update user set passwd=? where userid=?", [pw, id]);
+    console.log(result);
+    res.redirect('/selectQuery?id=' + req.body.id);
+})
+
+// request O, query O
+app.post('/delete', (req, res) => {
+    const id = req.body.id;
+    const result = connection.query("delete from user where userid=?", [id]);
+    console.log(result);
+    res.redirect('/select');
+})
+
+module.exports = app;
+
+
+
