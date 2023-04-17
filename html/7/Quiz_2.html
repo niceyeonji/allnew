@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>랜덤 배열 생성 후 값 뒤집어 저장한 후 출력</title>
+  </head>
+  <body>
+    <h3>랜덤 배열 생성 후 값 뒤집어 저장한 후 출력</h3>
+    <hr />
+    <script>
+      let n = 5;
+      let arr = new Array(n);
+      document.write('배열의 길이 : ' + n);
+      document.write('<br> 전체 배열의 값 : ');
+      for (let i = 0; i < n; i++) {
+        arr[i] = Math.floor(Math.random() * 100 + 1);
+        document.writeln(arr[i]);
+      }
+      for (let i = 0, j = arr.length - 1; i < j; i++, j--) {
+        temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+      document.write('<br> Reverse 배열 : ');
+      for (let i = 0; i < n; i++) document.writeln(arr[i]);
+    </script>
+  </body>
+</html>

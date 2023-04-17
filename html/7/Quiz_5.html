@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>중복없이 랜덤 숫자 발생</title>
+  </head>
+  <body>
+    <h3>중복없이 랜덤 숫자 발생</h3>
+    <hr />
+    <script>
+      var array = new Array();
+      var input = prompt('두 개의 숫자를 입력하세요.(예 : 5,10)', '5,10');
+      number = input.split(',');
+      for (i = 0; i < number[0]; i++) {
+        array[i] = Math.floor(Math.random() * number[1] + 1);
+        for (j = 0; j < i; j++) {
+          if (array[j] == array[i]) {
+            i--;
+            continue;
+          }
+        }
+      }
+      document.write(`배열의 크기 : ${array.length} <br>`);
+      document.write(`입력된 배열 : ${array} <br>`);
+      // var num = parseInt(array.substr(0));
+      // var max = parseInt(array.substr(2,3));
+
+      // var num = new Set();
+      // for (let i = 1; i <= max; i++) {
+      //     num.add(i);
+      // }
+    </script>
+  </body>
+</html>
