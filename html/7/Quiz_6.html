@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Date 객체로 경과 시간 알아내기</title>
+  </head>
+  <body>
+    <h3>Date 객체로 경과 시간 알아내기</h3>
+    <hr />
+    <script>
+      let now = new Date(); // 현재 시간 값을 가진 Date 객체 생성
+      let oldTime = new Date(2023, 02, 06, 09, 00, 00);
+      document.write('현재 시간 : ' + now + ' (대한민국 표준시) <br>');
+      document.write('<hr>');
+      document.write('기준 시간 : ' + oldTime + ' (대한민국 표준시) <br>');
+      document.write('<hr>');
+
+      let diff = now - oldTime;
+      //   document.write(x + "<br>");
+      document.write('경과 시간 - 일 : ' + diff / 1000 / 60 / 60 / 24 + '<br>');
+      document.write('경과 시간 - 시 : ' + diff / 1000 / 60 / 60 + '<br>');
+      document.write('경과 시간 - 분 : ' + diff / 1000 / 60 + '<br>');
+      document.write('경과 시간 - 초 : ' + diff / 1000 + '<br>');
+    </script>
+  </body>
+</html>

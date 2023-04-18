@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>프로토타입으로 Book 객체 만들기</title>
+    <script>
+      function Book(title, author, totalpage, category, price) {
+        this.title = title;
+        this.author = author;
+        this.totalpage = totalpage;
+        this.category = category;
+        this.price = price;
+        this.leftover = totalpage;
+        this.rentalState = 1;
+        this.rentalUser = '';
+        this.rentalDay = 0;
+        // 메소드 작성
+        this.reading = function (page) {
+          this.leftover -= page;
+          return this.leftover;
+        };
+        this.rental = function (user, day) {
+          this.rentalUser = user;
+          this.rentalDay = day;
+          this.rentalState = 0;
+          return this.rentalState;
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <h3>프로토타입으로 Book 객체 만들기</h3>
+    <hr />
+    <script>
+      let book = new Book(
+        '아마존에서 살아남기',
+        '최덕희',
+        174,
+        '학습만화',
+        9800,
+      );
+      document.write('<b>Book : </b><br>');
+      document.write('제목 : ' + book.title + '<br>');
+      document.write('저자 : ' + book.author + '<br>');
+      document.write('총 페이지 : ' + book.totalpage + 'p<br>');
+      document.write('카테고리 : ' + book.category + '<br>');
+      document.write('가격 : ' + book.price + '<br><hr>');
+
+      document.write(
+        '현재 전체 페이지 ' +
+          book.totalpage +
+          ' 중 잔여 페이지가 ' +
+          book.reading(40) +
+          '페이지 남으셨습니다. <br><hr>',
+      );
+
+      book.rental('조승연', 30);
+      let state = {0: '대여중', 1: '대여가능'};
+      document.write(
+        '현재 ' +
+          book.title +
+          '는 ' +
+          book.rentalUser +
+          '님에게 ' +
+          book.rentalDay +
+          '일 동안 ' +
+          state[book.rentalState] +
+          '입니다.',
+      );
+    </script>
+  </body>
+</html>

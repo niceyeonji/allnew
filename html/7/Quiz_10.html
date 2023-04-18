@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>프로토타입으로 회전초밥 객체 만들기</title>
+    <script>
+      function Sushi(menuName, kcal, Price, maxNumber) {
+        this.menuName = menuName;
+        this.kcal = kcal;
+        this.Price = Price;
+        this.maxNumber = maxNumber;
+        this.leftSushi = maxNumber;
+
+        this.info = function () {
+          document.write(`
+            <b>MENU</b><br>
+            메뉴이름 : ${this.menuName}초밥<br>
+            칼로리   : ${this.kcal}kcal<br>
+            가격     : ${this.Price}원<br>
+            최대 개수 : ${this.maxNumber}개<br><hr>`);
+        };
+
+        this.sushisell = function (sell) {
+          this.leftSushi -= sell;
+          document.write(`${this.menuName}초밥이 ${sell}개 팔렸습니다.<br>`);
+          if (this.leftSushi > 10)
+            document.write(
+              `남은 ${this.menuName}초밥은 ${this.leftSushi}개 입니다. <br><hr>`,
+            );
+          else
+            document.write(
+              `남은 ${this.menuName}초밥은 ${this.leftSushi}개 입니다. <br> 더 채워야 합니다.<br><hr>`,
+            );
+        };
+
+        this.sushiInput = function (amount) {
+          this.leftSushi += amount;
+          document.write(
+            `${amount}개 채워 넣어 ${this.leftSushi}개 남았습니다. <br><hr>`,
+          );
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <h3>프로토타입으로 회전초밥 객체 만들기</h3>
+    <hr />
+    <script>
+      let sushi1 = new Sushi('광어', 30, 4000, 25);
+      sushi1.info();
+      sushi1.sushisell(5);
+      sushi1.sushisell(5);
+      sushi1.sushisell(5);
+      sushi1.sushiInput(10);
+
+      let sushi2 = new Sushi('연어', 50, 4500, 25);
+      sushi2.info();
+      sushi2.sushisell(6);
+      sushi2.sushisell(9);
+      sushi2.sushiInput(10);
+      sushi2.sushisell(6);
+
+      let sushi3 = new Sushi('생새우', 40, 3000, 20);
+      sushi3.info();
+      sushi3.sushisell(3);
+      sushi3.sushisell(4);
+      sushi3.sushisell(6);
+      sushi3.sushiInput(10);
+    </script>
+  </body>
+</html>
