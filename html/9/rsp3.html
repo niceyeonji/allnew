@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>가위 바위 보 게임2</title>
+    <script>
+      var rsp = [];
+      rsp[1] = 1;
+      rsp[2] = 2;
+      rsp[3] = 3;
+      function findChecked() {
+        let found = null;
+        let rspplay = document.getElementsByName('play');
+        for (let i = 0; i < rspplay.length; i++) {
+          if (rspplay[i].checked == true) found = rspplay[i];
+        }
+        if (found != null) {
+          let user = found.value;
+          let com = Math.floor(Math.random() * 3 + 1);
+          verdict = user - com;
+          if (verdict == -2 || verdict == 1)
+            alert(
+              'User : ' +
+                rsp[user] +
+                ' vs Com : ' +
+                rsp[com] +
+                ' 당신이 이겼습니다.',
+            );
+          else if (verdict == 2 || verdict == -1)
+            alert(
+              'User : ' +
+                rsp[user] +
+                ' vs Com : ' +
+                rsp[com] +
+                ' 당신이 졌습니다.',
+            );
+          else
+            alert(
+              'User : ' +
+                rsp[user] +
+                ' vs Com : ' +
+                rsp[com] +
+                ' 무승부입니다.',
+            );
+        } else {
+          alert('선택된 것이 없음');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>가위 바위 보 게임2</h3>
+    <hr />
+    하나를 선택해주세요!
+    <br />
+    <br />
+    <form>
+      <input type="radio" name="play" value="1" checked />가위
+      <input type="radio" name="play" value="2" />바위
+      <input type="radio" name="play" value="3" />보
+      <input type="button" value="Go!" onclick="findChecked()" />
+    </form>
+  </body>
+</html>

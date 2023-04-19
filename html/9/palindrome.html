@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome</title>
+    <script>
+      // PALINDROME이 맞는지 아닌지 볼게용
+      function findChecked() {
+        let p_type = null; // 우리가 체크한 값이 뭔지 저장할 것.
+
+        let palindrome_type = document.getElementsByName('type'); //input에 있는 name이 "type"인 애들을 불러오기 위해
+        // console.log(palindrome_type);
+
+        //checked가 들어가 있다면 palindrome_type의 값을 p_type에 저장.
+        for (let i = 0; i < palindrome_type.length; i++) {
+          if (palindrome_type[i].checked == true) {
+            p_type = palindrome_type[i];
+          }
+        }
+
+        // input에 있는 것 id가 inputVal인 거를 가지고 오기 위해
+        let palindrome_id = document.getElementById('inputVal');
+        console.log(palindrome_id.value.length);
+
+        // 라디오 이거 체크가 되어 있다면
+        if (p_type != null) {
+          // 입력한 값이 3자리가 아니라면
+          if (palindrome_id.value.length != 3) {
+            alert('3자리 입력해주세요.');
+          } else {
+            // 입력한 값을 저장하기 위해 inputValue를 만들었다.
+            let inputValue = palindrome_id.value;
+            // inputValue의 0번째 값과 2번째 값을 비교
+            if (inputValue[0] === inputValue[2])
+              alert('palindrome이 맞습니다.');
+            else alert('palindrome이 아닙니다.');
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Palindrome</h3>
+    <hr />
+    <form>
+      <input type="text" id="inputVal" />
+      <input type="button" value="Check Palindrome" onclick="findChecked()" />
+      <br />
+      <br />
+      <input type="radio" name="type" value="number" />숫자
+      <input type="radio" name="type" value="text" checked="true" />문자
+    </form>
+    <br />
+    3자리 문자 또는 숫자를 입력하세요.
+  </body>
+</html>
