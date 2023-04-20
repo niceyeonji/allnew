@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome</title>
+    <script>
+      // palindrome을 구하는 함수만들기
+      function findChecked() {
+        // 우리가 체크한 값이 뭔지 저장
+        //name이 "type"인 요소를 불러와 palindrome_type에 넣음
+        let palindrome_type = document.getElementsByName('type');
+        // ID가 inputVal인 요소를 불러와 palindrome_id에 넣음
+        let palindrome_id = document.getElementById('inputVal');
+        // ID가 div인 요소 겟 (div(division)으로 감. innerHTML에 쓰임)
+        let div = document.getElementById('div');
+        // 입력을 통해 palindrome_id에 들어온 값을 inputValue에 저장
+        let inputValue = palindrome_id.value;
+
+        // 만약 숫자를 선택한 경우(0-숫자버튼, 1-문자버튼)
+        if (palindrome_type[0].checked) {
+          // inputValue가 Number가 아닐 경우(false가 아닐경우)
+          if (!(parseInt(inputValue) > 0)) {
+            div.innerHTML = '숫자를 입력해주세요.';
+            return;
+          }
+          // 길이가 3자리가 아닐 경우
+          if (inputValue.length != 3) {
+            div.innerHTML = '3자리 숫자를 입력해주세요.';
+            return;
+          }
+          // inputValue의 0번째와 2번째가 같다면
+          if (inputValue[0] === inputValue[2]) {
+            div.innerHTML = 'palindrome이 맞습니다.';
+          } else {
+            div.innerHTML = 'palindrome이 아닙니다.';
+          }
+          // 만약 문자를 선택한 경우
+        } else if (palindrome_type[1].checked) {
+          // 길이가 3자리가 아닐 경우
+          if (inputValue.length != 3) {
+            div.innerHTML = '3자리 문자를 입력해주세요.';
+            return;
+          }
+          // inputValue가 Number일 경우
+          if (parseInt(inputValue) > 0) {
+            div.innerHTML = '문자를 입력해주세요.';
+            return;
+          }
+          // inputValue의 0번째와 2번째가 같다면
+          if (inputValue[0] === inputValue[2]) {
+            div.innerHTML = 'palindrome이 맞습니다.';
+          } else {
+            div.innerHTML = 'palindrome이 아닙니다.';
+          }
+        } else {
+          div.innerHTML = '문자 또는 숫자를 선택해주세요.';
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Palindrome 맞아요?</h3>
+    <hr />
+    <form>
+      <input type="text" id="inputVal" />
+      <input type="button" value="펠린드롬 맞아요?" onclick="findChecked()" />
+      <br />
+      <br />
+      <input type="radio" name="type" value="number" />숫자
+      <input type="radio" name="type" value="text" />문자
+    </form>
+    <br />
+    3자리 문자 또는 숫자를 입력하세요.
+    <br />
+    <br />
+    <div id="div"></div>
+  </body>
+</html>
