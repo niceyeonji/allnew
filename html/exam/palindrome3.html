@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>회문</title>
+    <style>
+      div {
+        text-align: center;
+      }
+
+      input {
+        text-align: right;
+      }
+    </style>
+    <script>
+      function check_palindrome() {
+        let value = document.getElementById('targetBox').value;
+        let result = document.getElementById('result');
+        // result.innerHTML = typeof value;
+        let value_len = value.length;
+        let text = '';
+        if (value_len < 3) {
+          console.log(value);
+          alert('3글자 를 넣어주세요!');
+          return;
+        }
+        if (value[0] == value[value_len - 1]) text = 'palindrome 입니다!<br>';
+        else
+          text = `첫번째 '${value[0]}' 와 마지막 '${
+            value[value_len - 1]
+          }' 가 달라서,<br>
+                        palindrome 이 아닙니다.`;
+
+        result.innerHTML = text;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1 style="text-align: center">palindrome</h1>
+    <hr />
+    <div id="total-box">
+      <div>
+        <input
+          type="text"
+          id="targetBox"
+          placeholder="숫자 3개"
+          maxlength="3"
+        />
+        <button onclick="check_palindrome()">확인</button>
+      </div>
+      <div>
+        <p id="result"></p>
+      </div>
+    </div>
+  </body>
+</html>
