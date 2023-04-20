@@ -23,6 +23,11 @@
         sessionStorage.setItem(id, now);
         alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
       }
+      
+      function aaa(){
+        alert('경고')
+      }
+
       window.addEventListener("beforeunload", (event) => {
         event.preventDefault();
         event.returnValue = "";

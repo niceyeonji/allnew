@@ -29,7 +29,7 @@
       });
     </script>
   </head>
-  <body class="body">
+  <body class="body" onload="sessionStore()">
     <div class="blur"><h3>Main Page</h3></div>
     <nav id="menubar">
       <ul>
@@ -38,7 +38,7 @@
         <li overflow:hidden;></li>
         <li overflow:hidden;></li>
         <li overflow:hidden;></li>
-        <li><a href="index.html">Logout</a></li>
+        <li><a href="index.html" id="logout">Logout</a></li>
       </ul>
     </nav>
     <hr />
@@ -48,6 +48,16 @@
     <br />
     <br />
     <hr />
+
     <div class="img">@Ungdii95</div>
+    <script>
+      let id = getParameter('id');
+      let logout = document.getElementById('logout');
+      logout.addEventListener('click', event => {
+        // event.preventDefault();
+        sessionStorage.removeItem(id);
+        alert(`사용자 ${id} 님이 로그아웃 하셨습니다.`);
+      });
+    </script>
   </body>
 </html>
