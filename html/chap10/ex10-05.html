@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>윈도우의 위치와 크기 조절</title>
-</head>
-<body>
-<h3>윈도우의 위치와 크기 조절</h3>
-<hr>
-<button onclick="window.moveBy(-10, 0)">left</button>
-<button onclick="window.moveBy(10, 0)">right</button>
-<button onclick="self.moveBy(0, -10)">up</button>
-<button onclick="moveBy(0, 10)">down</button>
-<button onclick="resizeBy(10, 10)">+</button>
-<button onclick="resizeBy(-10, -10)">-</button>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>윈도우의 위치와 크기 조절</title>
+    <script>
+      let newWin = null; // 새로 연 윈도우 기억
+      function load(URL) {
+        newWin = window.open(
+          URL,
+          'myWin',
+          'left=300,top=300,width=400,height=300',
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <h3>윈도우의 위치와 크기 조절</h3>
+    <hr />
+    <a href="javascript:load('http://192.168.1.58/chap10/ex10-05.html')">
+      새 윈도우 열기</a
+    ><br />
+    <button onclick="window.moveBy(-10, 0)">left</button>
+    <button onclick="window.moveBy(10, 0)">right</button>
+    <button onclick="self.moveBy(0, -10)">up</button>
+    <button onclick="moveBy(0, 10)">down</button>
+    <button onclick="resizeBy(10, 10)">+</button>
+    <button onclick="resizeBy(-10, -10)">-</button>
+  </body>
 </html>

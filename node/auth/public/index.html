@@ -3,6 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <title>Login</title>
+        <script>
+      function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+      function sessionStore() {
+        let id = getParameter("id");
+        let now = new Date();
+        if (!window.sessionStorage) {
+          alert("세션 스토리지를 지원하지 않습니다.");
+          return;
+        }
+        sessionStorage.setItem(id, now);
+        alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
+      }
+    </script>
     <link type="text/css" rel="stylesheet" href="mystyle.css" />
   </head>
   <body  class="body">
