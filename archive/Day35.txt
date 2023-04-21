@@ -1,0 +1,114 @@
+Day-35
+
+### Prime number 워커 태스크
+
+## prime.html
+ 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prime number 워커 태스크</title>
+  </head>
+  <body>
+    <h3>Prime number 워커 태스크</h3>
+    <hr />
+    <input id="input" type="text" size="10" /> is Prime number ??
+    <button type="button" id="prime" onclick="send()">send</button>
+    <hr />
+    <div>
+      <span id="output">Result</span>
+    </div>
+    <script>
+      let addWorker = new Worker("prime.js"); // 워커 태스크 생성
+
+      function send() {
+        let parameters = {
+          input: document.getElementById("input").value,
+        };
+        addWorker.postMessage(parameters);
+      }
+
+      addWorker.onmessage = function (e) {
+        document.getElementById("output").innerHTML = e.data;
+      };
+    </script>
+  </body>
+</html>
+
+
+## prime.js
+
+onmessage = function (e) {
+	let output = 0;
+	let input = parseInt(e.data.input);
+	let i = 2;
+	while (i <= input) {
+		if (input % i == 0)
+			break;
+		else
+			i++;
+	}
+	output = input
+	output += (input == i) ? " is Prime Number." : " is not Prime Number.";
+	postMessage(output);
+}
+
+
+## minsum-version 
+
+## prime.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>소수 판별</title>
+  </head>
+  <body>
+    <h3>소수 판별</h3>
+    <hr />
+    <input id="number" type="number" size="10" />
+    <button type="button" id="check" onclick="send()">Check</button>
+    <p id="result"></p>
+    <script>
+      let primeWorker = new Worker("prime.js"); // 워크 태스크 생성
+
+      function send() {
+        let number = document.getElementById("number").value;
+        // 워커 태스크로 전송
+        primeWorker.postMessage(number);
+      }
+
+      // 리스너 등록
+      primeWorker.onmessage = function (e) {
+        // 결과 출력
+        document.getElementById("result").textContent = e.data;
+      };
+    </script>
+  </body>
+</html>
+
+
+## prime.js
+
+function Prime(num) {
+  if (num < 2) return false;
+  for (let i = 2; i <= num / 2; i++) {
+    if (num % i == 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+self.onmessage = function (e) {
+  // 워커 태스크로부터 전달받은 숫자
+  let number = e.data;
+
+  // 소수 판별 결과 전송
+  self.postMessage(Prime(number));
+};
+
+
+

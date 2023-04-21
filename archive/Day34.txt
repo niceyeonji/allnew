@@ -1,0 +1,703 @@
+Day-34
+
+
+### palindrome
+
+## palindrome-minhee.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      function checkText() {
+        let inputText = document.getElementById("inputput").value; //ID가 inputput인 요소의 값을 반환
+        let inputType = document.getElementsByName("type"); //name이 type인 라디오버튼 배열을 반환
+        let view = document.getElementById("view"); //ID가 view인 요소를 반환 (div에 있음, innerHTML에 활용)
+
+        if (inputText.length == 0) {
+          //텍스트를 입력하지 않을 경우
+          view.innerHTML = "입력을 하셔야지용"; // div 위치에 입력됨
+          return;
+        } else {
+          if (inputType[0].checked == true && inputText * 0 != 0) {
+            // 문자버튼에 체크가 되어있고, 문자가 맞을 경우
+            if (inputText[0] == inputText[2]) {
+              // 문자열 0번째, 2번째가 동일한지 확인
+              view.innerHTML = "문자 팰린드롬 맞드롬"; // 동일하면 팰린드롬임. (div 위치에 입력됨)
+            } else {
+              view.innerHTML = "그거 그렇게 하는거 아닌데"; // 동일하지 않으면 팰린드롬이 아님. (div 위치에 입력됨)
+            }
+          } else if (inputType[0].checked == true && inputText * 0 == 0) {
+            //문자버튼에 체크가 되어있고, 숫자일 경우
+            view.innerHTML = "문자가 아니잖슴"; // div 위치에 입력됨
+          } else if (inputType[1].checked == true && inputText * 0 == 0) {
+            //숫자버튼에 체크가 되어있고, 숫자일 경우
+            if (inputText[0] == inputText[2]) {
+              // 동일하면 팰린드롬임.
+              view.innerHTML = "숫자 팰린드롬 맞드롬"; // div 위치에 입력됨
+              return;
+            } else {
+              view.innerHTML = "그거 그렇게 하는거 아닌데"; // div 위치에 입력됨
+            }
+          } else if (inputType[1].checked == true && inputText * 0 != 0) {
+            //숫자버튼에 체크가 되어있고, 숫자가 아닐 경우
+            view.innerHTML = "숫자가 아니잖슴";
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>팰린드롬 싫드롬</h3>
+    <hr />
+    <form>
+      <input type="text" id="inputput" maxlength="3" />
+      <input type="button" value="췌키라웃나우" onclick="checkText()" /><br />
+      <input type="radio" name="type" value="1" />문자
+      <input type="radio" name="type" value="2" />숫자
+    </form>
+    <div id="view"></div>
+  </body>
+</html>
+
+
+## palindrome-sanghyun.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>palindrome</title>
+    <script>
+      function findChecked() {
+        let Input = document.getElementById("userInput").value; // 텍스트 출력 userInput 값을 다 가져옴(값은 객체)
+        let Language = document.getElementsByName("language"); // 타입 선언  (배열) name이 language인 요소를 가져옴
+
+        let mycked = 0; //라디오 버튼의 인덱스를 나타냄, 값이 1이면 문자열, 값이 2이면 숫자
+        let num = 0;
+        let str = "";
+
+        for (let i = 1; i <= Language.length; i++) {
+          //Language배열의 길이보다 작을때 까지 반복
+          if (Language[i].checked == true) {
+            //라디오 버튼이 선택되었으면
+            mycked = i;
+          }
+        }
+
+        if (parseInt(Input) > 0) {
+          //input값을 정수형태로 바꿈
+          num = parseInt(Input);
+        } else {
+          str = Input; //문자열이 들어감()
+        }
+
+        //문자열 펠린드롬을 가리기 위한 코드
+        if (str.length > 1 && mycked == 1) {
+          //mycked가 1이면 문자
+          if (str[0] == str[2]) {
+            //배열에 토 | 마 | 토 가 들어가서 하나의 string으로 구성되어 있음음
+            alert("문자 펠린드롬 입니다.");
+          } else {
+            alert("문자 펠린드롬이 아닙니다.");
+          }
+        } else if (num > 0 && mycked == 2) {
+          // mycked가 2이면 숫자
+          if (num % 10 == ((num % 1000) - (num % 100)) / 100) {
+            //마지막 자리수가 첫번째 자리수 나머지 - 두번쨰 자리수
+            alert("슷자 펠린드롬 입니다.");
+          } else {
+            alert("숫자 펠린드롬이 아닙니다.");
+          }
+        } else {
+          alert("문자 입력칸에 숫자를, 숫자입력칸에 문자를 넣으셨습니다.");
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Palindrome? Or Not?</h3>
+    <form>
+      <input type="text" id="userInput" />
+      <input type="radio" name="language" value="1" />문자
+      <input type="radio" name="language" value="2" />숫자
+      <input type="button" value="find checked" onclick="findChecked()" />
+    </form>
+  </body>
+</html>
+
+
+## palindrome-yeonji.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome</title>
+    <script>
+      // palindrome을 구하는 함수만들기
+      function findChecked() {
+        // 우리가 체크한 값이 뭔지 저장
+        //name이 "type"인 요소를 불러와 palindrome_type에 넣음
+        let palindrome_type = document.getElementsByName("type");
+        // ID가 inputVal인 요소를 불러와 palindrome_id에 넣음
+        let palindrome_id = document.getElementById("inputVal");
+        // ID가 div인 요소 겟 (div(division)으로 감. innerHTML에 쓰임)
+        let div = document.getElementById("div");
+        // 입력을 통해 palindrome_id에 들어온 값을 inputValue에 저장
+        let inputValue = palindrome_id.value;
+
+        // 만약 숫자를 선택한 경우(0-숫자버튼, 1-문자버튼)
+        if (palindrome_type[0].checked) {
+          // inputValue가 Number가 아닐 경우(false가 아닐경우)
+          if (!(parseInt(inputValue) > 0)) {
+            div.innerHTML = "숫자를 입력해주세요.";
+            return;
+          }
+          // 길이가 3자리가 아닐 경우
+          if (inputValue.length != 3) {
+            div.innerHTML = "3자리 숫자를 입력해주세요.";
+            return;
+          }
+          // inputValue의 0번째와 2번째가 같다면
+          if (inputValue[0] === inputValue[2]) {
+            div.innerHTML = "palindrome이 맞습니다.";
+          } else {
+            div.innerHTML = "palindrome이 아닙니다.";
+          }
+          // 만약 문자를 선택한 경우
+        } else if (palindrome_type[1].checked) {
+          // 길이가 3자리가 아닐 경우
+          if (inputValue.length != 3) {
+            div.innerHTML = "3자리 문자를 입력해주세요.";
+            return;
+          }
+          // inputValue가 Number일 경우
+          if (parseInt(inputValue) > 0) {
+            div.innerHTML = "문자를 입력해주세요.";
+            return;
+          }
+          // inputValue의 0번째와 2번째가 같다면
+          if (inputValue[0] === inputValue[2]) {
+            div.innerHTML = "palindrome이 맞습니다.";
+          } else {
+            div.innerHTML = "palindrome이 아닙니다.";
+          }
+        } else {
+          div.innerHTML = "문자 또는 숫자를 선택해주세요.";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Palindrome 맞아요?</h3>
+    <hr />
+    <form>
+      <input type="text" id="inputVal" />
+      <input type="button" value="펠린드롬 맞아요?" onclick="findChecked()" />
+      <br />
+      <br />
+      <input type="radio" name="type" value="number" />숫자
+      <input type="radio" name="type" value="text" />문자
+    </form>
+    <br />
+    3자리 문자 또는 숫자를 입력하세요.
+    <br />
+    <br />
+    <div id="div"></div>
+  </body>
+</html>
+
+
+## palindrome-kristen.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>회문</title>
+    <style>
+      div {
+        text-align: center;
+      }
+
+      input {
+        text-align: right;
+      }
+    </style>
+    <script>
+      function check_palindrome() {
+        let value = document.getElementById("targetBox").value;
+        let result = document.getElementById("result");
+        // result.innerHTML = typeof value;
+        let value_len = value.length;
+        let text = "";
+        if (value_len < 3) {
+          console.log(value);
+          alert("3글자 를 넣어주세요!");
+          return;
+        }
+        if (value[0] == value[value_len - 1]) text = "palindrome 입니다!<br>";
+        else
+          text = `첫번째 '${value[0]}' 와 마지막 '${
+            value[value_len - 1]
+          }' 가 달라서,<br>
+                        palindrome 이 아닙니다.`;
+
+        result.innerHTML = text;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1 style="text-align: center">palindrome</h1>
+    <hr />
+    <div id="total-box">
+      <div>
+        <input
+          type="text"
+          id="targetBox"
+          placeholder="숫자 3개"
+          maxlength="3"
+        />
+        <button onclick="check_palindrome()">확인</button>
+      </div>
+      <div>
+        <p id="result"></p>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+## panlindrome.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome</title>
+    <script>
+      let isNum = 0;
+      let result = 1;
+      function checkPalindrome() {
+        let ta_v = document.getElementsByName("ta");
+        for (let i = 0; i < ta_v.length; i++) {
+          if (ta_v[i].checked == true) {
+            isNum = i;
+          }
+        }
+        let input_v = document.getElementById("input").value;
+        let output_v = document.getElementById("output");
+        if (!isNum) {
+          let num = Number(input_v);
+          let input1 = Math.floor(num / 100);
+          let input2 = Math.floor((num / 10) % 10);
+          let input3 = Math.floor(num % 10);
+          result = input1 == input3 ? 1 : 0;
+        } else {
+          let char = input_v.split("");
+          result = char[0] == char[2] ? 1 : 0;
+        }
+        if (result == 1)
+          output_v.innerHTML = "입력하신 숫자/문자는 Palindrome입니다.";
+        else output_v.innerHTML = "입력하신 숫자/문자는 Palindrome이 아닙니다.";
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Palindrome</h3>
+    <hr />
+    <form>
+      <input type="text" id="input" placeholder="숫자/문자 3글자" />
+      <input
+        type="button"
+        value="Check Palindrome"
+        onclick="checkPalindrome()"
+      />
+      <p>
+        <input type="radio" name="ta" value="0" checked />숫자
+        <input type="radio" name="ta" value="1" />문자
+      </p>
+    </form>
+    <div sytle="margin=100">
+      <span id="output">3자리 문자 또는 숫자를 입력하세요.</span>
+    </div>
+  </body>
+</html>
+
+
+
+### cookie example
+
+# cd /allnew/html/
+
+# mkdir -p htdocs/12
+
+# cp 12/ex12-01.html htdocs/12/
+
+
+http://192.168.1.12/12/ex12-01.html
+
+
+
+
+선생님 안녕하세요
+내가 만든 쿠키
+뇸뇸뇸
+점심 맛있게 드셨나요?
+저는 새모이만큼 요만큼 먹었는데요
+어떠신가요
+기부니가 조습니다
+조스는 무서워요
+영화요즘 뭐 볼게 있을까요
+아마 극장엔 코로나가 종식하고 사람이 많아졌겠죠
+그러고보니 팝콘은 반반이 좋을까요 아니면 콜라만 먹는게 좋을까요
+제친구가 미소지기하는데 한번 가봐야하는데 언제가야할까싶네요
+갑자기 아이슬란드에는 영화관이 몇개가 있을가 싶네요
+영화관에 청소부는 잘생겼을가요?
+
+
+
+### Web Storage
+
+# cd /allnew/html/
+
+# cp 12/sessionStorage.html htdocs/12/
+
+
+## sessionStorage.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>세션 스토리지에 쓰기/읽기</title>
+</head>
+<body>
+<h3>세션 스토리지에 구입 리스트 저장/검색</h3>
+<hr>
+품목명 : <input id="item" type="text" size="10">
+개수 : <input id="count" type="text" size="10">
+<button type="button" id="save" onclick="store()">저장</button>
+<button type="button" id="retrieve" onclick="retrieve()">검색</button>
+<script>
+    let item = document.getElementById("item");
+    let count = document.getElementById("count");
+
+    function store() {
+        if (!window.sessionStorage) {
+        	alert("세션 스토리지를 지원하지 않습니다.");
+        	return;
+        }
+        sessionStorage.setItem(item.value, count.value);
+    }
+    function retrieve() {
+        if (!window.sessionStorage) {
+        	alert("세션 스토리지를 지원하지 않습니다.");
+        	return;
+        }
+        let val = sessionStorage.getItem(item.value);
+        if(val == null)
+    	alert(item.value + "는 구입 리스트에  없습니다.");
+        else
+    	count.value = val;
+    }
+</script>
+</body>
+</html>
+
+
+# cp 12/storageEvent.html htdocs/12/
+
+## storageEvent.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>로컬 스토리지에 StorageEvent</title>
+</head>
+<body>
+<h3>로컬 스토리지에 StorageEvent</h3>
+<hr>
+품목명 : <input id="item" type="text" size="10">
+개수 : <input id="count" type="text" size="10">
+<button id="save" onclick="store()">저장</button>
+<button id="retrieve" onclick="retrieve()">검색</button><p>
+로컬 스토리지의 변경 내용(storage 이벤트):<br>
+<textarea id="textarea" cols="60" rows="6"></textarea>
+<script>
+	window.addEventListener("storage", storageEventListener, false);
+
+	function storageEventListener(e) { // e는 StorageEvent 객체
+		let eventDetail = "key:\t\t\t" + e.key + "\n" +
+				"oldValue:\t\t" + e.oldValue + "\n" +   
+				"newValue:\t\t" + e.newValue + "\n" + 
+				"storageArea:\t" + e.storageArea + "\n" +
+				"url:\t\t\t" + e.url;
+		document.getElementById("textarea").innerHTML = eventDetail; //<textarea>에 출력
+	}
+</script>
+<script>
+	let item = document.getElementById("item");
+	let count = document.getElementById("count");
+
+	function store() {
+	    if (!window.localStorage) {
+	    	alert("로컬스토리지를 지원하지 않습니다.");
+	    	return;
+	    }
+		localStorage.setItem(item.value, count.value);
+	}
+	function retrieve() {
+	    if (!window.localStorage) {
+	    	alert("로컬스토리지를 지원하지 않습니다.");
+	    	return;
+	    }
+		let val = localStorage.getItem(item.value);
+		if(val == null)
+			alert(item.value + "는 구입 리스트에  없습니다.");
+		else
+			count.value = val;
+	}
+</script>
+</body>
+</html>
+
+
+### User Authentication에 session storage 적용
+
+## main.js
+
+    if (id == 'admin' || id == 'root') {
+        console.log(id + " => Administrator Logined")
+        res.redirect('member.html?id=' + id);
+    } else {
+        console.log(id + " => User Logined")
+        res.redirect('user.html?id='+id)
+    }
+
+
+## member.html
+
+    <script>
+      function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+      function sessionStore() {
+        let id = getParameter("id");
+        let now = new Date();
+        if (!window.sessionStorage) {
+          alert("세션 스토리지를 지원하지 않습니다.");
+          return;
+        }
+        sessionStorage.setItem(id, now);
+        alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
+      }
+    </script>
+
+  <body onload="sessionStore()">
+
+
+window.addEventListener("beforeunload", (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+      });
+
+
+
+# mkdir -p /allnew/html/exam/session
+
+# index.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+  </head>
+  <body>
+    <h2>Home</h2>
+    <hr />
+    <form>
+      <h2><a href="user.html?id=test">User Home</a></h2>
+    </form>
+  </body>
+</html>
+
+
+# user.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>User Home</title>
+    <script>
+      let id = "";
+      let now = "";
+      function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
+      function login() {
+        id = getParameter("id");
+        now = new Date();
+
+        if (!window.sessionStorage) {
+          alert("세션 스토리지를 지원하지 않습니다.");
+          return;
+        }
+
+        sessionStorage.setItem(id, now);
+        let username_v = document.getElementById("username");
+        username_v.innerHTML = `사용자 ${id} 세션 스토리지 생성`;
+      }
+
+      window.addEventListener("beforeunload", (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+      });
+
+      function logout() {
+        sessionStorage.removeItem(id);
+      }
+    </script>
+  </head>
+  <body onload="login()" onunload="logout()">
+    <div>
+      <span><h2 id="username">User Home</h2></span>
+    </div>
+    <div style="text-align: right">
+      <span><a href="index.html">logout</a></span>
+    </div>
+    <hr />
+    <h2>User's main Page</h2>
+    <hr />
+  </body>
+</html>
+
+
+
+## auth-jiwon.html
+
+<script>
+  let id = getParameter("id");
+  let now = new Date();
+
+  function getParameter(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+    return results === null
+      ? ""
+      : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  function sessionStore() {
+    if (!window.sessionStorage) {
+      alert("세션 스토리지를 지원하지 않습니다.");
+      return;
+    } else {
+      if (id == "") {
+        alert("잘못된 접근 방식입니다!!");
+        sessionStorage.removeItem("");
+        location.href = "login.html";
+      } else {
+        for (var i = 0; i < sessionStorage.key.length; i++) {
+          if (id == sessionStorage.key(i)) {
+            sessionStorage.setItem(id, now);
+            return;
+          }
+          sessionStorage.setItem(id, now);
+          alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
+        }
+      }
+    }
+  }
+
+  window.addEventListener("beforeunload", (event) => {
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
+  function logout() {
+    sessionStorage.removeItem(id);
+  }
+</script>
+
+
+## auth-enjae.html
+
+<script>
+  
+    function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null
+            ? ""
+            : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    
+    function sessionStore() {
+        let id = getParameter("id");
+        let now = new Date();
+        if (!window.sessionStorage) {
+            alert("세션 스토리지를 지원하지 않습니다.");
+            return;
+        } else {
+            if (id in sessionStorage) {
+                return;
+            } else if (!id) {
+                    alert("잘못된 접근입니다.");
+                    location.href = "/index.html";
+            } else{
+                sessionStorage.setItem(id, now);
+            alert(`${id} 님이 로그인하셨습니다.`);}
+            
+        }
+    }
+
+    function remove() {
+            let con = confirm("로그아웃하시겠습니까?");
+        if (con == true) {
+            location.href = "/index.html";
+            let id = getParameter("id");
+            sessionStorage.removeItem(id);
+            alert(`사용자 ${id} 세션 스토리지 삭제`);
+        }
+    }
+
+</script>
+
+<body onload="sessionStore()">
+</html>
+
+
+
+### a tag에서 onclick 사용하고 싶을 때
+
+function gohome() {
+	location.href = `user.html?id=${id}`;
+}
+
+<a href="javascript:void(0);" onclick="gohome();">Home</a>
+
+
+
+
+
+

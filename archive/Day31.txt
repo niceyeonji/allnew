@@ -1,0 +1,593 @@
+Day-31
+
+## c
+int arrayInt = [];
+int arrayInt = [10];
+
+
+## star1.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>* 출력</title>
+  </head>
+  <body>
+    <h3>* 출력</h3>
+    <hr />
+    <script>
+      for (let i = 1; i <= 10; i++) {
+        for (let j = 1; j < i; j++) document.write("*");
+        document.write(" " + i + "<br>");
+      }
+    </script>
+  </body>
+</html>
+
+
+## star2.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>* 출력</title>
+  </head>
+  <body>
+    <h3>* 출력</h3>
+    <hr />
+    <script>
+      let n = 7;
+      for (let i = 1; i <= n; i++) {
+        for (let j = 1; j < n - i + 1; j++) document.write("&nbsp;");
+        for (j = 0; j < i * 2 - 1; j++) document.write("*");
+        document.write("<br>");
+      }
+    </script>
+  </body>
+</html>
+
+
+## calendar.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calendar</title>
+    <style>
+      .sun {
+        color: red;
+      }
+
+      .sat {
+        color: blue;
+      }
+
+      body {
+        font: bold 20px monaco, sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-style: none;
+      }
+
+      td,
+      th {
+        text-align: center;
+        padding: 5px;
+        height: 5px;
+        width: 20px;
+      }
+
+      thead {
+        background: lightblue;
+        color: black;
+      }
+
+      tbody tr :hover {
+        background: papayawhip;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Calendar</h3>
+    <hr />
+    <script>
+      let input = prompt("원하는 년도와 달을 입력하세요.(예 : 202304)", 202304);
+      const input_year = input.substr(0, 4);
+      const input_month = input.substr(4, 2);
+      var startDay = new Date(input_year + "-" + input_month).getDay();
+      var endDay = new Date(input_year, input_month, 0).getDate();
+      document.write(
+        "<h4 style='text-align:center'>" +
+          input_year +
+          " / " +
+          input_month +
+          "</h4>"
+      );
+    </script>
+    <table id="calendar" border="3" align="center" width="400" height="300">
+      <thead>
+        <tr>
+          <th class="sun">Sun</th>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+          <th class="sat">Sat</th>
+        </tr>
+      </thead>
+      <script>
+        let i = 1;
+        for (i = 1; i <= endDay + startDay; i++) {
+          if (i % 7 == 1) document.write("<tr>");
+          if (i <= startDay) document.write("<td></td>");
+          if (i > startDay) {
+            document.write("<td>" + (i - startDay) + "</td>");
+          }
+          if (i % 7 == 0) document.write("</tr>");
+        }
+      </script>
+    </table>
+  </body>
+</html>
+
+
+## calendar_new.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calendar</title>
+    <style>
+      .sun {
+        color: red;
+      }
+
+      .sat {
+        color: blue;
+      }
+
+      body {
+        font: bold 20px monaco, sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-style: none;
+      }
+
+      td,
+      th {
+        text-align: center;
+        padding: 5px;
+        height: 5px;
+        width: 20px;
+      }
+
+      thead {
+        background: lightblue;
+        color: black;
+      }
+
+      tbody tr :hover {
+        background: papayawhip;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Calendar</h3>
+    <hr />
+    <script>
+      let input = prompt("원하는 년도와 달을 입력하세요.(예 : 202304)", 202304);
+      const input_year = input.substr(0, 4);
+      const input_month = input.substr(4, 2);
+      var startDay = new Date(input_year + "-" + input_month).getDay();
+      var endDay = new Date(input_year, input_month, 0).getDate();
+      document.write(
+        "<h4 style='text-align:center'>" +
+          input_year +
+          " / " +
+          input_month +
+          "</h4>"
+      );
+    </script>
+    <table id="calendar" border="3" align="center" width="400" height="300">
+      <thead>
+        <tr>
+          <!-- <th class="sun">Sun</th>
+          th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+          <th class="sat">Sat</th> -->
+          <script>
+            let week = new Array(
+              "Sun",
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat"
+            );
+            for (i = 0; i < week.length; i++) {
+              if (i == 0)
+                document.write("<th class='sun'>" + week[i] + "</th>");
+              else if (i == week.length - 1)
+                document.write("<th class='sat'>" + week[i] + "</th>");
+              else document.write("<th>" + week[i] + "</th>");
+            }
+          </script>
+        </tr>
+      </thead>
+      <script>
+        let i = 1;
+        for (i = 1; i <= endDay + startDay; i++) {
+          if (i % 7 == 1) document.write("<tr>");
+          if (i <= startDay) document.write("<td></td>");
+          if (i > startDay) {
+            document.write("<td>" + (i - startDay) + "</td>");
+          }
+          if (i % 7 == 0) document.write("</tr>");
+        }
+      </script>
+    </table>
+  </body>
+</html>
+
+
+### Quiz_1
+
+	0.	배열의 크기가 5인 빈 배열 선언
+	0.	배열에 ramdom숫자 (최대 100) 입력
+	0.	전체 배열 출력
+	0.	배열 원소 중 최대값 출력(3항 연산자 사용)
+
+
+## Quiz_1.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>랜덤 배열 생성 후 최대 값 출력</title>
+  </head>
+  <body>
+    <h3>랜덤 배열 생성 후 최대 값 출력</h3>
+    <hr />
+    <script>
+      let n = 5;
+      let array = new Array(n);
+      let max = 0;
+      document.write("배열의 길이 : " + n);
+      document.write("<br> 전체 배열의 값 : ");
+      for (let i = 0; i < n; i++) {
+        array[i] = Math.floor(Math.random() * 100 + 1);
+        document.writeln(array[i]);
+        max = array[i] > max ? array[i] : max;
+      }
+      document.write("<br> 배열 원소 중 최대값 : " + max);
+    </script>
+  </body>
+</html>
+
+
+## Quiz_2
+
+a, b 두 원소의 값을 바꾸는 방법
+
+temp = a;
+a = b;
+b = temp;
+
+for : 배열의 랜덤 수 생성 한 후 삽입
+for : reverse
+for : reverse 배열 출력
+
+
+## quiz_2-incheol.html
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>랜덤 배열 생성 후 최대 값 출력 </h3>
+    <hr>
+    <script>
+        const N = 5;
+        let arrr = new Array(N);
+        let max = 0;
+        document.write("<br> 배열의 길이 :" + arrr.length+'<br>')
+        document.write("전체 배열의 값 : ");
+        for (let i = 0; i < N; i++) {
+            arrr[i] = Math.floor(Math.random() * 100 + 1);
+            document.writeln(arrr[i]);
+            max = arrr[i] > max ? arrr[i] : max;
+        }
+        
+        document.write("<br>reverse 배열 : ")
+        for (let i = 0; i < N / 2; i++) {
+            let temp = arrr[i];
+            arrr[i] = arrr[N - 1 - i];
+            arrr[N - 1 - i] = temp;
+        }
+        
+        for (let i = 0; i < N; i++) {
+            document.writeln(arrr[i]);
+        }
+        
+        
+        document.write("<br> 배열 원소 중 최대 값 : " + max)
+
+    </script>
+</body>
+</html>
+
+
+## quiz_2.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>랜덤 배열 생성 후 값 뒤집어 저장한 후 출력</title>
+  </head>
+  <body>
+    <h3>랜덤 배열 생성 후 값 뒤집어 저장한 후 출력</h3>
+    <hr />
+    <script>
+      let n = 5;
+      let array = new Array(n);
+      let max = 0;
+      document.write("배열의 길이 : " + n);
+      document.write("<br> 원래 배열의 값 : ");
+      for (let i = 0; i < n; i++) {
+        array[i] = Math.floor(Math.random() * 100 + 1);
+        document.writeln(array[i]);
+      }
+      for (let i = 0, j = array.length - 1; i < j; i++, j--) {
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+      document.write("<br> Reverse 배열 : ");
+      for (let i = 0; i < n; i++) document.writeln(array[i]);
+    </script>
+  </body>
+</html>
+
+
+## Quiz_3
+
+	0.	n개의 배열에 랜덤한 값을 입력(최대값 10)
+	0.	전체 배열 출력
+	0.	배열의 원소를 각각 더해서 3n보다 크면 종료.
+	0.	종료된 시점 배열의 인덱스와 합산 값을 출력.
+
+
+## quiz_3-jiwon.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <h2>랜덤랜덤</h2>
+    <hr />
+    <script>
+      var n = 6;
+      var numbers = new Array(n);
+      var sum = 0;
+
+      document.write("배열의 길이 : " + n + "<br>" + "생성된 배열 : ");
+      for (var i = 0; i < n; i++) {
+        numbers[i] = Math.floor(Math.random() * 10 + 1);
+        document.writeln(numbers[i]);
+      }
+      for (var j = 0; j < n; j++) {
+        sum += numbers[j];
+        if (sum > 3 * n) {
+          document.write(
+            "<br>" +
+              "종료된 시점의 인덱스 값 : numbers[" +
+              j +
+              "]" +
+              "<br>" +
+              "총 합 : " +
+              sum
+          );
+          break;
+        }
+      }
+    </script>
+  </body>
+</html>
+
+
+## quiz_3.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      랜덤 배열 생성 후 각 배열의 원소를 누접합산 하여 3n보다 크면 종료
+    </title>
+  </head>
+  <body>
+    <h3>랜덤 배열 생성 후 각 배열의 원소를 누접합산 하여 3n보다 크면 종료</h3>
+    <hr />
+    <script>
+      let n = 5;
+      let array = new Array(n);
+      let sum = 0;
+      document.write("배열의 길이 : " + n);
+      document.write("<br> 배열의 값 : ");
+      for (let i = 0; i < n; i++) {
+        array[i] = Math.floor(Math.random() * 10 + 1);
+        document.writeln(array[i]);
+      }
+      for (i = 0; i < n; i++) {
+        sum += array[i];
+        if (sum > n * 3) {
+          document.write(
+            "<br> 종료 시점의 인덱스 : array[" + i + "] <br> sum = " + sum
+          );
+          break;
+        }
+      }
+    </script>
+  </body>
+</html>
+
+
+## Quiz_4
+
+	0.	랜덤값 1~5사이의 숫자를 입력받는다.
+	0.	입력받은 숫자의 합이 20을 넘으면 ..
+	0.	입력을 종료하고 현재까지 입력한 배열의 전체 값과 
+	0.	합산 값, 인덱스를 출력하시오.
+
+
+## quiz_4-myeongduk.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>출력</title>
+  </head>
+  <body>
+    <h3>랜덤</h3>
+    <hr />
+    <script>
+      var number = new Array();
+      var n = 0;
+      var i = 0;
+      while (20 >= n) {
+        number[i] = Math.floor(Math.random() * 5 + 1);
+        n += number[i];
+        i++;
+      }
+      document.write("종료 까지 받은 배열 전체 값: " + number + "<br>");
+      document.write(`종료 시점의 인덱스: number[${i - 1}]<br>`);
+      document.write("합산: " + n);
+    </script>
+  </body>
+</html>
+
+
+## quiz_4-jiwon.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <h2>Quiz4</h2>
+    <hr />
+    <script>
+      var numbers = new Array();
+      var sum = 0;
+
+      for (var i = 0; i < 20; i++) {
+        if (sum <= 20) {
+          numbers[i] = Math.floor(Math.random() * 5 + 1);
+          sum += numbers[i];
+        } else {
+          break;
+        }
+      }
+
+      document.write("생성된 배열의 크기 : " + numbers.length + "<br>");
+      document.write("입력된 배열 : " + numbers + "<br>");
+      document.write("합산 값 : " + sum + "<br>");
+      document.write("인덱스 : numbers[" + (i - 1) + "]");
+    </script>
+  </body>
+</html>
+
+
+## quiz_4.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>누접합산 하여 20보다 크면 종료</title>
+  </head>
+  <body>
+    <h3>누접합산 하여 20보다 크면 종료</h3>
+    <hr />
+    <script>
+      var array = new Array();
+      var sum = 0;
+      var i = 0;
+      while (20 >= sum) {
+        array[i] = Math.floor(Math.random() * 5 + 1);
+        sum += array[i];
+        i++;
+      }
+      document.write("배열의 크기 : " + array.length + "<br>");
+      document.write("입력된 배열 : " + array + "<br>");
+      document.write("누적 합산 값 : " + sum + "<br>");
+      document.write("최종 인덱스 : array[" + (i - 1) + "]");
+    </script>
+  </body>
+</html>
+
+
+## Quiz5
+
+	0.	사용자로부터 2개의 숫자를 한번에 입력받는다. 5,10
+	0.	첫번째 값 : 횟수(5), 두번째값은 : 최대값(10)
+	0.	배열에 입력 단, 중복을 제거할 것.
+
+
+## quiz_5.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>중복없이 랜덤 숫자 발생</title>
+  </head>
+  <body>
+    <h3>중복없이 랜덤 숫자 발생</h3>
+    <hr />
+    <script>
+      var array = new Array();
+      var input = prompt(
+        "두개의 숫자(배열의 크기, 최대값)를 입력하세요.(예 5,10)",
+        "5,10"
+      );
+      number = input.split(",");
+      for (i = 0; i < number[0]; i++) {
+        array[i] = Math.floor(Math.random() * number[1] + 1);
+        for (j = 0; j < i; j++) {
+          if (array[j] == array[i]) {
+            i--;
+            continue;
+          }
+        }
+      }
+      document.write(`배열의 크기 : ${array.length} <br>`);
+      document.write(`입력된 배열 : ${array} <br>`);
+    </script>
+  </body>
+</html>
+

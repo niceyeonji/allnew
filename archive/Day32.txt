@@ -1,0 +1,507 @@
+Day-32
+
+### javascript (cont.)
+
+
+## Quiz_6
+
+2023.3. 6 09:00:00 기준 현재까지의 경과시간 구하기
+
+## quiz_6.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Date 객체로 경과 시간 알아내기</title>
+  </head>
+  <body>
+    <h3>Date 객체로 경과 시간 알아내기</h3>
+    <hr />
+    <script>
+      let now = new Date(); // 현재 시간 값을 가진 Date 객체 생성
+      document.write("현재 시간 : " + now + "<br><hr />");
+      let oldTime = new Date(2023, 2, 6, 9, 0, 0);
+      document.write("기준 시간 : " + oldTime + "<br><hr />");
+      let diff = now - oldTime;
+      let elapsed_sec = diff / 1000;
+      let elapsed_min = elapsed_sec / 60;
+      let elapsed_hour = elapsed_min / 60;
+      let elapsed_day = elapsed_hour / 24;
+      document.write("경과 시간 - 일 : " + Math.round(elapsed_day) + "<br>");
+      document.write("경과 시간 - 시 : " + Math.round(elapsed_hour) + "<br>");
+      document.write("경과 시간 - 분 : " + Math.round(elapsed_min) + "<br>");
+      document.write("경과 시간 - 초 : " + elapsed_sec + "<br><hr />");
+    </script>
+  </body>
+</html>
+
+
+
+## Quiz_7
+
+book object 실습
+
+<property> 
+title
+author
+totalPage
+category
+price
+
+<method> 
+reading(page)
+rental(user, day)
+
+
+## quiz_7.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>리터럴 표기법으로 Book 객체 만들기</title>
+    <script>
+      let book = {
+        title: "스며드는 리눅스",
+        author: "문준현",
+        totalPage: 350,
+        category: "IT",
+        price: 30000,
+        leftover: 350,
+        rentalState: 1,
+        rentalUser: "",
+        rentalDay: 0,
+
+        // 메소드 작성
+        reading: function (page) {
+          this.leftover -= page;
+          return this.leftover;
+        },
+        rental: function (user, day) {
+          this.rentalUser = user;
+          this.rentalDay = day;
+          this.rentalState = 0;
+          return this.rentalState;
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <h3>리터럴 표기법으로 Book 객체 만들기</h3>
+    <hr />
+    <script>
+      document.write("Book : " + "<br>");
+      document.write("제목 : " + book.title + "<br>");
+      document.write("저자 : " + book.author + "<br>");
+      document.write("장르 : " + book.category + "<br>");
+      document.write("가격 : " + book.price + "원 <br>");
+      document.write("<hr />");
+
+      document.write(
+        "현재 전체 페이지 " +
+          book.totalPage +
+          " 중 잔여 페이지가 " +
+          book.reading(50) +
+          "페이지 남으셨습니다. <br><hr />"
+      );
+      book.rental("임예준", 30);
+      let state = { 0: "대여중", 1: "대여가능" };
+      document.write(
+        "현재 " +
+          book.title +
+          "는 " +
+          book.rentalUser +
+          "님에게 " +
+          book.rentalDay +
+          "일 동안 " +
+          state[book.rentalState] +
+          "입니다."
+      );
+    </script>
+  </body>
+</html>
+
+
+## quiz_7-sunghyun.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <h1>Quiz7</h1>
+    <h3 style="text-align: center">Book Object 실습</h3>
+    <hr />
+    <script>
+      let book = {
+        // <property>
+        title: "오십에 읽는 논어",
+        author: "최종엽",
+        totalPage: 299,
+        category: "철학",
+        price: 16000,
+        rentalUser: "",
+        rentalDay: 0,
+        rentalState: 1,
+        returnDay: 0,
+        remainPage: 0,
+
+        // <method>
+        reading: function (page) {
+          this.remainPage = this.totalPage - page;
+          return this.remainPage;
+        },
+        rental: function (user, day) {
+          if (this.rentalState == 0) {
+            document.write(
+              "현재 " +
+                this.title +
+                " 대여 중인 책이라 대여가 불가능합니다.<br><hr>"
+            );
+            documnet.write("반납일은 : " + this.returnDay);
+          } else {
+            this.rentalUser = user;
+            this.rentalDay = day;
+            this.returnDay = day;
+            this.rentalState = 0;
+          }
+          return;
+        },
+      };
+    </script>
+    <h4>책 객체를 써볼까?</h4>
+    <script>
+      let state = { 0: "대여중", 1: "대여가능" };
+      document.write("제목 : " + book.title + "<br>");
+      document.write("작가 : " + book.author + "<br>");
+      document.write("총 페이지 : " + book.totalPage + "<br>");
+      document.write("카테고리 : " + book.category + "<br>");
+      document.write("가격 : " + book.price + "<br>");
+      document.write("<hr>");
+
+      document.write(
+        "현재 전체 페이지 " +
+          book.totalPage +
+          "page 중 잔여 페이지가 " +
+          book.reading(50) +
+          "페이지 남으셨습니다. <br><hr>"
+      );
+      book.rental("문준현", 30);
+      document.write(
+        "현재 " +
+          book.title +
+          "는 " +
+          book.rentalUser +
+          "님이 " +
+          state[book.rentalState] +
+          " 이고 반납일은 " +
+          book.returnDay +
+          "일 입니다. " +
+          "<br>잔여 페이지는" +
+          book.remainPage +
+          "페이지 입니다.<br><hr>"
+      );
+      book.rental("사공", 20);
+    </script>
+  </body>
+</html>
+
+
+## quiz_7-jiwon.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      //사용자 객체 만들기
+      let book = {
+        // 프로퍼티 생성 및 초기화
+        title: "Justice",
+        author: "Michael J.Sandel",
+        totalPage: 320,
+        category: "philosophy",
+        price: 23400,
+        user: "정지원",
+        day: "2023-04-18",
+
+        // 메소드 작성
+        reading: function (page) {
+          this.totalPage -= page;
+          return this.totalPage;
+        },
+        rental: function (user, day) {
+          return [this.user, this.day];
+        },
+        discount: function (dis) {
+          this.price -= dis;
+          return this.price;
+        },
+      };
+    </script>
+  </head>
+
+  <body>
+    <h3>Quiz7</h3>
+    <hr />
+    <script>
+      document.write("< Book Information > <br>");
+      document.write("책 이름 : " + book.title + ", <br>");
+      document.write("저자 : " + book.author + ", <br>");
+      document.write("총 페이지 : " + book.totalPage + "p, <br>");
+      document.write("카테고리 : " + book.category + ", <br>");
+      document.write("가격 : " + book.price + "원<hr><br>");
+
+      document.write(
+        "100페이지 읽은 후 남은 페이지는 " +
+          book.reading(100) +
+          "페이지<br><br>"
+      );
+
+      document.write("대여자 정보 : " + book.rental() + "<br><br>");
+
+      document.write("10% 할인 후 가격 " + book.discount(2340) + "원");
+    </script>
+  </body>
+</html>
+
+
+## Quiz8
+
+앞에서 만든 book 오브젝트를 프로토타입으로 재구성하세요.
+
+## quiz_8.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>프로토타입으로 Book 객체 만들기</title>
+    <script>
+      function Book(title, author, totalPage, category, price) {
+        this.title = title;
+        this.author = author;
+        this.totalPage = totalPage;
+        this.category = category;
+        this.price = price;
+        this.leftover = totalPage;
+        this.rentalState = 1;
+        this.rentalUser = "";
+        this.rentalDay = 0;
+
+        this.reading = function (page) {
+          this.leftover -= page;
+          return this.leftover;
+        };
+
+        this.rental = function (user, day) {
+          this.rentalUser = user;
+          this.rentalDay = day;
+          this.rentalState = 0;
+          return this.rentalState;
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <h3>리터럴 표기법으로 Book 객체 만들기</h3>
+    <hr />
+    <script>
+      let book = new Book("스며드는 리눅스", "문준현", 350, "IT", 30000);
+
+      document.write("Book : " + "<br>");
+      document.write("제목 : " + book.title + "<br>");
+      document.write("저자 : " + book.author + "<br>");
+      document.write("장르 : " + book.category + "<br>");
+      document.write("가격 : " + book.price + "원 <br>");
+      document.write("총 페이지 수 : " + book.totalPage + "<br>");
+      document.write("<hr />");
+
+      document.write(
+        "현재 전체 페이지 " +
+          book.totalPage +
+          " 중 잔여 페이지가 " +
+          book.reading(50) +
+          "페이지 남으셨습니다. <br><hr />"
+      );
+
+      book.rental("임예준", 30);
+      let state = { 0: "대여중", 1: "대여가능" };
+      document.write(
+        "현재 " +
+          book.title +
+          "는 " +
+          book.rentalUser +
+          "님에게 " +
+          book.rentalDay +
+          "일 동안 " +
+          state[book.rentalState] +
+          "입니다."
+      );
+    </script>
+  </body>
+</html>
+
+
+## Quiz_9
+
+Car 프로토타입
+
+brand : benz, bmw
+grade : suv, sedan
+maxFuel : 900, 500
+displacement : 4000, 2500
+price : 3000, 2000
+
+           서울, 부산, 350
+drive(from, to, distance)
+
+refueling(amount)
+
+
+## quiz_9-enjae.html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <h2>리터럴 표기법으로 Car 객체 만들기</h2>
+    <hr />
+    <script>
+      function Car(brand, grade, maxFuel, displacement, price) {
+        this.brand = brand;
+        this.grade = grade;
+        this.maxFuel = maxFuel;
+        this.leftFuel = maxFuel;
+        this.displacement = displacement;
+        this.price = price;
+        this.totalDistance = 0;
+        this.drive = function (from, to, distance) {
+          this.useFuel = distance * 0.3;
+          document.write(
+            `${from} 부터 ${to}까지의 거리는 ${distance}km입니다. 도착했습니다. <br>`
+          );
+          this.leftFuel -= this.useFuel;
+          this.totalDistance += distance;
+          document.write(
+            `연료를 ${this.useFuel}만큼 사용하여 총 ${this.leftFuel}만큼의 연료가 남았습니다. ${this.totalDistance}km 주행완료.<br>`
+          );
+          if (this.leftFuel < 0) {
+            document.write("주유하세요.<br>");
+          }
+        };
+        this.refueling = function (amount) {
+          if (this.leftFuel == this.maxFuel) {
+            document.write("Full!!<br>");
+          } else {
+            this.leftFuel += amount;
+            document.write(
+              `${amount}L 충전 완료. 남은 연료는 ${this.leftFuel}L 입니다.<br>`
+            );
+          }
+        };
+        this.info = function () {
+          document.write(`
+            brand : ${this.brand}<br>
+            grade : ${this.grade}<br>
+            maxfuel : ${this.maxFuel}<br>
+            displacement : ${this.displacement}<br>
+            price : ${this.price}<br><hr>`);
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <script>
+      let benz = new Car("Benz", "suv", 900, 4000, 3000);
+      benz.info();
+      benz.drive("Seoul", "Busan", 400);
+      benz.drive("Busan", "Seoul", 460);
+      benz.refueling(860);
+
+      let bmw = new Car("BMW", "sedan", 500, 2500, 2000);
+      bmw.info();
+      bmw.drive("Seoul", "Daejeon", 310);
+      bmw.refueling(200);
+      bmw.drive("Dajeon", "Seoul", 300);
+    </script>
+  </body>
+</html>
+
+
+## quiz_9.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>프로토타입으로 Car 객체 만들기</title>
+    <script>
+      function Car(brand, grade, maxFuel, displacement, price) {
+        this.brand = brand;
+        this.grade = grade;
+        this.maxFuel = maxFuel;
+        this.displacement = displacement;
+        this.price = price;
+
+        this.leftoverFuel = maxFuel;
+
+        this.info = function () {
+          document.write(`
+            brand : ${this.brand}<br>
+            grade : ${this.grade}<br>
+            maxfuel : ${this.maxFuel}<br>
+            displacement : ${this.displacement}<br>
+            price : ${this.price}<br><hr>`);
+        };
+
+        this.drive = function (from, to, distance) {
+          this.leftoverFuel -= distance;
+          document.write(
+            `${this.brand} 차량이 ${from}에서 ${to}까지 ${distance}Km 주행하셨습니다.<br>`
+          );
+          if (this.leftoverFuel > 50)
+            document.write(
+              `잔여 연료량은 ${this.leftoverFuel}입니다. <br><hr />`
+            );
+          else
+            document.write(
+              `잔여 연료량은 ${this.leftoverFuel}입니다. <br> 주유가 필요합니다. <br><hr />`
+            );
+        };
+
+        this.refueling = function (amount) {
+          this.leftoverFuel += amount;
+          document.write(
+            `${amount}L 주유하여 잔여 연료량은 ${this.leftoverFuel}입니다. <br><hr />`
+          );
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <h3>프로토타입으로 Car 객체 만들기</h3>
+    <hr />
+    <script>
+      let benz = new Car("Benz", "SUV", 900, 4000, 3000);
+      benz.info();
+      benz.drive("Seoul", "Busan", 400);
+      benz.drive("Busan", "Incheon", 460);
+      benz.refueling(860);
+
+      let bmw = new Car("BMW", "Sedan", 500, 2500, 2000);
+      bmw.info();
+      bmw.drive("Seoul", "Daejeon", 300);
+      bmw.refueling(200);
+      bmw.drive("Daejeon", "Seoul", 300);
+    </script>
+  </body>
+</html>
+
+
+
+
