@@ -13,39 +13,37 @@
           ? ''
           : decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
-
-      function sessionStore() {
-        let id = getParameter('id');
-        let now = new Date();
+      let id = getParameter('id');
+      let now = new Date();
+      function login() {
         if (!window.sessionStorage) {
           alert('세션 스토리지를 지원하지 않습니다.');
           return;
         }
-        // sessionStorage.setItem(id, now);
-        alert(
-          `사용자 ${id} 님의  로그인 시간은 ${sessionStorage.getItem(
-            id,
-          )} 입니다.`,
-        );
+        if (id == '') {
+          sessionStorage.removeItem('');
+          alert('잘못된 접근 방식입니다.');
+          location.href = 'index.html';
+        } else {
+          // sessionStorage.setItem(id, now);
+          alert(
+            `사용자 ${id} 님의  로그인 시간은 ${sessionStorage.getItem(
+              id,
+            )} 입니다.`,
+          );
+        }
       }
       window.addEventListener('beforeunload', event => {
         event.preventDefault();
         event.returnValue = '';
       });
 
-      // function sessionStore() {
-      //   let id = getParameter('id');
-
-      //   sessionStore.getItem(id);
-      //   alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
-      // }
-      // window.addEventListener('beforeunload', event => {
-      //   event.preventDefault();
-      //   event.returnValue = '';
-      // });
+      function logout() {
+        sessionStorage.removeItem(id);
+      }
     </script>
   </head>
-  <body class="body" onload="sessionStore()">
+  <body class="body" onload="login()" onunload="logout()">
     <div class="blur"><h3>AboutMe</h3></div>
     <nav id="menubar">
       <ul>
@@ -54,7 +52,7 @@
         <li overflow:hidden;></li>
         <li overflow:hidden;></li>
         <li overflow:hidden;></li>
-        <li><a href="index.html" id="logout">Logout</a></li>
+        <li><a href="index.html" onclick="logout()">Logout</a></li>
       </ul>
     </nav>
     <hr />
@@ -66,14 +64,5 @@
     <br />
     <hr />
     <div class="img">@Ungdii95</div>
-    <script>
-      let id = getParameter('id');
-      let logout = document.getElementById('logout');
-      logout.addEventListener('click', event => {
-        // event.preventDefault();
-        sessionStorage.removeItem(id);
-        alert(`사용자 ${id} 님이 로그아웃 하셨습니다.`);
-      });
-    </script>
   </body>
 </html>
