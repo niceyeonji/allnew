@@ -44,3 +44,8 @@ oracle/node/package-lock.json
 ## html
 html/mysql/node_modules
 html/mysql/package-lock.json
+
+## nodejs
+node/**/node_modules
+node/**/package-lock.json
+node/config/pool.js
