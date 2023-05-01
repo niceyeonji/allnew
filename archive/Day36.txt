@@ -1,0 +1,635 @@
+Day-36
+
+### mysql2
+
+# cd /allnew/node/
+
+# mkdir mysql2
+
+## mysql2.js
+
+const { connect } = require("http2");
+const mysql = require("mysql2/promise");
+const env = require("dotenv").config({ path: "../../.env" });
+
+const db = async () => {
+    try {
+        //db connection
+        let connection = await mysql.createConnection({
+            host: process.env.host,
+            user: process.env.user,
+            password: process.env.password,
+            database: process.env.database
+        });
+
+        // select query
+        let [rows, fields] = await connection.query("select * from st_info");
+        console.log(rows);
+
+        // make insert data
+        let data = {
+            st_id: "202399",
+            name: "Moon",
+            dept: "Computer"
+        }
+
+        // insert query
+        let [results] = await connection.query("insert into st_info set ?", data);
+        console.log("data is Inserted~!!");
+
+        let insertId = data.st_id;
+
+        // select query of inserted data
+        [rows, fields] = await connection.query("select * from st_info where st_id = ?", insertId);
+        console.log(rows);
+
+        // update query
+        [results] = await connection.query("update st_info set dept = ? where st_id = ? ", ["Game", insertId]);
+        console.log("data is Updated~!!");
+
+        // select query of inserted data
+        [rows, fields] = await connection.query("select * from st_info where st_id = ?", insertId);
+        console.log(rows);
+
+        // delete row
+        [rows, fields] = await connection.query("delete from st_info where st_id = ?", insertId);
+        console.log(rows);
+
+        // select query all data
+        [rows, fields] = await connection.query("select * from st_info");
+        console.log(rows);
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+db();
+
+# npm init -y
+
+# npm install mysql2 dotenv
+
+# node mysql2.js
+
+
+
+### mysql2 - Web version
+
+# cd ..
+
+# cp -R mysql2 mysql2-web
+
+# cd mysql2-web
+
+# rm -rf node_modules package*
+
+# mkdir /allnew/node/config
+
+# cd /allnew/node/config
+
+
+## pool.js
+
+const mysql = require('mysql2')
+
+const pool = mysql.createPool({
+    // mysql connection info
+    host: "192.168.1.12",
+    port: 3306,
+    user: "mysql",
+    password: "1234",
+    database: "testdb"
+})
+
+const promisePool = pool.promise()
+
+module.exports = promisePool;
+
+
+# npm install mysql2
+
+
+# cd /allnew/node/mysql2-web
+
+# cp ../mysql-sync-web/app.js .
+
+# cp -r ../mysql-sync-web/public .
+
+# cp -R ../mysql-sync-web/routes .
+
+# npm init -y
+
+# npm install mysql2 express body-parser cookie-parser morgan  path
+
+## routes/main.js
+
+const express = require('express')
+const bodyParser = require('body-parser')
+const app = express()
+const pool = require("../../config/pool");
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.get("/Hello", (req, res) => {
+    res.send("Hello World")
+})
+
+// Select all rows from st_info table
+app.get("/select", async (req, res) => {
+    const [rows, fields] = await pool.query("SELECT * FROM st_info");
+    console.log(rows);
+    res.writeHead(200);
+    var template = `
+  <!doctype html>
+  <html>
+  <head>
+    <title>Result</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+   <table border="1" margin:auto; text-align:center;>
+     <tr>
+       <th>ST_ID</th>
+       <th>NAME</th>
+       <th>DEPT</th>
+     </tr>
+   `;
+    for (var i = 0; i < rows.length; i++) {
+        template += `
+     <tr>
+       <th>${rows[i]['ST_ID']}</th>
+       <th>${rows[i]['NAME']}</th>
+       <th>${rows[i]['DEPT']}</th>
+     </tr>
+    `
+    }
+    template += `
+     </table>
+  </body>
+  </html>
+ `;
+    res.end(template);
+})
+
+// insert data into st_info table
+app.get("/insert", async(req, res) => {
+    const { ST_ID, NAME, DEPT } = req.query
+    const [rows, fields] = await pool.query(
+        "INSERT INTO st_info values (?, ?, ?)", [
+        ST_ID,
+        NAME,
+        DEPT
+    ]);
+
+        res.redirect('/select');
+})
+
+// update row from st_info table
+app.get("/update", async(req, res) => {
+    const { ST_ID, NAME, DEPT } = req.query
+    const [rows, fields] = await pool.query("UPDATE st_info SET NAME=?, DEPT=? WHERE ST_ID=?", [
+        NAME,
+        DEPT,
+        ST_ID
+    ]);
+
+        res.redirect('/select');
+})
+
+// delete row from st_info table
+app.get("/delete", async (req, res) => {
+    const ST_ID = req.query.ST_ID
+    const [results] = await pool.query("DELETE FROM st_info WHERE ST_ID=?", [
+        ST_ID
+    ]);
+
+       res.redirect('/select');
+})
+
+module.exports = app;
+
+
+# nodemon app.js
+
+
+## .gitignore
+
+## nodejs
+node/**/node_modules
+node/**/package-lock.json
+node/config/pool.js
+
+
+### mongodb.js
+
+# apt -y update; apt -y upgrade
+
+# mkdir mongodb
+
+# cd mongodb
+
+## mongodb.js
+
+const express = require('express')
+const morgan = require('morgan')
+const fs = require('fs')
+const path = require('path')
+const mongoClient = require('mongodb').MongoClient
+const app = express()
+app.set('port', process.env.Port || 8000)
+app.use(morgan('dev'))
+
+var db;
+var databaseUrl = "mongodb://192.168.1.12:27017"
+
+app.get('/', (req, res) => {
+    res.send("Web Server Started~!!")
+})
+
+app.get('/things', (req, res) => {
+    mongoClient.connect(databaseUrl, function (err, database) {
+        if (err != null) {
+            res.json({ 'count': 0 })
+        } else {
+            db = database.db('test')
+            db.collection('things').find({}).toArray(function (err, result) {
+                if (err) throw err
+                console.log('result : ')
+                console.log(result)
+                res.json(JSON.stringify(result))
+            })
+        }
+    })
+});
+
+app.get('/emp', (req, res) => {
+    mongoClient.connect(databaseUrl, function (err, database) {
+        if (err != null) {
+            res.json({ 'count': 0 })
+        } else {
+            db = database.db('test')
+            db.collection('emp').find({}).toArray(function (err, result) {
+                if (err) throw err
+                console.log('result : ')
+                console.log(result)
+                res.json(JSON.stringify(result))
+            })
+        }
+    })
+});
+
+app.get('/traffic', (req, res) => {
+    mongoClient.connect(databaseUrl, function (err, database) {
+        if (err != null) {
+            res.json({ 'count': 0 })
+        } else {
+            db = database.db('test')
+            db.collection('traffic').find({}).toArray(function (err, result) {
+                if (err) throw err
+                console.log('result : ')
+                console.log(result)
+                res.json(JSON.stringify(result))
+            })
+        }
+    })
+});
+
+app.get('/seoul', (req, res) => {
+    mongoClient.connect(databaseUrl, function (err, database) {
+        if (err != null) {
+            res.json({ 'count': 0 })
+        } else {
+            db = database.db('test')
+            db.collection('seoul').find({}).toArray(function (err, result) {
+                if (err) throw err
+                console.log('result : ')
+                console.log(result)
+                res.json(JSON.stringify(result))
+            })
+        }
+    })
+});
+
+app.listen(app.get('port'), () => {
+    console.log('8000 Port : Server Started~!!')
+})
+
+
+# npm init -y
+
+# npm install express morgan fs path mongodb@4.2.2
+
+# nodemon mongodb.js
+
+
+### mongoose module
+
+# mkdir /allnew/node/mongoose
+
+
+## users_insert
+
+use test
+db.users.drop()
+
+db.users.insert({userid:"1001", name:"ALLEN", city:"Seoul", sex:"female", age:20})
+db.users.insert({userid:"1002", name:"BLAKE", city:"Busan", sex:"female", age:22})
+db.users.insert({userid:"1003", name:"CLARK", city:"Kwangju", sex:"male", age:23})
+db.users.insert({userid:"1004", name:"DAVID", city:"Incheon", sex:"male", age:24})
+db.users.insert({userid:"1005", name:"ROLLEN", city:"Seoul", sex:"female", age:23})
+
+db.users.find()
+
+# mongo < users_insert 
+
+# cp ../mysql2-web/app.js .
+
+# cp -r ../mysql2-web/public/ .
+
+# mkdir routes
+
+## app.js
+
+const express = require('express')
+const morgan = require('morgan')
+const path = require('path')
+const app = express()
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const router = express.Router()
+
+app.set('port', process.env.PORT || 8000)
+app.use(morgan('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
+
+//mongoose configuration
+const mongoose = require("mongoose")
+mongoose.connect("mongodb://192.168.1.12:27017/test")
+
+var main = require('./routes/main.js')
+app.use('/', main)
+
+app.listen(app.get('port'), () => {
+    console.log('8000 Port : Server Started...')
+});
+
+
+## public/index.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>mongoose Example</title>
+  </head>
+  <body>
+    <h1>mongoose Example</h1>
+    <hr />
+    <form method="post" action="/insert" name="mongoform" target="targetURL">
+      <input
+        type="button"
+        value="Users Collection"
+        onclick='document.targetURL.location.href="/list"'
+      />
+      <p>
+        userid <input type="text" size="10" name="userid" />
+        <input
+          type="button"
+          value="get"
+          onclick='document.targetURL.location.href="/get?input="+document.mongoform.userid.value'
+        />
+      </p>
+      <p>name <input type="text" size="10" name="name" /></p>
+      <p>city <input type="text" size="10" name="city" /></p>
+      <p>age <input type="text" size="10" name="age" /></p>
+       <p>
+        sex <input type="radio" name="sex" value="male" />male
+        <input type="radio" name="sex" value="female" checked />female
+      </p>
+      <p>
+       <input
+          type="submit"
+          value="insert"
+          onclick='this.form.action="/insert"'
+        />
+        <input
+          type="submit"
+          value="update"
+          onclick='this.form.action="/update"'
+        />
+        <input
+          type="submit"
+          value="delete"
+          onclick='this.form.action="/delete"'
+        />
+      </p>
+    </form>
+    <hr />
+    <iframe
+      name="targetURL"
+      class="iframe-preview center"
+      width="90%"
+      height="500"
+      style="border: none"
+      src="/Hello"
+    >
+    </iframe>
+  </body>
+</html>
+
+
+## routes/main.js
+
+const express = require("express")
+const app = express.Router()
+const mongoose = require("mongoose")
+const async = require("async")
+
+// define schema
+// define schema
+var userSchema = mongoose.Schema({
+    userid: String,
+    name: String,
+    city: String,
+    sex: String,
+    age: Number
+}, {
+    versionKey: false
+})
+
+// create model with mongodb collection and schema
+var User = mongoose.model('users', userSchema);
+
+app.get("/Hello", function (req, res) {
+    res.send("Hello World~!!")
+})
+
+// list
+app.get('/list', function (req, res, next) {
+    User.find({}, function (err, docs) {
+        if (err) console.log('err')
+        res.send(docs)
+    })
+})
+
+// get
+app.get('/get', function (req, res, next) {
+    var userid = req.query.input
+    User.findOne({ 'userid': userid }, function (err, doc) {
+        if (err) console.log(err)
+        res.send(doc)
+    })
+})
+
+// insert
+app.post('/insert', function (req, res, next) {
+    var userid = req.body.userid;
+    var name = req.body.name;
+    var city = req.body.city;
+    var sex = req.body.sex;
+    var age = req.body.age;
+    var user = new User({ 'userid': userid, 'name': name, 'city': city, 'sex': sex, 'age': age })
+
+    User.save(function (err, silence) {
+        if (err) {
+            console.log('err')
+            res.status(500).send(‘insert error')
+            return;
+        }
+        res.status(200).send("Inserted")
+    })
+})
+
+// update
+app.post('/update', function (req, res, next) {
+    var userid = req.body.userid;
+    var name = req.body.name;
+    var city = req.body.city;
+    var sex = req.body.sex;
+    var age = req.body.age;
+
+    User.findOne({ 'userid': userid }, function (err, user) {
+        if (err) {
+            console.log('err')
+            res.status(500).send('update error')
+            return;
+        }
+        user.name = name;
+        user.sex = sex;
+        user.city = city;
+        user.age = age;
+
+        user.save(function (err, silence) {
+            if (err) {
+                console.log('err')
+                res.status(500).send('update error')
+                return;
+            }
+            res.status(200).send("Updated")
+        })
+    })
+})
+
+// delete
+app.post('/delete', function (req, res, next) {
+    var userid = req.body.userid;
+    var user = User.find({ 'userid': userid })
+    user.remove(function (err) {
+        if (err) {
+            console.log('err')
+            res.status(500).send('delete error')
+            return;
+        }
+        res.status(200).send("Removed")
+    })
+})
+
+module.exports = app;
+
+ async.series([query1, query2, query3, query4, query5, query6], function (err, result) {
+    if (err) {
+        console.log('error' + err);
+    } else {
+        console.log('task finish');
+    }
+})
+
+function query1(callback) {
+    // select * from users
+    User.find({}, { '_id': 0 }).exec(function (err, user) {
+        console.log("\nQuery 1");
+        console.log(user + "\n");
+        callback(null)
+    })
+}
+
+function query2(callback) {
+    // select userid, name, city from users
+    User.find({}, { '_id': 0, 'userid': 1, 'name': 1, 'city': 1 }).exec(function (err, user) {
+        console.log("\nQuery 2");
+        console.log(user + "\n");
+        callback(null)
+    })
+}
+
+function query3(callback) {
+    // select * from users where city="Seoul" order by userid limit 3
+    User.find({ 'city': "Seoul" }, { '_id': 0 }).sort({ 'userid': 1 }).limit(3).exec(function (err, user) {
+        console.log("\nQuery 2");
+        console.log(user + "\n");
+        callback(null)
+    })
+}
+
+function query4(callback) {
+    // select userid, name from users where userid='/user/'
+    User.find({ 'userid': { '$regex': '100' } }, { '_id': 0 }).select('userid name').exec(function (err, users) {
+        console.log("\nQuery 4");
+        console.log(users + "\n");
+        callback(null)
+    });
+}
+
+function query5(callback) {
+    // using JSON doc query
+    // select userid, name, age from users where city='Seoul' and age > 15 and age < 23
+    User.find({ 'city': 'Seoul', 'age': { $gt: 14, $lt: 23 } }, { '_id': 0 })
+        .sort({ 'age': -1 })
+        .select('userid name age')
+        .exec(function (err, users) {
+            console.log("\nQuery 5");
+            console.log(users + "\n");
+            callback(null)
+        })
+}
+
+function query6(callback) {
+    // using querybuilder
+    // select userid, name, age from users where city='Seoul' and age > 15 and age < 23
+    User.find({}, { '_id': 0 })
+        .where('city').equals('Seoul')
+        .where('age').gt(15).lt(23)
+        .sort({ 'age': 1 })
+        .select('userid name age')
+        .exec(function (err, users) {
+            console.log("\nQuery 6");
+            console.log(users + "\n");
+            callback(null)
+        })
+}
+
+
+# npm init -y
+
+# npm install express morgan path body-parser cookie-parser mongoose async
+
+# nodemon app.js
+
+

@@ -1,0 +1,158 @@
+Day-37
+
+
+### request - GET
+
+# mkdir /allnew/node/request
+
+
+## app.js
+
+const express = require('express');
+const request = require('request');
+const CircularJSON = require('circular-json');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send("Web Sever started...");
+})
+
+app.get('/hello', (req, res) => {
+    res.send("Hello World - Moon");
+})
+
+let option = "http://192.168.1.187:8000/hello"
+app.get("/rhello", function (req, res) {
+    request(option, { json: true }, (err, result, body) => {
+        if (err) { return console.log(err) }
+        res.send(CircularJSON.stringify(body))
+    })
+})
+
+const data = JSON.stringify({ todo: 'Buy the milk - Moon' })
+app.get("/data", function (req, res) {
+    res.send(data);
+})
+
+option = "http://192.168.1.187:8000/data"
+app.get("/rdata", function (req, res) {
+    request(option, { json: true }, (err, result, body) => {
+        if (err) { return console.log(err) }
+        res.send(CircularJSON.stringify(body))
+    })
+})
+
+app.listen(8000, function () {
+    console.log('8000 Port : Server Started....');
+})
+
+
+# npm init -y
+
+# npm install express request circular-json
+
+# nodemon request-get.js
+
+
+### htttps request -GET
+
+# cd ..
+
+# cp -r request http-request
+
+# cd http-request
+
+# rm -rf node_modules/ package*
+
+
+## get.js
+
+const https = require('https');
+
+const data = JSON.stringify({
+    todo: 'Buy the milk'
+})
+
+const options = {
+    hostname: '192.168.1.158',
+    port: 8000,
+    path: '/todos',
+    method: 'GET'
+}
+
+const req = https.request(options, res => {
+    console.log(`statusCode : ${res.statusCode}`);
+    res.on('data', d => {
+        process.stdout.write(d);
+    })
+})
+
+req.on('error', error => {
+    console.log(error)
+})
+
+req.write(data)
+req.end()
+
+
+### htttps request -POST
+
+# cp get.js post.js
+
+## post.js 
+
+const https = require('https');
+
+const data = JSON.stringify({
+    todo: 'Buy the milk'
+})
+
+const options = {
+    hostname: '192.168.1.158',
+    port: 8000,
+    path: '/todos',
+    method: 'POST',
+    header: {
+        'Content-Type': 'application/json',
+        'Content-Length': data.length
+    }
+}
+
+const req = https.request(options, res => {
+    console.log(`statusCode : ${res.statusCode}`);
+    res.on('data', d => {
+        process.stdout.write(d);
+    })
+})
+
+req.on('error', error => {
+    console.log(error)
+})
+
+req.write(data)
+req.end()
+
+
+### axios request 
+
+# cd ..
+
+# mkdir axios-request
+
+## app.js
+
+const axios = require('axios');
+
+axios
+    .post('http://192.168.1.158:8000/todos', {
+        todo: "Buy the milk"
+    })
+    .then(res => {
+        console.log(`statusCode : ${res.status}`)
+        console.log(res)
+    })
+    .catch(error => {
+        console.log(error)
+    })
+
+

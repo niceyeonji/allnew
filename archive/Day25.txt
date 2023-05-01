@@ -246,8 +246,8 @@ success
 # apt -y update; apt -y upgrade
 
 ## .env
-
-m7ThIAG1EPMwWTz3BJ047nFTQtoBwgVW8jlbiv9u9E9Df1vfgzI9sYUMGayOuOf7
+# atlas api-key
+ATLAS_API=m7ThIAG1EPMwWTz3BJ047nFTQtoBwgVW8jlbiv9u9E9Df1vfgzI9sYUMGayOuOf7
 
 
 ## .gitignore
@@ -378,6 +378,7 @@ mysql> exit
 # node app.js
 
 
+
 ### mysql-sync
 
 ## app.js
@@ -396,10 +397,45 @@ var connection = new mysql({
 let result = connection.query('select * from st_info');
 console.log(result);
 
+// make insert data
+let data = {
+    st_id: "202399",
+    name: "Moon",
+    dept: "Computer"
+}
+
+// inserted data's id
+let insertId = data.st_id;
+
+// insert query
+result = connection.query("insert into st_info values (?, ?, ?)", [insertId, data.name, data.dept]);
+console.log("data is Inserted~!!");
+
+// select * query for inserted data
+result = connection.query("select * from st_info where st_id= ?", [insertId]);
+console.log(result);
+
+// update query
+result = connection.query("update st_info set dept =? where st_id = ? ", ["Game", insertId]);
+console.log("data is Inserted~!!");
+
+// select * query for updated data
+result = connection.query("select * from st_info where st_id= ?", [insertId]);
+console.log(result);
+
+// delete query
+result = connection.query("delete from st_info where st_id= ?", [insertId]);
+console.log(result);
+
+// select * query for all data
+result = connection.query("select * from st_info");
+console.log(result);
+
 
 # npm install sync-mysql dotenv
 
 # node app.js
+
 
 
 ### mysql-sync-web version
@@ -464,7 +500,7 @@ app.listen(app.get('port'), () => {
       DEPT <input type="text" name="dept" size='10'>
       <input type="button" value="Delete st_info" onclick='document.targetURL.location.href="/delete?ST_ID="+document.userForm.id.value'><br>
 ---------------------------------------------------------<br>
-<iframe name="targetURL" class="iframe-preview center" width="90%" height="500" style="border:none;" src="http://13.209.234.117:3000/select">
+<iframe name="targetURL" class="iframe-preview center" width="90%" height="500" style="border:none;" src="http://192.168.1.200:8000/Hello">
 </iframe>
 </body>
 </html>
@@ -474,8 +510,6 @@ app.listen(app.get('port'), () => {
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const CircularJSON = require('circular-json')
-const request = require('request')
 const mysql = require("sync-mysql")
 const env = require("dotenv").config({ path: "../../.env" });
 
@@ -545,11 +579,7 @@ app.get("/insert", (req, res) => {
         DEPT
     ]);
 
-    urls = "http://192.168.1.200:8000/select/"
-    request(urls, { json: true }, (err, result, body) => {
-        if (err) { return console.log(err) }
-        res.send(CircularJSON.stringify(body))
-    })
+    res.redirect('/select');
 })
 
 // update row from st_info table
@@ -561,11 +591,7 @@ app.get("/update", (req, res) => {
         ST_ID
     ]);
 
-    urls = "http://192.168.1.200:8000/select/"
-    request(urls, { json: true }, (err, result, body) => {
-        if (err) { return console.log(err) }
-        res.send(CircularJSON.stringify(body))
-    })
+    res.redirect('/select');
 })
 
 // delete row from st_info table
@@ -575,11 +601,7 @@ app.get("/delete", (req, res) => {
         ST_ID
     ]);
 
-    urls = "http://192.168.1.200:8000/select/"
-    request(urls, { json: true }, (err, result, body) => {
-        if (err) { return console.log(err) }
-        res.send(CircularJSON.stringify(body))
-    })
+    res.redirect('/select');
 })
 
 module.exports = app;
@@ -587,8 +609,10 @@ module.exports = app;
 
 # npm init -y
 
-# npm install express body-parser cookie-parser morgan circular-json request sync-mysql dotenv
+# npm install express body-parser cookie-parser morgan sync-mysql dotenv
 
 # npm install -g nodemon
 
 # nodemon app.js
+
+

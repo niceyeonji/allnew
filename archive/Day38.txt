@@ -1,0 +1,591 @@
+Day-38
+
+https://www.jetbrains.com
+
+Pycham 다운로드 후 설치해주세요.
+
+학교 교육 계정(email)이 있는 분은 Professional version 
+
+없으시면 Community version…
+
+
+# ssh ubuntu
+
+# cd /allnew/python
+
+# mkdir helloworld
+
+# cd helloworld
+
+# vi p06_helloworld.py
+
+      #!/usr/bin/env python
+      print("Hello World~!!");
+
+# python helloworld.py
+Hello World~!!
+
+# chmod +x helloworld.py
+
+# ./helloworld.py
+
+
+## p09_var .py
+
+#!/usr/bin/env python
+
+# f(x) = f(x-1) + f(x-2)
+
+num = 1
+prev = 0
+cur = 1
+
+while num < 10:
+    next = cur + prev
+    print("%3d : %d " %  (num, next))
+    prev = cur
+    cur = next
+    num += 1
+
+
+## p09_str .py
+
+#!/usr/bin/env python
+
+numbers = [0 , 1, 2, 3]
+names = ["Kim", "Lee", "Park", "Choi"]
+print(numbers[0])
+print(names[2:])
+print(numbers[-1])
+print(numbers + names)
+empty=[]
+print(empty)
+
+# append
+names.append("Moon")
+print(names)
+
+# insert
+names.insert(1, "Gang")
+print(names)
+
+# delete
+del names[1]
+print(names)
+
+# remove
+names.remove("Moon")
+print(names)
+
+# pop
+value = names.pop()
+print(value)
+
+# pop
+value = names.pop(1)
+print(value)
+
+# extend
+numbers.extend([4, 5, 6, 4, 4, 5, 6])
+print(numbers)
+
+# count
+print(numbers.count(4))
+
+# sort
+numbers.sort()
+print(numbers)
+
+# reverse
+numbers.reverse()
+print(numbers)
+
+# clear
+numbers.clear()
+print(numbers)
+
+
+## p11_tuple.py
+
+#!/usr/bin/env python
+
+person = ("Kim", 24, "male")
+print(person)
+
+a = ()
+print(a)
+
+b = (person, )
+print(b)
+
+name, age, gender = person
+print("name : ", name)
+print("age : ", age)
+print("gender : ", gender)
+
+n = 1
+numbers = [1, 2]
+
+print(type(person))
+print(type(n))
+print(type(numbers))
+
+print(person[0])
+print(person[-1])
+
+fruits = ('apple', ('banana', 'cherry'), ('strawberry', 'watermelon'))
+print(fruits)
+print(fruits[0])
+print(fruits[1][0])
+print(fruits[1][1])
+print(fruits[2][0])
+print(fruits[2][1])
+
+
+## p12_set.py
+
+#!/usr/bin/env python
+
+even = set([0, 2, 4, 6, 8])
+print(even)
+
+hello = set("Hello")
+print(hello)
+
+s = even | hello
+print(s)
+
+p = even & hello
+print(p)
+
+even.add(10)
+print(even)
+
+hello.remove('e')
+print(hello)
+
+s1 = set([1, 2, 3, 4, 5])
+s2 = set([4, 5, 6, 7, 8])
+
+# intersection
+print(s1.intersection(s2))
+print(s1 & s2)
+
+# union
+print(s1.union(s2))
+print(s1 | s2)
+
+# difference
+print(s1.difference(s2))
+print(s2.difference(s1))
+
+print(s1 - s2)
+print(s2 - s1)
+
+s3 = {1, 2, 3, 4, 5}
+
+if s1 == s2:
+    print("s1, s2 is same...")
+else:
+    print("s1, s2 is not same...")
+
+if s1 == s3:
+    print("s1, s3 is same...")
+else:
+    print("s1, s3 is not same...")
+
+s4 = {6, 7, 8, 9, 10}
+
+if s1.isdisjoint(s2):
+    print("s1, s2 not have in common")
+else:
+    print("s1, s2 have in common")
+
+if s3.isdisjoint(s4):
+    print("s3, s4 not have in common")
+else:
+    print("s3, s4 have in common")
+
+print(s1.issubset(s2))
+
+s5 = {4, 5}
+
+print(s2.issubset(s5))
+
+s = {1, 2, 3}
+print(f'set : {s}')
+
+s.update({'a', 'b', 'c'})
+print(f'set : {s}')
+
+s.update([11, 12, 13])
+print(f'set : {s}')
+
+s.remove('a')
+print(f'set : {s}')
+
+s.discard("b")
+print(f'set : {s}')
+
+s.discard("a")
+print(f'set : {s}')
+
+s = {'r', 'd', 'n', 'd', 'o', 'm'}
+
+print(f'set.pop() : {s.pop()}')
+print(f'set : {s}')
+
+print(f'set.pop() : {s.pop()}')
+print(f'set : {s}')
+
+print(f'set.pop() : {s.pop()}')
+print(f'set : {s}')
+
+s.clear()
+print(f'set : {s}')
+
+s = {'a', 'b', 'c'}
+
+if 'a' in s:
+    print('a is Exist')
+else:
+    print('a is not Exist')
+
+if 'z' in s:
+    print('z is Exist')
+else:
+    print('z is not Exist')
+
+print(f'length of set : {len(s)}')
+
+
+## p13_dictionary.py
+
+#!/usr/bin/env python
+
+me = {"name":"Moon", "age" : 22, "gender" : "male"}
+print(me)
+
+myname = me["name"]
+print(myname)
+
+me["age"] = 25
+print(me)
+
+dict={}
+print(dict)
+
+me[10] = 10
+print(me)
+
+me['10'] = 10
+print(me)
+
+me['job'] = "teacher"
+print(me)
+
+me['list'] = [1, 2, 3, 4, 5]
+print(me)
+
+me[(1, 2)] = "this is value"
+print(me)
+
+me[3] = (3, 'aa', 5)
+print(me)
+
+print("===========")
+print(f'me[list] : {me["list"]}')
+print(f'me[(1, 2)] : {me[(1, 2)]}')
+print(f'me[3] : {me[3]}')
+
+print(f'me[(1, 2)] : {me[(1, 2)]}')
+me[(1, 2)] = "This is real value"
+print(f'me[(1, 2)] : {me[(1, 2)]}')
+
+dic = {'a' : 1234, "b" : "blog", "c" : 3333}
+
+# in
+if 'b' in dic:
+    print("b is exist")
+else:
+    print("b is not exist")
+
+if 'e' in dic:
+    print("e is exist")
+else:
+    print("e is not exist")
+
+# keys()
+print(dic.keys())
+
+for k in dic.keys():
+    print(f'key : {k}')
+
+# values()
+if 'blog' in dic.values():
+    print("value is exist")
+else:
+    print("value is not exist")
+
+print(dic.values())
+
+for v in dic.values():
+    print(f'value : {v}')
+
+# items()
+print(dic.items())
+
+for i in dic.items():
+    print(f'all : {i}')
+    print(f'key : {i[0]}')
+    print(f'value : {i[1]}')
+    print()
+
+# get()
+v1 = dic.get('b')
+print(f"dic.get['b'] : {v1}")
+
+v2 = dic.get('z')
+print(f"dic.get['z'] : {v2}")
+
+# del
+print(f'before : {dic}')
+
+del dic['c']
+
+print(f'after : {dic}')
+
+# clear
+dic.clear()
+print(f'dic : {dic}')
+
+
+## p14_type.py
+
+arr = [1, 2, 3, 4]
+
+print(id(arr))
+
+print(type(arr))
+
+print(type(10))
+
+print(type([1, 2]))
+
+print(type(type(10)))
+
+
+## p16_indent.py
+
+n = 0
+
+while True :
+    n += 1
+
+    if n > 10 :
+        break
+    if ((n % 2) == 0) :
+        print(n)
+        
+
+## p17_if_elif.py
+
+while True:
+    i = input("Input the number(q : Quit) : ")
+
+    if i == 'q':
+        break
+    else:
+        if int(i) > 0:
+            print("This is positive")
+        elif int(i) == 0:
+            print("This is zero")
+        else:
+            print("This is negative")
+
+
+## p17_if.py
+
+a = int(input("Input the First Number : "))
+b = int(input("Input the Second Number : "))
+
+if a > b:
+    print("Max is %d" % a)
+else:
+    print("Max is %d" % b)
+
+
+## p17_if_1.py
+
+a = int(input("Input the First Number : "))
+b = int(input("Input the Second Number : "))
+
+print("Max is %d" % a) if a > b else print("Max is %d" % b)
+
+
+## p17_if_2.py
+
+a = int(input("Input the First Number : "))
+b = int(input("Input the Second Number : "))
+
+max_value = a if a > b else b
+
+print(f"Max is {max_value}")
+
+
+## p19_for1.py
+
+for i in [0, 1, 2, 3, 4]:
+    print(f'{i} ^ 2 = {i * i}')
+
+
+## p19_for2.py
+
+for i in range(5):
+    print(f'{i} ^ 2 = {i * i}')
+print()
+
+for i in range(1, 6):
+    print(f'{i} ^ 2 = {i * i}')
+
+
+## p20_continue.py
+
+sum = 0
+for i in range(10):
+    if i % 2 == 0:
+        continue
+    sum += i
+    print(f'sum += {i}')
+print()
+print(f"sum = {sum}")
+
+
+## p20_pass.py
+
+sum = 0
+for i in range(10):
+    if i % 2 == 0:
+        pass
+    sum += i
+    print(f'sum += {i}')
+print()
+print(f"sum = {sum}")
+
+
+## p21_def_min.py
+
+def min(a, b):
+    if a > b:
+        return b
+    else:
+        return a
+
+a = input("Input first number : ")
+b = input("Input Second number : ")
+
+print("{} vs {} : Min number = {}".format(a, b, min(a,b)))
+
+
+## p22_global.py
+
+m = 0
+n = 1
+def func():
+    m = 0
+    global n
+    m += 1
+    n += 1
+    print(f'{m} vs {n}')
+func()
+print(m, n)
+
+
+## p23_couter.py
+
+def counter(max):
+    t = 0
+    def output():
+        print("t = %d" % t)
+
+    while t < max:
+        output()
+        t += 1
+
+n = input("Input number : ")
+counter(int(n))
+
+
+## p23_factorial.py.  # f(x) = x * f(x-1), f(x) = 1
+
+def factorial(n):
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+n = input("Input number : ")
+print("{} factorial is {}".format(n, factorial(int(n))))
+
+
+## p24_lambda.py
+
+i = input("Input first number : ")
+j = input("Input second number : ")
+
+a = lambda i, j : i + j
+print('{} + {} = {}'.format(i, j, a(int(i), int(j))))
+
+
+## calc_func.py
+
+# calc.py
+
+def add(a, b):
+    return a + b
+
+def sub(a, b):
+    return a - b
+
+
+## calc_func_call.py
+
+import calc_func
+
+a = int(input("Input first number : "))
+b = int(input("Input second number : "))
+
+print('{} + {} = {}'.format(a, b, calc_func.add(a, b)))
+print('{} + {} = {}'.format(a, b, calc_func.sub(a, b)))
+
+
+## prime_func.py
+
+def prime(n):
+    for k in (2, n):
+        if n % k == 0:
+            break
+    if k == n:
+        return 1
+    else:
+        return 0
+
+
+## prime_func_call.py
+
+import prime_func
+
+while True:
+    n = int(input("Input number(0 : Quit) : "))
+
+    if (n == 0):
+        break
+    if (n < 2) :
+        print("re-enter number~!!")
+        continue
+    print(f"{n} is prime number") if prime_func.prime(n) == 1 else print(f"{n} is not prime number")
+
+
+
+
+
