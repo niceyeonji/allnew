@@ -12,7 +12,6 @@ c/**/*.o
 c/**/test
 
 ## java
-
 java/*.class
 
 ## scala
@@ -25,10 +24,13 @@ maven/target
 ## nodejs
 node/**/node_modules
 node/**/package-lock.json
+node/config/pool.js
 
 ## python
 python/**/.venv
 python/**/__pycache__/
+python/**/.idea
+python/secret.json
 
 ## mongodb
 mongodb/*.json
