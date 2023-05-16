@@ -5,8 +5,8 @@ import json
 address = '서울 마포구 신수동 451번지 세양청마루아파트 상가 101호'
 url = 'https://dapi.kakao.com/v2/local/search/address.json?query=' + address
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("../")))
-secret_file = os.path.join(BASE_DIR, 'secret.json')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
 
 with open(secret_file) as f:
     secrets = json.loads(f.read())
