@@ -1,6 +1,7 @@
 import cx_Oracle
 
-cx_Oracle.init_oracle_client(lib_dir="C:\OracleXE\instantclient_19_18")
+# cx_Oracle.init_oracle_client(lib_dir="C:\OracleXE\instantclient_19_18")
+cx_Oracle.init_oracle_client(lib_dir="/usr/local/OracleXE/instantclient_19_19")
 conn = None # 접속 객체
 cur = None # 커서 객체
 
