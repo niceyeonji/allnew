@@ -1,0 +1,11 @@
+{
+  "member" : {
+    "name" : "심형식",
+    "address" : "용산구 도원동",
+    "phone" : "02-1234-5678"
+  },
+  "web" : {
+    "cafename" : "cafe.naver.com/asdf1234",
+    "id" : "badboy"
+  }
+}
