@@ -40,9 +40,9 @@ for page in pages:
     all_data.extend(result)
 
 # 데이터를 CSV 파일로 저장
-filename = "table_data.csv"
+filename = "BirthData.csv"
 with open(filename, "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerows(all_data)
 
-print(f"Data has been saved to {filename}.")
+print(f"{filename} 파일 저장 완료.")
