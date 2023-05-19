@@ -1,13 +1,16 @@
 import pandas as pd
 
 filename = '여름기온.csv'
-dataframe = pd.read_csv(filename, names=['평균기온', '평균최저기온', '평균최고기온'])
+dataframe = pd.read_csv(filename, names=['Average_tem', 'Average_low', 'Average_high'])
 
-dataframe.index.name = '년월'
+dataframe.index.name = 'monthly'
 
-new_df = dataframe[['평균기온']]
+new_df = dataframe[['Average_tem']]
 
 print(new_df)
+
+# result = new_df.loc['2015-06']
+# print(result)
 
 myencoding = 'utf-8'
 filename = 'temp.csv'
