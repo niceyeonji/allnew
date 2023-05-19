@@ -43,7 +43,7 @@ async def getMongo():
     return list(mycol.find())
 
 @app.get('/getyear')
-async def getyear(year=None):
+async def getyear(year: int = None):
     if year is None:
         return "연도를 입력하세요."
     result = mycol.find_one({"year":year})
