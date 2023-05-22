@@ -28,11 +28,9 @@ df = pd.DataFrame(data[1:], columns=['year', 'beaf', 'pork', 'chicken', 'total',
 # 만든 데이터프레임 확인!
 print(df)
 
-# csv로 저장하기
-# filename = 'meat.csv'
+# json으로 저장하기
 filename = 'meat.json'
 myencoding = 'utf-8'
-# df.to_csv(filename, encoding=myencoding, mode='w', index=True)
 df.to_json(filename, mode='w', index=True, orient = "records")
 print(filename + '파일 저장 완료')
 
