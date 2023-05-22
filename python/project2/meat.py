@@ -23,14 +23,16 @@ for row in table1.select("tr"):
 
 # 추출한 데이터로 데이터프레임 만들기
 df = pd.DataFrame(data[1:], columns=['year', 'beaf', 'pork', 'chicken', 'total', 'beaf1', 'pork1', 'chicken1', 'total1'])
-df.set_index('year', inplace=True)
+# df.set_index('year', inplace=True)
 
 # 만든 데이터프레임 확인!
 print(df)
 
 # csv로 저장하기
-filename = 'meat.csv'
+# filename = 'meat.csv'
+filename = 'meat.json'
 myencoding = 'utf-8'
-df.to_csv(filename, encoding=myencoding, mode='w', index=True)
+# df.to_csv(filename, encoding=myencoding, mode='w', index=True)
+df.to_json(filename, mode='w', index=True, orient = "records")
 print(filename + '파일 저장 완료')
 

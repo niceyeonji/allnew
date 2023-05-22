@@ -32,7 +32,7 @@ client = mongo_client.MongoClient(f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAM
 print('Connected to Mongodb....')
 
 mydb = client['test']
-mycol = mydb['projectdb2']
+mycol = mydb['projectdb1']
 
 @app.get('/')
 def healthCheck():
@@ -46,7 +46,7 @@ async def getMongo():
 async def getyear(year: int = None):
     if year is None:
         return "연도를 입력하세요."
-    result = mycol.find_one({"year":year})
+    result = mycol.find_one({"year": str(year)})
     if result:
         return result
     else:
