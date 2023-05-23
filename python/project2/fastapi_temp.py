@@ -32,7 +32,7 @@ client = mongo_client.MongoClient(f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAM
 print('Connected to Mongodb....')
 
 mydb = client['test']
-mycol = mydb['projectdb']
+mycol = mydb['projecttemp']
 
 @app.get('/')
 def healthCheck():
@@ -46,7 +46,7 @@ async def getMongo():
 async def getmonthly(monthly=None):
     if monthly is None:
         return "날짜를 입력하세요."
-    result = mycol.find_one({"monthly":monthly})
+    result = mycol.find_one({"년월":monthly})
     if result:
         return result
     else:
@@ -60,9 +60,9 @@ async def getyear(year=None):
         return "연도를 입력하세요."
 # results라는 빈 리스트 생성. 입력한 연도에 해당하는 데이터 저장 용도
     results = []
-# mycol.find() 메서드 사용해서 MongoDB의 컬렉션에서 모든 데이터 가져옴. 반복문 사용 monthly변수에 현재 아이템의 "monthly"값 할당 
+# mycol.find() 메서드 사용해서 MongoDB의 컬렉션에서 모든 데이터 가져옴. 반복문 사용 monthly변수에 현재 아이템의 "년월"값 할당 
     for item in mycol.find():
-        monthly = item["monthly"]
+        monthly = item["년월"]
 # 'monthly[:len(year)]'로 monthly값을 연도의 길이만큼 슬라이싱해서 입력한 연도와 비교. 연도 일치하면 해당 아이템을 results 리스트에 추가.
         if monthly[:len(year)] == year:
             results.append(item)
@@ -75,7 +75,7 @@ async def getyear(year=None):
 
 @app.get('/add_data')
 async def add_data():
-    with open("temp.json", "r") as file:
+    with open("temp_data.json", "r") as file:
         data = json.load(file)
 
     for item in data:
@@ -88,20 +88,9 @@ async def dea_data(monthly=None):
     if monthly is None:
         return "날짜를 입력하세요"
     else:
-        month = mycol.find_one({"monthly":monthly})
+        month = mycol.find_one({"년월":monthly})
         if month:
-            mycol.delete_one({"monthly":monthly})
+            mycol.delete_one({"년월":monthly})
             return list(mycol.find().limit(10))
         else:
-            return f"monthly = {monthly} 데이터가 존재하지 않습니다."
-
-
-@app.get('/getmonthly')
-async def getmonthly(monthly=None):
-    if monthly is None:
-        return "날짜를 입력하세요."
-    result = mycol.find_one({"monthly":monthly})
-    if result:
-        return result
-    else:
-        return "검색 결과가 없습니다."
+            return f"년월 = {monthly} 데이터가 존재하지 않습니다."
