@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>About Me</title>
+    <link type="text/css" rel="stylesheet" href="mystyle.css" />
+    <script>
+      function getParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+          results = regex.exec(location.search);
+        return results === null
+          ? ''
+          : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+      let id = getParameter('id');
+      let now = new Date();
+      function login() {
+        if (!window.sessionStorage) {
+          alert('세션 스토리지를 지원하지 않습니다.');
+          return;
+        }
+        if (id == '') {
+          sessionStorage.removeItem('');
+          alert('잘못된 접근 방식입니다.');
+          location.href = 'index.html';
+        } else {
+          // sessionStorage.setItem(id, now);
+          alert(
+            `사용자 ${id} 님의  로그인 시간은 ${sessionStorage.getItem(
+              id,
+            )} 입니다.`,
+          );
+        }
+      }
+      window.addEventListener('beforeunload', event => {
+        event.preventDefault();
+        event.returnValue = '';
+      });
+
+      function logout() {
+        sessionStorage.removeItem(id);
+      }
+    </script>
+  </head>
+  <body class="body" onload="login()" onunload="logout()">
+    <div class="blur"><h3>AboutMe</h3></div>
+    <nav id="menubar">
+      <ul>
+        <li><a href="user.html">Home</a></li>
+        <li><a href="aboutme.html">About Me</a></li>
+        <li overflow:hidden;></li>
+        <li overflow:hidden;></li>
+        <li overflow:hidden;></li>
+        <li><a href="index.html" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+    <hr />
+    <br />
+    <p style="font-size: 2em"><b>강연지 짱이다 짱</b></p>
+    <br />
+    안녕하세요 2004년생 강연지입니다.
+    <br />
+    <br />
+    <hr />
+    <div class="img">@Ungdii95</div>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login Failed</title>
+    <link type="text/css" rel="stylesheet" href="mystyle.css" />
+    <script>
+      function getParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+          results = regex.exec(location.search);
+        return results === null
+          ? ''
+          : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+      function sessionStore() {
+        let id = getParameter('id');
+        let now = new Date();
+        if (!window.sessionStorage) {
+          alert('세션 스토리지를 지원하지 않습니다.');
+          return;
+        }
+        sessionStorage.setItem(id, now);
+        alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
+      }
+    </script>
+  </head>
+  <body class="body">
+    <div class="blur"><h3>Login Failed</h3></div>
+    <hr />
+    <div class="box">
+      <div class="p">
+        <b>로그인에 실패하셨습니다😢😢</b>
+        <br />
+        🙏🙏🙏🙏제대로 쳐주세용🙏🙏🙏🙏
+        <br />
+        🙏🙏🙏🙏비밀번호 변경은 DM으로 부탁드려용🙏🙏🙏🙏
+      </div>
+      <br />
+      <img
+        src="https://www.busan.com/nas/data/content/image/2017/05/01/20170501000166_0.jpg"
+        width="500"
+        height="700"
+      />
+      <br />
+      <br />
+      <a href="index.html" style="font-size: 18px"> (☞ﾟヮﾟ)☞ 다시 시도하기 </a>
+    </div>
+    <hr />
+    <div class="img">@Ungdii95</div>
+  </body>
+</html>

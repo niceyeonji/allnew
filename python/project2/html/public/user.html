@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>User page</title>
+    <link type="text/css" rel="stylesheet" href="mystyle.css" />
+        <script>
+      function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+      function sessionStore() {
+        let id = getParameter("id");
+        let now = new Date();
+        if (!window.sessionStorage) {
+          alert("세션 스토리지를 지원하지 않습니다.");
+          return;
+        }
+        sessionStorage.setItem(id, now);
+        alert(`사용자 ${id} 님이 로그인 하셨습니다.`);
+      }
+      
+      function aaa(){
+        alert('경고')
+      }
+
+      window.addEventListener("beforeunload", (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+      });
+    </script>
+  </head>
+  <body class="body">
+    <div class="blur"><h3>User Page</h3></div>
+        <nav id="menubar">
+      <ul>
+        <li><a href="main.html" target="main">Home</a></li>
+        <li><a href="aboutme.html" target="main">About Me</a></li> 
+        <li overflow:hidden;></li>   
+                <li overflow:hidden;></li>  
+                                <li overflow:hidden;></li>         
+        <li><a href="index.html">Logout</a></li>
+      </ul>
+    </nav>
+    <hr />
+    <div class="box2">
+        <iframe
+        name="main"
+        src="/thanks"
+        width="100%"
+        height="100%"></iframe>
+    </div>
+  </div>
+    <hr />
+    <div class="img">@Ungdii95</div>
+  </body>
+</html>
