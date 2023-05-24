@@ -7,6 +7,7 @@ import os.path
 import json
 import chardet
 import matplotlib.pyplot as plt
+from temp_models import Temp
 from database import db_conn
 
 
@@ -42,8 +43,12 @@ def healthCheck():
     return "OK"
 
 @app.get('/getmongo')
+# async def getMongo():
+#     return list(mycol.find())
 async def getMongo():
-    return list(mycol.find())
+    data = mycol.find({}, {"_id": 0, "년월": 1, "평균기온(℃)": 1})
+    result = {d["년월"]: d["평균기온(℃)"] for d in data}
+    return result
 
 @app.get('/getmonthly')
 async def getmonthly(monthly=None):
@@ -135,21 +140,29 @@ def temp_graph(year1: int, year2: int):
 
     return {"message": "그래프가 생성되었습니다.", "filename": filename}
 
-db_connection = db_conn()
+db = db_conn()
+session = db.sessionmaker()
 
-@app.get("/migrate")
-def migrate_data():
-    data = list(mycol.find())
+@app.get('/add_total')
+async def add_total(year=None):
+    if year is None:
+        return "'년도(ex, 2018)'를 입력하세요."
+    else:
+        data = await getmongo(year)
 
-    mysql_conn = db_connection.connection()  # 인스턴스를 통해 connect() 메서드 호출
-    cursor = mysql_conn.cursor()
-    for item in data:
-        year_month = item["년월"].strftime("%Y-%m-%d")
-        temp = item["평균기온(℃)"]
-        sql = f"INSERT INTO table_name (year_month, temp) VALUES ('{year_month}', {temp})"
-        cursor.execute(sql)
-    mysql_conn.commit()
-    cursor.close()
-    mysql_conn.close()
+        for date, avr in data.items():
+            total = Temp(DATADATE=date, TEMP_AVR=avr)
+            session.add(total)
 
-    return {"message": "데이터 마이그레이션 완료"}
+        session.commit()
+
+        results = session.query(Temp).all()
+
+        return results
+
+async def getmongo(year):
+    data = mycol.find({}, {"_id": 0, "년월": 1, "평균기온(℃)": 1})
+    filtered_data = {d["년월"]: d["평균기온(℃)"] for d in data if d["년월"].startswith(year)}
+    return filtered_data
+
+
