@@ -1,3 +1,4 @@
+from pandas import DataFrame
 from fastapi import FastAPI
 import pandas as pd
 from pymongo import mongo_client
@@ -9,6 +10,7 @@ import chardet
 import matplotlib.pyplot as plt
 from temp_models import Temp
 from database import db_conn
+import requests
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -34,6 +36,7 @@ PASSWORD = get_secret("ATLAS_Password")
 
 client = mongo_client.MongoClient(f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
 print('Connected to Mongodb....')
+
 
 mydb = client['test']
 mycol = mydb['projecttemp']
@@ -80,6 +83,36 @@ async def getyear(year=None):
 # 'results'리스트가 비어있으면 검색결과 없다는 메시지 반환
     else:
         return "검색 결과가 없습니다."
+def temp():
+    url = "http://192.168.1.58:5000/temp"
+    result = getRequestUrl(url)
+    if (result == None):
+        return None
+    else:
+        return json.loads(result)
+
+def duplica(yd):
+    query = {"년월":yd}
+    count = mycol.count_documents(query)
+    return count > 0
+
+@app.get('/add_temp')
+async def save_data_temp_mongo():
+    listResult = []
+    listData = fire()
+    for item in listData:
+        if not duplica(item["년월"]):
+            listResult.append(item)
+
+    if listResult:
+        mycol.insert_many(listResult)
+    return "데이터가 추가되었습니다."
+
+@app.get('/tempmongo')
+async def tempmongo():
+    result=list(mycol.find())
+    data={item["년월"]:item["횟수"] for item in result}
+    return data
 
 @app.get('/add_data')
 async def add_data():
@@ -90,6 +123,7 @@ async def add_data():
         mycol.insert_one(item)
 
     return "데이터가 추가되었습니다."
+
 
 @app.get("/del_data")
 async def dea_data(monthly=None):
