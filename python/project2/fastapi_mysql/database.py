@@ -4,7 +4,7 @@ import os.path
 import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
-secret_file = os.path.join(BASE_DIR, '../secret.json')
+secret_file = os.path.join(BASE_DIR, '../../secret.json')
 
 with open(secret_file) as f:
     secrets = json.loads(f.read())
@@ -26,7 +26,7 @@ DB_URL = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DBNAME}'
 
 class db_conn:
     def __init__(self):
-        self.engine = create_engine(DB_URL, pool_recycle=500)   
+        self.engine = create_engine(DB_URL, pool_recycle=500)
     
     def sessionmaker(self):
         Session = sessionmaker(bind=self.engine)
@@ -36,4 +36,3 @@ class db_conn:
     def connection(self):
         conn = self.engine.connection()
         return conn
-

@@ -7,6 +7,7 @@ import os.path
 import json
 import chardet
 import matplotlib.pyplot as plt
+from database import db_conn
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -133,3 +134,22 @@ def temp_graph(year1: int, year2: int):
     plt.close()
 
     return {"message": "그래프가 생성되었습니다.", "filename": filename}
+
+db_connection = db_conn()
+
+@app.get("/migrate")
+def migrate_data():
+    data = list(mycol.find())
+
+    mysql_conn = db_connection.connection()  # 인스턴스를 통해 connect() 메서드 호출
+    cursor = mysql_conn.cursor()
+    for item in data:
+        year_month = item["년월"].strftime("%Y-%m-%d")
+        temp = item["평균기온(℃)"]
+        sql = f"INSERT INTO table_name (year_month, temp) VALUES ('{year_month}', {temp})"
+        cursor.execute(sql)
+    mysql_conn.commit()
+    cursor.close()
+    mysql_conn.close()
+
+    return {"message": "데이터 마이그레이션 완료"}
