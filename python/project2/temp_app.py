@@ -73,8 +73,9 @@ async def save_data_temp_mongo():
     listData = temp()
     for item in listData:
         if not duplica(item["년월"]):
+            year_month = item["년월"].replace("\t", "").strip()
             temp_item = {
-                "년월" : item["년월"],
+                "년월" : year_month,
                 "평균기온(℃)" : item["평균기온(℃)"]
             }
             listResult.append(temp_item)
