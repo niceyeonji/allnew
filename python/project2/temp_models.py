@@ -9,8 +9,3 @@ class Temp(Base):
     DATADATE = Column(TEXT, nullable=False, primary_key=True)
     TEMP_AVR = Column(INT, nullable=False)
 
-class Fire(Base):
-    __tablename__ = "temp"
-
-    DATADATE = Column(TEXT, nullable=False, primary_key=True)
-    TEMP_AVR = Column(INT, nullable=False)
