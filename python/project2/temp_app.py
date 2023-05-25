@@ -51,7 +51,8 @@ def getRequestUrl(url):
             return response.read().decode('utf-8')
     except Exception as e:
         return None
-        
+
+@app.get('/temp')        
 def temp():
     url = "http://192.168.1.58:5000/temp"
     result = getRequestUrl(url)
@@ -60,6 +61,7 @@ def temp():
     else:
         return json.loads(result)
 
+@app.get('/duplicate')
 def duplica(yd):
     query = {"년월":yd}
     count = mycol.count_documents(query)
@@ -71,16 +73,25 @@ async def save_data_temp_mongo():
     listData = temp()
     for item in listData:
         if not duplica(item["년월"]):
-            listResult.append(item)
+            temp_item = {
+                "년월" : item["년월"],
+                "평균기온(℃)" : item["평균기온(℃)"]
+            }
+            listResult.append(temp_item)
 
     if listResult:
         mycol.insert_many(listResult)
     return "데이터가 추가되었습니다."
 
+
+# mongodb에서 데이터 가지고 오기
 @app.get('/tempmongo')
 async def tempmongo():
     result=list(mycol.find())
-    data={item["년월"]:item["평균기온(℃)"] for item in result}
+    # data={item["년월"]:item["평균기온(℃)"] for item in result}
+    # return data
+    sorted_data = sorted(result, key=lambda item: item["년월"])
+    data = {item["년월"]: item["평균기온(℃)"] for item in sorted_data}
     return data
 
 @app.get('/month_tempmongo')
@@ -93,13 +104,15 @@ async def month_tempmongo(year=None):
         data = {key:value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
         return data
 
+
+# 월별 평균기온 비교 그래프 그리기
 @app.get("/temp_graph")
-def temp_graph(year1: int, year2: int):
+async def temp_graph(year1: int, year2: int):
     plt.rcParams['font.family'] = "AppleGothic"
 
-    # JSON 파일로부터 데이터 읽어서 데이터프레임('df')으로 저장.
-    filename = 'temp_data.json'
-    df = pd.read_json(filename)
+    result = list(mycol.find())
+
+    df = pd.DataFrame(result, columns=['년월', '평균기온(℃)'])
 
     # '년월' 열을 날짜형으로 변환
     df['년월'] = pd.to_datetime(df['년월'])
@@ -110,7 +123,7 @@ def temp_graph(year1: int, year2: int):
 
     # 그래프 그리기
     plt.figure(figsize=(10, 6))
-    
+
     # 입력한 연도 그래프 그리기
     plt.plot(df_year1['년월'].dt.month, df_year1['평균기온(℃)'], marker='o', label=str(year1)+'년')
     plt.plot(df_year2['년월'].dt.month, df_year2['평균기온(℃)'], marker='o', label=str(year2)+'년')
@@ -122,7 +135,6 @@ def temp_graph(year1: int, year2: int):
 
     # x축 눈금 설정
     plt.xticks(range(1, 13), ['01월', '02월', '03월', '04월', '05월', '06월', '07월', '08월', '09월', '10월', '11월', '12월'])
-
 
     filename = 'tempGraph_'+str(year1)+'_'+str(year2)+'.png'
     plt.savefig(filename, dpi=400, bbox_inches='tight')

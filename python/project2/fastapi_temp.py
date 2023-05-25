@@ -83,6 +83,7 @@ async def getyear(year=None):
 # 'results'리스트가 비어있으면 검색결과 없다는 메시지 반환
     else:
         return "검색 결과가 없습니다."
+        
 def temp():
     url = "http://192.168.1.58:5000/temp"
     result = getRequestUrl(url)
