@@ -105,6 +105,16 @@ async def month_tempmongo(year=None):
         data = {key:value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
         return data
 
+@app.get('/gettemp')
+async def get_tempmongo(year=None):
+    if year is None:
+        return "'년도(ex,2018)의 입력을 확인해주세요"
+    else:
+        months = [str(i).zfill(2) for i in range(1, 13)]
+        result = await tempmongo()
+        data = {key: value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
+        return data
+
 
 # 월별 평균기온 비교 그래프 그리기
 @app.get("/temp_graph")
