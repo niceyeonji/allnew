@@ -188,6 +188,7 @@ async def temp_graph(year1: int, year2: int):
 
     return df_combined, {"message": "그래프가 생성되었습니다.", "filename": filename}
 
+
 @app.get('/getmongo')
 async def getMongo():
     baseurl = 'http://192.168.1.187:3002'
