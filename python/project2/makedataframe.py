@@ -92,3 +92,13 @@ def get_data(year: int):
         "df1_year_avg": df1_year_avg,
         "df2_year_sum": df2_year_sum
     }
+
+
+# CSV 파일 경로
+csv_path = "combi.csv"
+
+# CSV 파일을 DataFrame으로 읽기
+df = pd.read_csv(csv_path)
+
+# DataFrame 출력
+print(df)

@@ -54,6 +54,7 @@ def getRequestUrl(url):
     except Exception as e:
         return None
 
+
 # Json Server에서 데이터 가지고 오기
 @app.get('/temp')        
 def temp():
@@ -63,6 +64,7 @@ def temp():
         return None
     else:
         return json.loads(result)
+
 
 # MongoDB에서 중복 데이터 여부 확인
 @app.get('/duplicate')
@@ -104,23 +106,37 @@ async def save_data_temp_mongo():
 # mongodb에서 데이터 가지고 오기
 @app.get('/tempmongo')
 async def tempmongo():
+# mycol.find()를 사용하여 MongoDB의 mycol 컬렉션에서 모든 문서 검색, 가져온 문서들의 리스트를 result변수에 저장
     result=list(mycol.find())
     # data={item["년월"]:item["평균기온(℃)"] for item in result}
     # return data
+# result를 sorted함수를 사용해 '년월'을 기준으로 오름차순 정렬. key 매개변수에는 각 문서의 '년월'값을 반환하는 람다함수 전달
     sorted_data = sorted(result, key=lambda item: item["년월"])
+# 정렬된 데이터를 기반으로 딕셔너리 'data' 생성. 각 문서의 '년월'을 키로, '평균기온'을 값으로 설정
     data = {item["년월"]: item["평균기온(℃)"] for item in sorted_data}
+# 생선된 'data' 딕셔너리 반환
     return data
 
+
+# 특정 연도와 월에 해당하는 데이터 가져오기
 @app.get('/month_tempmongo')
+# 'year' 매개변수가 'None'인지 확인.
 async def month_tempmongo(year=None):
     if year is None:
         return "'년도(ex,2018)'의 입력을 확인해주세요"
     else:
+# months 리스트에 원하는 월들을 문자열로 저장
         months=["06","07","08"]
+# tempmongo() 함수를 호출해 MongoDB에서 데이터 가져오기. 이 함수는 /tempmongo 엔드포인트를 호출하는 비동기 함수. 가져온 건 result 변수에 저장
         result=await tempmongo()
+# data 변수는 빈 딕셔너리로 초기화
+# result의 각 아이템을 순회하면서 조건 확인. 년월 값을 '-'로 분리한 후 첫 번째 요소(연도)가 'year'과 일치하는지 확인 and 년월 값을 '-'로 분리한 후 두 번재 요소(월)가 'months'리스트에 포함되는지 확인 
         data = {key:value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
+# 최종적으로 'data' 딕셔너리 반환. 주어진 연도와 월에 해당하는 데이터 담고 있음.
         return data
 
+
+# 특정 년도에 해당하는 월별 평균기온 데이터 가져오기
 @app.get('/gettemp')
 async def get_tempmongo(year=None):
     if year is None:
@@ -148,6 +164,9 @@ async def temp_graph(year1: int, year2: int):
     df_year1 = df[df['년월'].dt.year == year1]
     df_year2 = df[df['년월'].dt.year == year2]
 
+    # 두 데이터프레임을 합치기
+    df_combined = pd.concat([df_year1, df_year2])
+
     # 그래프 그리기
     plt.figure(figsize=(10, 6))
 
@@ -167,7 +186,7 @@ async def temp_graph(year1: int, year2: int):
     plt.savefig(filename, dpi=400, bbox_inches='tight')
     plt.close()
 
-    return {"message": "그래프가 생성되었습니다.", "filename": filename}
+    return df_combined, {"message": "그래프가 생성되었습니다.", "filename": filename}
 
 @app.get('/getmongo')
 async def getMongo():
@@ -213,3 +232,11 @@ async def combined_data():
     combined_df = pd.merge(df_fire, df_temp, on='년월')
 
     return combined_df
+
+
+# MongoDB에 가져온 데이터 데이터프레임 생성
+@app.get('/mongodb_to_dataframe')
+async def mongodb_to_dataframe():
+    result = list(mycol.find())
+    df = pd.DataFrame(result)
+    return df
