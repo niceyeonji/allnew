@@ -2,6 +2,27 @@
 <html>
   <head>
     <title>기온 산불 미세먼지</title>
+    <script>
+      function getHello() {
+        const xhr = new XMLHttpRequest();
+        const method = 'GET';
+        const url = '/hello';
+        xhr.open(method, url);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+
+          if (xhr.status === 200) {
+            console.log(xhr.responseText);
+            const element = document.getElementById('ss1');
+            element.innerHTML = xhr.responseText;
+          } else {
+            console.log('HTTP error', xhr.status, xhr.statusText);
+          }
+        };
+      }
+    </script>
     <style>
       .row {
         display: flex;
@@ -41,6 +62,8 @@
       <div class="col">
         <h2>기온</h2>
         <p>여기에는 기온에 대한 정보가 들어갑니다.</p>
+        <input type="button" value="Node Hello" onclick="getHello()" />
+        <span id="ss1"></span>
       </div>
       <div class="col">
         <h2>산불</h2>

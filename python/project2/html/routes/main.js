@@ -267,4 +267,27 @@ app.post('/delete', (req, res) => {
   }
 });
 
+app.get('/temperature', (req, res) => {
+  axios
+    .get('http://192.168.1.58:3000/tempmongo')
+    .then(response => {
+      console.log(`상태 코드: ${response.status}`);
+      console.log(response.data);
+
+      const temperatureData = response.data;
+
+      // 기온 데이터를 HTML 형식의 문자열로 변환합니다.
+      let temperatureHTML = '';
+      for (const [date, temperature] of Object.entries(temperatureData)) {
+        temperatureHTML += `<p>${date}: ${temperature}</p>`;
+      }
+
+      res.send(temperatureHTML);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).send('기온 데이터를 가져오는 중에 오류가 발생했습니다.');
+    });
+});
+
 module.exports = app;
