@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('sync-mysql');
 const env = require('dotenv').config({path: '../../.env'});
+const axios = require('axios');
 
 var connection = new mysql({
   host: process.env.host,
@@ -71,30 +72,6 @@ function template_result(result, res) {
 
 app.get('/hello', (req, res) => {
   res.send('Hello World~!!');
-});
-
-app.get('/thanks', (req, res) => {
-  res.send('방문해주셔서 압도적 감사');
-});
-
-// login
-app.post('/login', (req, res) => {
-  const {id, pw} = req.body;
-  const result = connection.query(
-    'select * from user where userid=? and passwd=?',
-    [id, pw],
-  );
-  // console.log(result);
-  if (result.length == 0) {
-    res.redirect('error.html');
-  }
-  if (id == 'admin' || id == 'root') {
-    console.log(id + ' => Administrator Logined');
-    res.redirect('member.html?id=' + id);
-  } else {
-    console.log(id + ' => User Logined');
-    res.redirect('main.html?id=' + id);
-  }
 });
 
 // register
@@ -225,68 +202,16 @@ app.post('/insert', (req, res) => {
   }
 });
 
-// request O, query O
-app.post('/update', (req, res) => {
-  const {id, pw} = req.body;
-  if (id == '' || pw == '') {
-    // res.send('User-id와 Password를 입력하세요.');
-    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
-  } else {
-    const result = connection.query('select * from user where userid=?', [id]);
-    console.log(result);
-    // res.send(result);
-    if (result.length == 0) {
-      template_nodata(res);
-    } else {
-      const result = connection.query(
-        'update user set passwd=? where userid=?',
-        [pw, id],
-      );
-      console.log(result);
-      res.redirect('/selectQuery?id=' + id);
-    }
-  }
-});
-
-// request O, query O
-app.post('/delete', (req, res) => {
-  const id = req.body.id;
-  if (id == '') {
-    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
-  } else {
-    const result = connection.query('select * from user where userid=?', [id]);
-    console.log(result);
-    // res.send(result);
-    if (result.length == 0) {
-      template_nodata(res);
-    } else {
-      const result = connection.query('delete from user where userid=?', [id]);
-      console.log(result);
-      res.redirect('/select');
-    }
-  }
-});
-
-app.get('/temperature', (req, res) => {
+app.get('/gettemp', (req, res) => {
   axios
     .get('http://192.168.1.58:3000/tempmongo')
     .then(response => {
-      console.log(`상태 코드: ${response.status}`);
+      console.log(`statusCode : ${response.status}`);
       console.log(response.data);
-
-      const temperatureData = response.data;
-
-      // 기온 데이터를 HTML 형식의 문자열로 변환합니다.
-      let temperatureHTML = '';
-      for (const [date, temperature] of Object.entries(temperatureData)) {
-        temperatureHTML += `<p>${date}: ${temperature}</p>`;
-      }
-
-      res.send(temperatureHTML);
+      res.send(response.data);
     })
     .catch(error => {
       console.log(error);
-      res.status(500).send('기온 데이터를 가져오는 중에 오류가 발생했습니다.');
     });
 });
 

@@ -44,6 +44,12 @@ mycol = mydb['projecttemp']
 def healthCheck():
     return "OK"
 
+# node.js에 잘 연결되는지 확인 예시
+@app.get("/data")
+def get_data():
+    data = {"message": "Hello, FastAPI!"}
+    return data
+
 # 주어진 URL에 대한 GET 요청을 보내고, 응답 결과를 반환합니다.
 def getRequestUrl(url):
     req = urllib.request.Request(url)
@@ -241,3 +247,6 @@ async def mongodb_to_dataframe():
     result = list(mycol.find())
     df = pd.DataFrame(result)
     return df
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=3000)

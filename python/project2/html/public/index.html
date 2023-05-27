@@ -2,25 +2,19 @@
 <html>
   <head>
     <title>기온 산불 미세먼지</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      function getHello() {
-        const xhr = new XMLHttpRequest();
-        const method = 'GET';
-        const url = '/hello';
-        xhr.open(method, url);
-        xhr.send();
-
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState !== 4) return;
-
-          if (xhr.status === 200) {
-            console.log(xhr.responseText);
-            const element = document.getElementById('ss1');
-            element.innerHTML = xhr.responseText;
-          } else {
-            console.log('HTTP error', xhr.status, xhr.statusText);
-          }
-        };
+      function getTemperature() {
+        axios
+          .get('http://192.168.1.58:3000/gettemp')
+          .then(function (response) {
+            const data = response.data;
+            document.getElementById('temperature-info').textContent =
+              JSON.stringify(data);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
       }
     </script>
     <style>
@@ -67,7 +61,7 @@
         </div>
       </header>
     </div>
-    <form action="submit.php" method="post">
+    <form action="/gettemp" method="get">
       <input type="checkbox" name="year" value="2018" />2018
       <input type="checkbox" name="year" value="2019" />2019
       <input type="checkbox" name="year" value="2020" />2020
@@ -93,5 +87,6 @@
         <span id="air-quality-info"></span>
       </div>
     </div>
+    <hr />
   </body>
 </html>
