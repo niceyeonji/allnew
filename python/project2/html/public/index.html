@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>기온 산불 미세먼지</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      function getTemperature() {
-        axios
-          .get('http://192.168.1.58:3000/gettemp')
-          .then(function (response) {
-            const data = response.data;
-            document.getElementById('temperature-info').textContent =
-              JSON.stringify(data);
-          })
-          .catch(function (error) {
-            console.error(error);
-          });
+      function tempmongo() {
+        const xhr = new XMLHttpRequest();
+        const method = 'GET';
+        const url = '/tempmongo';
+        xhr.open(method, url);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+
+          if (xhr.status === 200) {
+            console.log(xhr.responseText);
+            const element = document.getElementById('ss3');
+            element.innerHTML = xhr.responseText;
+          } else {
+            console.log('HTTP error', xhr.status, xhr.statusText);
+          }
+        };
       }
     </script>
     <style>
@@ -73,8 +80,10 @@
     <div class="row">
       <div class="col">
         <h2>기온</h2>
-        <input type="button" value="기온 정보" onclick="getTemperature()" />
-        <span id="temperature-info"></span>
+        <input type="button" value="기온 정보" onclick="tempmongo()" />
+        <br />
+        <br />
+        <span id="ss3"></span>
       </div>
       <div class="col">
         <h2>산불</h2>
@@ -90,3 +99,110 @@
     <hr />
   </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>기온 산불 미세먼지</title>
+    <style>
+      .row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .col {
+        flex-basis: 30%;
+        border-right: 1px solid #ccc;
+        padding: 10px;
+      }
+      .col:last-child {
+        border-right: none;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .info {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #333;
+      }
+      .graph-container {
+        display: none;
+        margin-top: 20px;
+      }
+      .graph-container img {
+        max-width: 100%;
+      }
+    </style>
+    <script>
+      function getTemperature() {
+        const checkboxes = document.querySelectorAll(
+          'input[name="year"]:checked',
+        );
+
+        if (checkboxes.length < 2) {
+          alert('두 개 이상의 연도를 선택해주세요.');
+          return;
+        }
+
+        const selectedYears = Array.from(checkboxes).map(
+          checkbox => checkbox.value,
+        );
+
+        const xhr = new XMLHttpRequest();
+        const method = 'GET';
+        const url = `/temp_graph?year1=${selectedYears[0]}&year2=${selectedYears[1]}`;
+        xhr.open(method, url);
+        xhr.responseType = 'blob';
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+
+          if (xhr.status === 200) {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              const graphContainer = document.getElementById('graph-container');
+              graphContainer.innerHTML = `<img src="${reader.result}" alt="기온 그래프" />`;
+              graphContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(xhr.response);
+          } else {
+            console.log('HTTP 에러', xhr.status, xhr.statusText);
+          }
+        };
+      }
+    </script>
+  </head>
+  <body id="tt-body-index" class="layout-aside-right paging-number">
+    <div id="wrap">
+      <header id="header">
+        <div class="inner">
+          <h1>
+            <a>기온 산불 미세먼지</a>
+          </h1>
+        </div>
+      </header>
+    </div>
+    <form action="/gettemp" method="get">
+      <input type="checkbox" name="year" value="2018" />2018
+      <input type="checkbox" name="year" value="2019" />2019
+      <input type="checkbox" name="year" value="2020" />2020
+      <input type="checkbox" name="year" value="2021" />2021
+      <input type="checkbox" name="year" value="2022" />2022
+      <input type="button" value="검색" onclick="getTemperature()" />
+    </form>
+    <div class="graph-container" id="graph-container"></div>
+  </body>
+</html> -->

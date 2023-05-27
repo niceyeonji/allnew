@@ -9,6 +9,7 @@ import json, urllib.request
 import chardet
 import matplotlib.pyplot as plt
 import requests
+from typing import List
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -34,8 +35,6 @@ PASSWORD = get_secret("ATLAS_Password")
 
 client = mongo_client.MongoClient(f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
 print('Connected to Mongodb....')
-
-
 mydb = client['test']
 mycol = mydb['projecttemp']
 
@@ -44,11 +43,6 @@ mycol = mydb['projecttemp']
 def healthCheck():
     return "OK"
 
-# node.js에 잘 연결되는지 확인 예시
-@app.get("/data")
-def get_data():
-    data = {"message": "Hello, FastAPI!"}
-    return data
 
 # 주어진 URL에 대한 GET 요청을 보내고, 응답 결과를 반환합니다.
 def getRequestUrl(url):
@@ -177,8 +171,14 @@ async def temp_graph(year1: int, year2: int):
     plt.figure(figsize=(10, 6))
 
     # 입력한 연도 그래프 그리기
-    plt.plot(df_year1['년월'].dt.month, df_year1['평균기온(℃)'], marker='o', label=str(year1)+'년')
-    plt.plot(df_year2['년월'].dt.month, df_year2['평균기온(℃)'], marker='o', label=str(year2)+'년')
+    df_year1_sorted = df_year1.sort_values(by='년월')  # 월별 정렬
+    df_year2_sorted = df_year2.sort_values(by='년월')  # 월별 정렬
+
+    plt.plot(df_year1_sorted['년월'].dt.month, df_year1_sorted['평균기온(℃)'], marker='o', label=str(year1)+'년')
+    plt.plot(df_year2_sorted['년월'].dt.month, df_year2_sorted['평균기온(℃)'], marker='o', label=str(year2)+'년')
+
+    plt.plot(df_year1_sorted['년월'].dt.month[5:8], df_year1_sorted['평균기온(℃)'][5:8], color='red', marker='*')
+    plt.plot(df_year2_sorted['년월'].dt.month[5:8], df_year2_sorted['평균기온(℃)'][5:8], color='red', marker='*')
 
     plt.xlabel('월')
     plt.ylabel('평균기온(℃)')
@@ -248,5 +248,16 @@ async def mongodb_to_dataframe():
     df = pd.DataFrame(result)
     return df
 
+selected_year = []
+
+@app.get('/select_years/{year}', status_code=200)
+async def select_years(year: int):
+    if year not in selected_years:
+        selected_years.append(year)
+    else:
+        selected_years.remove(year)
+    return {"selected_years": selected_years}
+
+    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=3000)

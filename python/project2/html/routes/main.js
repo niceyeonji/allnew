@@ -1,8 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('sync-mysql');
-const env = require('dotenv').config({path: '../../.env'});
+const env = require('dotenv').config({path: '../../../.env'});
 const axios = require('axios');
+const fs = require('fs');
+const {promisify} = require('util');
+const writeFrileAsync = promisify(fs.writeFile);
 
 var connection = new mysql({
   host: process.env.host,
@@ -74,137 +77,9 @@ app.get('/hello', (req, res) => {
   res.send('Hello World~!!');
 });
 
-// register
-app.post('/register', (req, res) => {
-  const {id, pw} = req.body;
-  if (id == '') {
-    res.redirect('register.html');
-  } else {
-    let result = connection.query('select * from user where userid=?', [id]);
-    if (result.length > 0) {
-      res.writeHead(200);
-      var template = `
-        <!doctype html>
-        <html>
-        <head>
-            <title>Error</title>
-            <meta charset="utf-8">
-        </head>
-        <body>
-            <div>
-                <h3 style="margin-left: 30px">Registrer Failed</h3>
-                <h4 style="margin-left: 30px">이미 존재하는 아이디입니다.</h4>
-                <a href="register.html" style="margin-left: 30px">다시 시도하기</a>
-            </div>
-        </body>
-        </html>
-        `;
-      res.end(template);
-    } else {
-      result = connection.query('insert into user values (?, ?)', [id, pw]);
-      console.log(result);
-      res.redirect('/');
-    }
-  }
-});
-
-// request O, query X
-app.get('/select', (req, res) => {
-  const result = connection.query('select * from user');
-  console.log(result);
-  // res.send(result);
-  if (result.length == 0) {
-    template_nodata(res);
-  } else {
-    template_result(result, res);
-  }
-});
-
-// request O, query X
-app.post('/select', (req, res) => {
-  const result = connection.query('select * from user');
-  console.log(result);
-  // res.send(result);
-  if (result.length == 0) {
-    template_nodata(res);
-  } else {
-    template_result(result, res);
-  }
-});
-
-// request O, query O
-app.get('/selectQuery', (req, res) => {
-  const id = req.query.id;
-  if (id == '') {
-    // res.send('User-id를 입력하세요.')
-    res.write("<script>alert('User-id를 입력하세요.')</script>");
-  } else {
-    const result = connection.query('select * from user where userid=?', [id]);
-    console.log(result);
-    // res.send(result);
-    if (result.length == 0) {
-      template_nodata(res);
-    } else {
-      template_result(result, res);
-    }
-  }
-});
-
-// request O, query O
-app.post('/selectQuery', (req, res) => {
-  const id = req.body.id;
-  if (id == '') {
-    // res.send('User-id를 입력하세요.');
-    res.write("<script>alert('User-id를 입력하세요.')</script>");
-  } else {
-    const result = connection.query('select * from user where userid=?', [id]);
-    console.log(result);
-    // res.send(result);
-    if (result.length == 0) {
-      template_nodata(res);
-    } else {
-      template_result(result, res);
-    }
-  }
-});
-
-// request O, query O
-app.post('/insert', (req, res) => {
-  const {id, pw} = req.body;
-  if (id == '' || pw == '') {
-    // res.send('User-id와 Password를 입력하세요.');
-    res.write("<script>alert('User-id와 Password를 입력하세요.')</script>");
-  } else {
-    let result = connection.query('select * from user where userid=?', [id]);
-    if (result.length > 0) {
-      res.writeHead(200);
-      var template = `
-        <!doctype html>
-        <html>
-        <head>
-            <title>Error</title>
-            <meta charset="utf-8">
-        </head>
-        <body>
-            <div>
-                <h3 style="margin-left: 30px">Registrer Failed</h3>
-                <h4 style="margin-left: 30px">이미 존재하는 아이디입니다.</h4>
-            </div>
-        </body>
-        </html>
-        `;
-      res.end(template);
-    } else {
-      result = connection.query('insert into user values (?, ?)', [id, pw]);
-      console.log(result);
-      res.redirect('/selectQuery?id=' + req.body.id);
-    }
-  }
-});
-
-app.get('/gettemp', (req, res) => {
+app.get('/tempmongo', (req, res) => {
   axios
-    .get('http://192.168.1.58:3000/tempmongo')
+    .get('http://192.168.0.253:3000/tempmongo')
     .then(response => {
       console.log(`statusCode : ${response.status}`);
       console.log(response.data);
@@ -213,6 +88,21 @@ app.get('/gettemp', (req, res) => {
     .catch(error => {
       console.log(error);
     });
+});
+
+app.get('/temp_graph', async (req, res) => {
+  const {year1, year2} = req.query;
+
+  // FastAPI 엔드포인트에 GET 요청을 보내서 기온 그래프를 생성합니다.
+  const fastAPIUrl = `http://192.168.0.253:3000/temp_graph?year1=${year1}&year2=${year2}`;
+  const response = await axios.get(fastAPIUrl, {responseType: 'arraybuffer'});
+
+  // 서버에 그래프 이미지를 저장합니다.
+  const filename = `tempGraph_${year1}_${year2}.png`;
+  await writeFileAsync(filename, response.data);
+
+  // 응답으로 파일 이름을 전송합니다.
+  res.send(filename);
 });
 
 module.exports = app;
