@@ -79,7 +79,7 @@ app.get('/hello', (req, res) => {
 
 app.get('/tempmongo', (req, res) => {
   axios
-    .get('http://192.168.0.253:3000/tempmongo')
+    .get('http://192.168.1.58:3000/tempmongo')
     .then(response => {
       console.log(`statusCode : ${response.status}`);
       console.log(response.data);
