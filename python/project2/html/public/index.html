@@ -4,62 +4,46 @@
     <meta charset="utf-8" />
     <title>기온 산불 미세먼지</title>
     <script>
-      function tempmongo() {
-        const xhr = new XMLHttpRequest();
-        const method = 'GET';
-        const url = '/tempmongo';
-        xhr.open(method, url);
-        xhr.send();
-
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState !== 4) return;
-
-          if (xhr.status === 200) {
-            console.log(xhr.responseText);
-            const element = document.getElementById('ss3');
-            element.innerHTML = xhr.responseText;
-          } else {
-            console.log('HTTP error', xhr.status, xhr.statusText);
-          }
-        };
-      }
-
       function getTemperature() {
-        const checkboxes = document.querySelectorAll(
-          'input[name="year"]:checked',
-        );
+        const checkboxes = document.getElementsByName('year');
+        let selectedYears = [];
 
-        if (checkboxes.length < 2) {
-          alert('두 개 이상의 연도를 선택해주세요.');
+        checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+            selectedYears.push(checkbox.value);
+          }
+        });
+
+        if (selectedYears.length !== 2) {
+          alert('두 개의 연도를 선택해야 합니다.');
           return;
         }
 
-        const selectedYears = Array.from(checkboxes).map(
-          checkbox => checkbox.value,
-        );
+        const year1 = selectedYears[0];
+        const year2 = selectedYears[1];
 
-        const xhr = new XMLHttpRequest();
-        const method = 'GET';
-        const url = `/gettemp?year=${selectedYears.join(',')}`;
-        xhr.open(method, url);
-        xhr.send();
+        fetchGraph(year1, year2);
+      }
 
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState !== 4) return;
+      function fetchGraph(year1, year2) {
+        const url = `/temp_graph?year1=${year1}&year2=${year2}`;
 
-          if (xhr.status === 200) {
-            console.log(xhr.responseText);
-            const element = document.getElementById('ss1');
-            const data = JSON.parse(xhr.responseText);
-            let html = '';
-            for (const key in data) {
-              html += `<p>${key}: ${data[key]}</p>`;
-            }
-            element.innerHTML = html;
-          } else {
-            console.log('HTTP error', xhr.status, xhr.statusText);
-          }
-        };
+        // AJAX 또는 fetch를 사용하여 서버에 GET 요청을 보내고 그래프를 받아옵니다.
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const {message, filename} = data;
+            const graphContainer = document.getElementById('graph-container');
+            const img = document.createElement('img');
+            img.src = '/allnew/python/project2/html/public/media/' + filename;
+            graphContainer.innerHTML = '';
+            graphContainer.appendChild(img);
+            console.log(message);
+          })
+          .catch(error => {
+            console.error(error);
+            alert('그래프를 가져오는 데 실패했습니다.');
+          });
       }
     </script>
     <style>
@@ -106,23 +90,20 @@
         </div>
       </header>
     </div>
-    <form action="/gettemp" method="get">
-      <input type="checkbox" name="year" value="2018" />2018
-      <input type="checkbox" name="year" value="2019" />2019
-      <input type="checkbox" name="year" value="2020" />2020
-      <input type="checkbox" name="year" value="2021" />2021
-      <input type="checkbox" name="year" value="2022" />2022
-      <input type="submit" value="검색" />
+    <form onsubmit="event.preventDefault(); getTemperature()">
+      <input type="checkbox" name="year" value="2018" /> 2018
+      <input type="checkbox" name="year" value="2019" /> 2019
+      <input type="checkbox" name="year" value="2020" /> 2020
+      <input type="checkbox" name="year" value="2021" /> 2021
+      <input type="checkbox" name="year" value="2022" /> 2022
     </form>
     <hr />
     <div class="row">
       <div class="col">
         <h2>기온</h2>
-        <input type="button" value="기온 정보" onclick="tempmongo()" />
-        <br />
-        <br />
-        <span id="ss3"></span>
-        <span id="ss1"></span>
+        <div id="graph-container">
+          <button onclick="getTemperature()">그래프 그리기</button>
+        </div>
       </div>
       <div class="col">
         <h2>산불</h2>
@@ -138,110 +119,3 @@
     <hr />
   </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>기온 산불 미세먼지</title>
-    <style>
-      .row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-      .col {
-        flex-basis: 30%;
-        border-right: 1px solid #ccc;
-        padding: 10px;
-      }
-      .col:last-child {
-        border-right: none;
-      }
-      .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #3498db;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      .btn:hover {
-        background-color: #2980b9;
-      }
-      .info {
-        margin-top: 10px;
-        font-size: 14px;
-        color: #333;
-      }
-      .graph-container {
-        display: none;
-        margin-top: 20px;
-      }
-      .graph-container img {
-        max-width: 100%;
-      }
-    </style>
-    <script>
-      function getTemperature() {
-        const checkboxes = document.querySelectorAll(
-          'input[name="year"]:checked',
-        );
-
-        if (checkboxes.length < 2) {
-          alert('두 개 이상의 연도를 선택해주세요.');
-          return;
-        }
-
-        const selectedYears = Array.from(checkboxes).map(
-          checkbox => checkbox.value,
-        );
-
-        const xhr = new XMLHttpRequest();
-        const method = 'GET';
-        const url = `/temp_graph?year1=${selectedYears[0]}&year2=${selectedYears[1]}`;
-        xhr.open(method, url);
-        xhr.responseType = 'blob';
-        xhr.send();
-
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState !== 4) return;
-
-          if (xhr.status === 200) {
-            const reader = new FileReader();
-            reader.onloadend = function () {
-              const graphContainer = document.getElementById('graph-container');
-              graphContainer.innerHTML = `<img src="${reader.result}" alt="기온 그래프" />`;
-              graphContainer.style.display = 'block';
-            };
-            reader.readAsDataURL(xhr.response);
-          } else {
-            console.log('HTTP 에러', xhr.status, xhr.statusText);
-          }
-        };
-      }
-    </script>
-  </head>
-  <body id="tt-body-index" class="layout-aside-right paging-number">
-    <div id="wrap">
-      <header id="header">
-        <div class="inner">
-          <h1>
-            <a>기온 산불 미세먼지</a>
-          </h1>
-        </div>
-      </header>
-    </div>
-    <form action="/gettemp" method="get">
-      <input type="checkbox" name="year" value="2018" />2018
-      <input type="checkbox" name="year" value="2019" />2019
-      <input type="checkbox" name="year" value="2020" />2020
-      <input type="checkbox" name="year" value="2021" />2021
-      <input type="checkbox" name="year" value="2022" />2022
-      <input type="button" value="검색" onclick="getTemperature()" />
-    </form>
-    <div class="graph-container" id="graph-container"></div>
-  </body>
-</html> -->

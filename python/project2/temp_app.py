@@ -158,14 +158,14 @@ async def temp_graph(year1: int, year2: int):
     df = pd.DataFrame(result, columns=['년월', '평균기온(℃)'])
 
     # '년월' 열을 날짜형으로 변환
-    df['년월'] = pd.to_datetime(df['년월'])
+    df['년월'] = pd.to_datetime(df['년월'], format='%Y-%m')
 
     # 입력한 연도 데이터 필터링
     df_year1 = df[df['년월'].dt.year == year1]
     df_year2 = df[df['년월'].dt.year == year2]
 
-    # 두 데이터프레임을 합치기
-    df_combined = pd.concat([df_year1, df_year2])
+    # # 두 데이터프레임을 합치기
+    # df_combined = pd.concat([df_year1, df_year2])
 
     # 그래프 그리기
     plt.figure(figsize=(10, 6))
@@ -188,11 +188,19 @@ async def temp_graph(year1: int, year2: int):
     # x축 눈금 설정
     plt.xticks(range(1, 13), ['01월', '02월', '03월', '04월', '05월', '06월', '07월', '08월', '09월', '10월', '11월', '12월'])
 
+    # filename = 'tempGraph_'+str(year1)+'_'+str(year2)+'.png'
+
+    # plt.savefig(filename, dpi=400, bbox_inches='tight')
+    # plt.close()
+
+    # return {"message": "그래프가 생성되었습니다.", "filename": filename}
+
     filename = 'tempGraph_'+str(year1)+'_'+str(year2)+'.png'
-    plt.savefig(filename, dpi=400, bbox_inches='tight')
+    filepath = '/allnew/python/project2/html/public/media/' + filename  # 파일 경로 수정
+    plt.savefig(filepath, dpi=400, bbox_inches='tight')
     plt.close()
 
-    return df_combined, {"message": "그래프가 생성되었습니다.", "filename": filename}
+    return {"message": "그래프가 생성되었습니다.", "filename": filename}
 
 
 @app.get('/getmongo')
@@ -248,38 +256,17 @@ async def mongodb_to_dataframe():
     df = pd.DataFrame(result)
     return df
 
-selected_year = []
+@app.get('/combined_data/{year1}/{year2}')
+async def combined_data(year1: int, year2: int):
+    # MongoDB query to fetch data for year1 and year2
+    query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
+    result = list(mycol.find(query))
 
-@app.get('/select_years/{year}', status_code=200)
-async def select_years(year: int):
-    if year not in selected_years:
-        selected_years.append(year)
-    else:
-        selected_years.remove(year)
-    return {"selected_years": selected_years}
+    # Create DataFrames from fetched data
+    df = pd.DataFrame(result)
 
-
-# 월별 평균기온 비교 데이터프레임
-@app.get("/temp_compare")
-async def temp_graph(year1: int, year2: int):
-    plt.rcParams['font.family'] = "AppleGothic"
-
-    result = list(mycol.find())
-
-    df = pd.DataFrame(result, columns=['년월', '평균기온(℃)'])
-
-    # '년월' 열을 날짜형으로 변환
-    df['년월'] = pd.to_datetime(df['년월'])
-
-    # 입력한 연도 데이터 필터링
-    df_year1 = df[df['년월'].dt.year == year1]
-    df_year2 = df[df['년월'].dt.year == year2]
-
-
-    # 두 데이터프레임을 합치기
-    df_combined = pd.concat([df_year1, df_year2])
-
-    return df_combined
+    # Return the combined DataFrame
+    return df
 
     
 if __name__ == "__main__":
