@@ -35,7 +35,8 @@
             const {message, filename} = data;
             const graphContainer = document.getElementById('graph-container');
             const img = document.createElement('img');
-            img.src = '/allnew/python/project2/html/public/media/' + filename;
+            img.src = '/media/' + filename;
+            img.style.width = '600px';
             graphContainer.innerHTML = '';
             graphContainer.appendChild(img);
             console.log(message);
