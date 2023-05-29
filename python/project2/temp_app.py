@@ -258,6 +258,29 @@ async def select_years(year: int):
         selected_years.remove(year)
     return {"selected_years": selected_years}
 
+
+# 월별 평균기온 비교 데이터프레임
+@app.get("/temp_compare")
+async def temp_graph(year1: int, year2: int):
+    plt.rcParams['font.family'] = "AppleGothic"
+
+    result = list(mycol.find())
+
+    df = pd.DataFrame(result, columns=['년월', '평균기온(℃)'])
+
+    # '년월' 열을 날짜형으로 변환
+    df['년월'] = pd.to_datetime(df['년월'])
+
+    # 입력한 연도 데이터 필터링
+    df_year1 = df[df['년월'].dt.year == year1]
+    df_year2 = df[df['년월'].dt.year == year2]
+
+
+    # 두 데이터프레임을 합치기
+    df_combined = pd.concat([df_year1, df_year2])
+
+    return df_combined
+
     
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=3000)

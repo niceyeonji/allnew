@@ -94,7 +94,7 @@ app.get('/temp_graph', async (req, res) => {
   const {year1, year2} = req.query;
 
   // FastAPI 엔드포인트에 GET 요청을 보내서 기온 그래프를 생성합니다.
-  const fastAPIUrl = `http://192.168.0.253:3000/temp_graph?year1=${year1}&year2=${year2}`;
+  const fastAPIUrl = `http://192.168.1.58:3000/temp_graph?year1=${year1}&year2=${year2}`;
   const response = await axios.get(fastAPIUrl, {responseType: 'arraybuffer'});
 
   // 서버에 그래프 이미지를 저장합니다.
@@ -103,6 +103,30 @@ app.get('/temp_graph', async (req, res) => {
 
   // 응답으로 파일 이름을 전송합니다.
   res.send(filename);
+});
+
+app.get('/gettemp', async (req, res) => {
+  const {year} = req.query;
+
+  if (!year) {
+    return res.send("'년도(ex,2018)의 입력을 확인해주세요");
+  } else {
+    const months = Array.from({length: 12}, (_, i) =>
+      String(i + 1).padStart(2, '0'),
+    );
+    const result = await tempmongo();
+    const data = Object.entries(result)
+      .filter(([key]) => {
+        const [keyYear, keyMonth] = key.split('-');
+        return keyYear === year && months.includes(keyMonth);
+      })
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+
+    res.json(data);
+  }
 });
 
 module.exports = app;

@@ -23,6 +23,44 @@
           }
         };
       }
+
+      function getTemperature() {
+        const checkboxes = document.querySelectorAll(
+          'input[name="year"]:checked',
+        );
+
+        if (checkboxes.length < 2) {
+          alert('두 개 이상의 연도를 선택해주세요.');
+          return;
+        }
+
+        const selectedYears = Array.from(checkboxes).map(
+          checkbox => checkbox.value,
+        );
+
+        const xhr = new XMLHttpRequest();
+        const method = 'GET';
+        const url = `/gettemp?year=${selectedYears.join(',')}`;
+        xhr.open(method, url);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+
+          if (xhr.status === 200) {
+            console.log(xhr.responseText);
+            const element = document.getElementById('ss1');
+            const data = JSON.parse(xhr.responseText);
+            let html = '';
+            for (const key in data) {
+              html += `<p>${key}: ${data[key]}</p>`;
+            }
+            element.innerHTML = html;
+          } else {
+            console.log('HTTP error', xhr.status, xhr.statusText);
+          }
+        };
+      }
     </script>
     <style>
       .row {
@@ -84,6 +122,7 @@
         <br />
         <br />
         <span id="ss3"></span>
+        <span id="ss1"></span>
       </div>
       <div class="col">
         <h2>산불</h2>
