@@ -75,4 +75,20 @@ app.get('/temp_graph', async (req, res) => {
   }
 });
 
+app.get('/combined_frame/:year1/:year2', (req, res) => {
+  const {year1, year2} = req.params;
+  const apiUrl = `http://192.168.1.58:3000/combined_frame/${year1}/${year2}`;
+
+  axios
+    .get(apiUrl)
+    .then(response => {
+      const data = response.data;
+      res.send(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      res.status(500).send('Internal Server Error');
+    });
+});
+
 module.exports = app;

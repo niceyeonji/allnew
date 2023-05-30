@@ -23,6 +23,7 @@
         const year2 = selectedYears[1];
 
         fetchGraph(year1, year2);
+        fetchDataFrame(year1, year2);
       }
 
       function fetchGraph(year1, year2) {
@@ -44,6 +45,69 @@
           .catch(error => {
             console.error(error);
             alert('그래프를 가져오는 데 실패했습니다.');
+          });
+      }
+
+      function fetchDataFrame(year1, year2) {
+        const url = `/combined_frame/${year1}/${year2}`;
+
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const dataframeContainer = document.getElementById(
+              'dataframe-container',
+            );
+            const table = document.createElement('table');
+            table.style.borderCollapse = 'collapse';
+
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+
+            // Add Year columns to header
+            const yearHeader = document.createElement('th');
+            yearHeader.style.border = '1px solid #ddd';
+            yearHeader.style.padding = '8px';
+            yearHeader.textContent = 'Year';
+            headerRow.appendChild(yearHeader);
+
+            for (const month of Object.keys(data)) {
+              const th = document.createElement('th');
+              th.style.border = '1px solid #ddd';
+              th.style.padding = '8px';
+              th.textContent = month;
+              headerRow.appendChild(th);
+            }
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+            for (const year of [year1, year2]) {
+              const dataRow = document.createElement('tr');
+              const yearCell = document.createElement('td');
+              yearCell.style.border = '1px solid #ddd';
+              yearCell.style.padding = '8px';
+              yearCell.textContent = year;
+              dataRow.appendChild(yearCell);
+
+              for (const month of Object.keys(data)) {
+                const td = document.createElement('td');
+                td.style.border = '1px solid #ddd';
+                td.style.padding = '8px';
+                td.textContent = data[month][year];
+                dataRow.appendChild(td);
+              }
+              tbody.appendChild(dataRow);
+            }
+            table.appendChild(tbody);
+
+            dataframeContainer.innerHTML = '';
+            dataframeContainer.appendChild(table);
+          })
+          .catch(error => {
+            console.error(error);
+            alert('데이터를 가져오는 데 실패했습니다.');
           });
       }
     </script>
@@ -103,8 +167,9 @@
       <div class="col">
         <h2>기온</h2>
         <div id="graph-container">
-          <button onclick="getTemperature()">그래프 그리기</button>
+          <button onclick="getTemperature()">기온 정보</button>
         </div>
+        <div id="dataframe-container"></div>
       </div>
       <div class="col">
         <h2>산불</h2>

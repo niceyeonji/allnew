@@ -256,8 +256,8 @@ async def mongodb_to_dataframe():
     df = pd.DataFrame(result)
     return df
 
-@app.get('/combined_data/{year1}/{year2}')
-async def combined_data(year1: int, year2: int):
+@app.get('/combined_frame/{year1}/{year2}')
+async def combined_frame(year1: int, year2: int):
     # MongoDB query to fetch data for year1 and year2
     query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
     result = list(mycol.find(query))
@@ -265,8 +265,21 @@ async def combined_data(year1: int, year2: int):
     # Create DataFrames from fetched data
     df = pd.DataFrame(result)
 
-    # Return the combined DataFrame
-    return df
+    # Extract year and month from "년월" column
+    # df["Year"] = df["년월"].str[:4]
+    # df["Month"] = df["년월"].str[5:7]
+    df["Year"] = pd.to_datetime(df["년월"]).dt.year
+    df["Month"] = pd.to_datetime(df["년월"]).dt.month
+
+    # Pivot the DataFrame to have "년월" as columns and "평균기온(℃)" as values
+    df_pivot = df.pivot(index="Year", columns="Month", values="평균기온(℃)")
+
+    # Reorder columns to have them in the desired order
+    # df_pivot = df_pivot.reindex(columns=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
+    df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
+
+    # Return the modified DataFrame
+    return df_pivot
 
     
 if __name__ == "__main__":
