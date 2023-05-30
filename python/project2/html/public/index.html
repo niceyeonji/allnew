@@ -159,9 +159,41 @@
       }
 
       function fetchFire(year1, year2) {
-        const url = `http://192.168.1.187:4000/yearfire_total_${year1}%26${year2}.png`;
+        const url = `http://192.168.1.187:4000/fire/yearfire_total_${year1}%26${year2}.png`;
 
         const graphContainer = document.getElementById('fire1graph-container');
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.width = '600px';
+        graphContainer.innerHTML = '';
+        graphContainer.appendChild(img);
+      }
+
+      function getultra() {
+        const checkboxes = document.getElementsByName('year');
+        let selectedYears = [];
+
+        checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+            selectedYears.push(checkbox.value);
+          }
+        });
+
+        if (selectedYears.length !== 2) {
+          alert('두 개의 연도를 선택해야 합니다.');
+          return;
+        }
+
+        const year1 = selectedYears[0];
+        const year2 = selectedYears[1];
+
+        fetchultrafine(year1, year2);
+      }
+
+      function fetchultrafine(year1, year2) {
+        const url = `http://192.168.1.187:4000/ultrafine/ultrafine_${year1}%26${year2}.png`;
+
+        const graphContainer = document.getElementById('ultragraph-container');
         const img = document.createElement('img');
         img.src = url;
         img.style.width = '600px';
@@ -211,8 +243,9 @@
       </div>
       <div class="col">
         <h2>미세먼지</h2>
-        <button onclick="getFire()">미세먼지 정보</button>
-        <span id="air-quality-info"></span>
+        <div id="ultragraph-container">
+          <button onclick="getultra()">미세먼지 정보</button>
+        </div>
       </div>
     </div>
     <hr />

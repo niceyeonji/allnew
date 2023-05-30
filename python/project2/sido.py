@@ -182,15 +182,17 @@ async def generate_pie_charts(year1: str, year2: str):
 
     # 그래프 생성
     plt.figure(figsize=(10, 6))
+    colors = ['#ff9999','#ffc000', '#8fd9b6', '#d395d0', 'yellowgreen', 'lightblue','sandybrown', 'lightskyblue', 'lightcoral', 'paleturquoise', 'thistle']
+
 
     # year1 파이 차트
     plt.subplot(1, 2, 1)
-    plt.pie(data1_combined.values(), labels=data1_combined.keys(), autopct='%1.1f%%')
+    plt.pie(data1_combined.values(), labels=data1_combined.keys(), autopct='%1.1f%%', startangle=90, counterclock=False, colors=colors)
     plt.title(f"시도별 산불 발생 현황 - {year1}")
 
     # year2 파이 차트
     plt.subplot(1, 2, 2)
-    plt.pie(data2_combined.values(), labels=data2_combined.keys(), autopct='%1.1f%%')
+    plt.pie(data2_combined.values(), labels=data2_combined.keys(), autopct='%1.1f%%', startangle=90, counterclock=False, colors=colors)
     plt.title(f"시도별 산불 발생 현황 - {year2}")
 
     plt.tight_layout()  # 그래프 간격 조정
@@ -201,4 +203,21 @@ async def generate_pie_charts(year1: str, year2: str):
     plt.savefig(filepath)
     plt.close()
     return {"message": "그래프가 생성되었습니다.", "filename": chart_filename}
+
+@app.get('/sido_frame/{year1}/{year2}')
+async def sido_frame(year1: int, year2: int):
+
+    query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
+    result = list(mycol.find(query))
+
+    df = pd.DataFrame(result)
+
+    df["Year"] = pd.to_datetime(df["년월"]).dt.year
+    df["Month"] = pd.to_datetime(df["년월"]).dt.month
+
+    df_pivot = df.pivot(index="Year", columns="Month", values="평균기온(℃)")
+
+    df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
+
+    return df_pivot
 

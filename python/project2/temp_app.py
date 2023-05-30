@@ -198,17 +198,18 @@ async def temp_graph(year1: int, year2: int):
 
 @app.get('/combined_frame/{year1}/{year2}')
 async def combined_frame(year1: int, year2: int):
-
+# query 변수 생성. $regex 연산자를 사용하여 "년월"필드 값이 'year1' 또는 'year2'로 시작하는지 확인
     query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
+# query를 사용하여 MongoDB에서 해당 쿼리 실행, 결과를 리스트로 반환
     result = list(mycol.find(query))
-
+# 결과를 DataFrame으로 변환
     df = pd.DataFrame(result)
-
+# "년월" 열의 값을 날짜/시간 형식으로 변환
     df["Year"] = pd.to_datetime(df["년월"]).dt.year
     df["Month"] = pd.to_datetime(df["년월"]).dt.month
-
+# df.pivot()을 사용하여 "Year"를 인덱스, "Month"를 열, "평균기온"을 값으로 하는 피벗 테이블 생성
     df_pivot = df.pivot(index="Year", columns="Month", values="평균기온(℃)")
-
+# df_pivot.columns를 정렬해 열을 연도 및 월 순서로 재정렬
     df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
 
     return df_pivot
@@ -249,8 +250,6 @@ async def combined_data():
     combined_df = pd.merge(df_fire, df_temp, on='년월')
 
     return combined_df
-
-
 
     
 if __name__ == "__main__":

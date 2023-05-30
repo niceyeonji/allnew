@@ -106,19 +106,4 @@ app.get('/pie_charts', async (req, res) => {
   }
 });
 
-app.get('/fire_graph', async (req, res) => {
-  const {year1, year2} = req.query;
-
-  try {
-    const response = await axios.get(
-      `http://192.168.1.187:3001/fire_graph?year1=${year1}&year2=${year2}`,
-    );
-    const {message, filename} = response.data;
-    res.json({message, filename});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
 module.exports = app;
