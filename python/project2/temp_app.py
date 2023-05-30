@@ -10,8 +10,6 @@ import chardet
 import matplotlib.pyplot as plt
 import requests
 from typing import List
-import httpx
-from fastapi.responses import StreamingResponse
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -252,27 +250,6 @@ async def combined_data():
 
     return combined_df
 
-@app.get('/get_fire_image/{year1}/{year2}')
-async def get_fire_image(year1: int, year2: int):
-    url = f"http://192.168.1.187:3001/year_firemongo?year1={year1}&year2={year2}"
-
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-
-        if response.status_code == 200:
-            image_data = response.content
-
-            # 이미지 파일 저장
-            filename = f'fireGraph_{year1}_{year2}.png'
-            filepath = f'/allnew/python/project2/html/public/media/{filename}'
-            with open(filepath, 'wb') as file:
-                file.write(image_data)
-
-            return {'filepath': filepath}
-        else:
-            return {
-                'message': "그래프 이미지를 가져오는데 실패했습니다.",
-            }
 
 
     

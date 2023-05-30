@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>기온 산불 미세먼지</title>
+    <link rel="stylesheet" href="mystyle.css" />
     <script>
       function getTemperature() {
         const checkboxes = document.getElementsByName('year');
@@ -130,9 +131,11 @@
         const year2 = selectedYears[1];
 
         fetchFireGraph(year1, year2);
+        fetchFire(year1, year2);
       }
+
       function fetchFireGraph(year1, year2) {
-        const url = `/fire_graph?year1=${year1}&year2=${year2}`;
+        const url = `/pie_charts?year1=${year1}&year2=${year2}`;
 
         // AJAX 또는 fetch를 사용하여 서버에 GET 요청을 보내고 그래프를 받아옵니다.
         fetch(url)
@@ -144,7 +147,7 @@
             );
             const img = document.createElement('img');
             img.src = '/media/' + filename;
-            img.style.width = '600px';
+            img.style.width = '650px';
             graphContainer.innerHTML = '';
             graphContainer.appendChild(img);
             console.log(message);
@@ -154,57 +157,40 @@
             alert('그래프를 가져오는 데 실패했습니다.');
           });
       }
+
+      function fetchFire(year1, year2) {
+        const url = `http://192.168.1.187:4000/yearfire_total_${year1}%26${year2}.png`;
+
+        const graphContainer = document.getElementById('fire1graph-container');
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.width = '600px';
+        graphContainer.innerHTML = '';
+        graphContainer.appendChild(img);
+      }
     </script>
-    <style>
-      .row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-      .col {
-        flex-basis: 30%;
-        border-right: 1px solid #ccc;
-        padding: 10px;
-      }
-      .col:last-child {
-        border-right: none;
-      }
-      .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #3498db;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      .btn:hover {
-        background-color: #2980b9;
-      }
-      .info {
-        margin-top: 10px;
-        font-size: 14px;
-        color: #333;
-      }
-    </style>
   </head>
   <body id="tt-body-index" class="layout-aside-right paging-number">
     <div id="wrap">
       <header id="header">
         <div class="inner">
           <h1>
-            <a>기온 산불 미세먼지</a>
+            <a>기온☀️ 산불🔥 미세먼지😷</a>
           </h1>
         </div>
       </header>
     </div>
+    <br />
+    <br />
     <form onsubmit="event.preventDefault(); getTemperature(); getFire()">
-      <input type="checkbox" name="year" value="2018" /> 2018
-      <input type="checkbox" name="year" value="2019" /> 2019
-      <input type="checkbox" name="year" value="2020" /> 2020
-      <input type="checkbox" name="year" value="2021" /> 2021
-      <input type="checkbox" name="year" value="2022" /> 2022
+      &nbsp;&nbsp;
+      <input type="checkbox" name="year" value="2018" /> 2018&nbsp;&nbsp;
+      <input type="checkbox" name="year" value="2019" /> 2019&nbsp;&nbsp;
+      <input type="checkbox" name="year" value="2020" /> 2020&nbsp;&nbsp;
+      <input type="checkbox" name="year" value="2021" /> 2021&nbsp;&nbsp;
+      <input type="checkbox" name="year" value="2022" />
+      2022&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button onclick="location.reload()">다시하기!</button>
     </form>
     <hr />
     <div class="row">
@@ -213,18 +199,19 @@
         <div id="graph-container">
           <button onclick="getTemperature()">기온 정보</button>
         </div>
+        <br />
         <div id="dataframe-container"></div>
       </div>
       <div class="col">
         <h2>산불</h2>
-        <div id="firegraph-container">
+        <div id="fire1graph-container">
           <button onclick="getFire()">산불 정보</button>
         </div>
-        <div id="dataframe-container"></div>
+        <div id="firegraph-container"></div>
       </div>
       <div class="col">
         <h2>미세먼지</h2>
-        <input type="button" value="미세먼지 정보" onclick="getAirQuality()" />
+        <button onclick="getFire()">미세먼지 정보</button>
         <span id="air-quality-info"></span>
       </div>
     </div>

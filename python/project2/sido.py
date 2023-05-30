@@ -198,5 +198,7 @@ async def generate_pie_charts(year1: str, year2: str):
     # Save the pie chart image
     chart_filename = f"firepie_{year1}_{year2}.png"
     filepath = '/allnew/python/project2/html/public/media/' + chart_filename
-    plt.savefig(chart_filename)
+    plt.savefig(filepath)
+    plt.close()
+    return {"message": "그래프가 생성되었습니다.", "filename": chart_filename}
 
