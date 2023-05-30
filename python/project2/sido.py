@@ -7,6 +7,9 @@ from bson.objectid import ObjectId
 import os.path
 import json
 import urllib.request
+import matplotlib.pyplot as plt
+from PIL import Image
+
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -129,3 +132,71 @@ async def get_max_value(year: str):
                     max_data['값'] = value
 
     return max_data
+
+
+@app.get('/pie_charts/{year1}/{year2}')
+async def generate_pie_charts(year1: str, year2: str):
+    plt.rcParams['font.family'] = "AppleGothic"
+    result = await sidomongo()
+    data1 = {}
+    data2 = {}
+
+    for item in result:
+        for key, value in item.items():
+            if key != '시도별(1)':
+                if key == year1:
+                    if value != '-':
+                        data1[item['시도별(1)']] = float(value)
+                elif key == year2:
+                    if value != '-':
+                        data2[item['시도별(1)']] = float(value)
+
+    # 데이터 처리
+    threshold = 0.01  # 1% 미만의 임계값 설정
+    data1_combined = {}
+    data2_combined = {}
+
+    # year1 데이터 처리
+    total1 = sum(data1.values())
+    other1 = 0
+
+    for label, value in data1.items():
+        if value / total1 >= threshold:
+            data1_combined[label] = value
+        else:
+            other1 += value
+
+    data1_combined['기타'] = other1
+
+    # year2 데이터 처리
+    total2 = sum(data2.values())
+    other2 = 0
+
+    for label, value in data2.items():
+        if value / total2 >= threshold:
+            data2_combined[label] = value
+        else:
+            other2 += value
+
+    data2_combined['기타'] = other2
+
+    # 그래프 생성
+    plt.figure(figsize=(10, 6))
+
+    # year1 파이 차트
+    plt.subplot(1, 2, 1)
+    plt.pie(data1_combined.values(), labels=data1_combined.keys(), autopct='%1.1f%%')
+    plt.title(f"시도별 산불 발생 현황 - {year1}")
+
+    # year2 파이 차트
+    plt.subplot(1, 2, 2)
+    plt.pie(data2_combined.values(), labels=data2_combined.keys(), autopct='%1.1f%%')
+    plt.title(f"시도별 산불 발생 현황 - {year2}")
+
+    plt.tight_layout()  # 그래프 간격 조정
+
+    # Save the pie chart image
+    chart_filename = f"firepie_{year1}_{year2}.png"
+    filepath = '/allnew/python/project2/html/public/media/' + chart_filename
+    plt.savefig(chart_filename)
+

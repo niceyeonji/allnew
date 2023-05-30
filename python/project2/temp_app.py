@@ -10,6 +10,8 @@ import chardet
 import matplotlib.pyplot as plt
 import requests
 from typing import List
+import httpx
+from fastapi.responses import StreamingResponse
 
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -188,13 +190,6 @@ async def temp_graph(year1: int, year2: int):
     # x축 눈금 설정
     plt.xticks(range(1, 13), ['01월', '02월', '03월', '04월', '05월', '06월', '07월', '08월', '09월', '10월', '11월', '12월'])
 
-    # filename = 'tempGraph_'+str(year1)+'_'+str(year2)+'.png'
-
-    # plt.savefig(filename, dpi=400, bbox_inches='tight')
-    # plt.close()
-
-    # return {"message": "그래프가 생성되었습니다.", "filename": filename}
-
     filename = 'tempGraph_'+str(year1)+'_'+str(year2)+'.png'
     filepath = '/allnew/python/project2/html/public/media/' + filename  # 파일 경로 수정
     plt.savefig(filepath, dpi=400, bbox_inches='tight')
@@ -203,25 +198,34 @@ async def temp_graph(year1: int, year2: int):
     return {"message": "그래프가 생성되었습니다.", "filename": filename}
 
 
-@app.get('/getmongo')
-async def getMongo():
-    baseurl = 'http://192.168.1.187:3002'
-    try:
-        response = requests.get(baseurl + '/getmongo')
-        response.raise_for_status()  # 요청이 성공적으로 이루어졌는지 확인
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        return {"ok": False, "db": "mongodb", "service": "/getmongo"}
+@app.get('/combined_frame/{year1}/{year2}')
+async def combined_frame(year1: int, year2: int):
+
+    query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
+    result = list(mycol.find(query))
+
+    df = pd.DataFrame(result)
+
+    df["Year"] = pd.to_datetime(df["년월"]).dt.year
+    df["Month"] = pd.to_datetime(df["년월"]).dt.month
+
+    df_pivot = df.pivot(index="Year", columns="Month", values="평균기온(℃)")
+
+    df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
+
+    return df_pivot
+
 
 @app.get('/firemongo')
-async def firemongo():
-    baseurl = 'http://192.168.1.187:3005'
+async def fireMongo():
+    baseurl = 'http://192.168.1.187:3001'
     try:
         response = requests.get(baseurl + '/firemongo')
         response.raise_for_status()  # 요청이 성공적으로 이루어졌는지 확인
         return response.json()
     except requests.exceptions.RequestException as e:
         return {"ok": False, "db": "mongodb", "service": "/firemongo"}
+
 
 @app.get('/combined_data')
 async def combined_data():
@@ -248,38 +252,28 @@ async def combined_data():
 
     return combined_df
 
+@app.get('/get_fire_image/{year1}/{year2}')
+async def get_fire_image(year1: int, year2: int):
+    url = f"http://192.168.1.187:3001/year_firemongo?year1={year1}&year2={year2}"
 
-# MongoDB에 가져온 데이터 데이터프레임 생성
-@app.get('/mongodb_to_dataframe')
-async def mongodb_to_dataframe():
-    result = list(mycol.find())
-    df = pd.DataFrame(result)
-    return df
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
 
-@app.get('/combined_frame/{year1}/{year2}')
-async def combined_frame(year1: int, year2: int):
-    # MongoDB query to fetch data for year1 and year2
-    query = {"년월": {"$regex": f"^{year1}|^{year2}"}}
-    result = list(mycol.find(query))
+        if response.status_code == 200:
+            image_data = response.content
 
-    # Create DataFrames from fetched data
-    df = pd.DataFrame(result)
+            # 이미지 파일 저장
+            filename = f'fireGraph_{year1}_{year2}.png'
+            filepath = f'/allnew/python/project2/html/public/media/{filename}'
+            with open(filepath, 'wb') as file:
+                file.write(image_data)
 
-    # Extract year and month from "년월" column
-    # df["Year"] = df["년월"].str[:4]
-    # df["Month"] = df["년월"].str[5:7]
-    df["Year"] = pd.to_datetime(df["년월"]).dt.year
-    df["Month"] = pd.to_datetime(df["년월"]).dt.month
+            return {'filepath': filepath}
+        else:
+            return {
+                'message': "그래프 이미지를 가져오는데 실패했습니다.",
+            }
 
-    # Pivot the DataFrame to have "년월" as columns and "평균기온(℃)" as values
-    df_pivot = df.pivot(index="Year", columns="Month", values="평균기온(℃)")
-
-    # Reorder columns to have them in the desired order
-    # df_pivot = df_pivot.reindex(columns=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"])
-    df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
-
-    # Return the modified DataFrame
-    return df_pivot
 
     
 if __name__ == "__main__":
