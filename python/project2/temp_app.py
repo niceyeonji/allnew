@@ -121,19 +121,35 @@ async def tempmongo():
 # 특정 연도와 월에 해당하는 데이터 가져오기
 @app.get('/month_tempmongo')
 # 'year' 매개변수가 'None'인지 확인.
-async def month_tempmongo(year=None):
-    if year is None:
-        return "'년도(ex,2018)'의 입력을 확인해주세요"
-    else:
-# months 리스트에 원하는 월들을 문자열로 저장
-        months=["06","07","08"]
-# tempmongo() 함수를 호출해 MongoDB에서 데이터 가져오기. 이 함수는 /tempmongo 엔드포인트를 호출하는 비동기 함수. 가져온 건 result 변수에 저장
-        result=await tempmongo()
-# data 변수는 빈 딕셔너리로 초기화
-# result의 각 아이템을 순회하면서 조건 확인. 년월 값을 '-'로 분리한 후 첫 번째 요소(연도)가 'year'과 일치하는지 확인 and 년월 값을 '-'로 분리한 후 두 번재 요소(월)가 'months'리스트에 포함되는지 확인 
-        data = {key:value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
-# 최종적으로 'data' 딕셔너리 반환. 주어진 연도와 월에 해당하는 데이터 담고 있음.
+async def month_tempmongo(year1=None, year2=None):
+    if year1 is None or year2 is None:
+        return "연도(ex. 2018)를 입력해주세요."
+
+    months = ["06", "07", "08"]
+
+    async def get_month_data(year):
+        result = await tempmongo()
+        data = {key: value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
         return data
+
+    data1 = await get_month_data(year1)
+    data2 = await get_month_data(year2)
+
+    output = ""
+
+    if data1:
+        max_temp1 = max(data1.values())
+        avg_temp1 = sum(data1.values()) / len(data1)
+        max_month1 = [k for k, v in data1.items() if v == max_temp1][0].split('-')[1]
+        output += f"{year1}년의 여름(6월~8월) 중 가장 기온이 높은 달은 {max_temp1}도인 {max_month1}월입니다. {year1}년 여름(6월~8월)의 평균 온도는 {avg_temp1:.1f}입니다.\n"
+
+    if data2:
+        max_temp2 = max(data2.values())
+        avg_temp2 = sum(data2.values()) / len(data2)
+        max_month2 = [k for k, v in data2.items() if v == max_temp2][0].split('-')[1]
+        output += f"{year2}년의 여름(6월~8월) 중 가장 기온이 높은 달은 {max_temp2}도인 {max_month2}월입니다. {year2}년 여름(6월~8월)의 평균 온도는 {avg_temp2:.1f}입니다.\n"
+
+    return output
 
 
 # 특정 년도에 해당하는 월별 평균기온 데이터 가져오기
