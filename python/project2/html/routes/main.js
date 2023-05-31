@@ -19,46 +19,18 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.get('/hello', (req, res) => {
-  res.send('Hello World~!!');
-});
-
-app.get('/tempmongo', (req, res) => {
-  axios
-    .get('http://192.168.1.58:3000/tempmongo')
-    .then(response => {
-      console.log(`statusCode : ${response.status}`);
-      console.log(response.data);
-      res.send(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-});
-
-app.get('/gettemp', async (req, res) => {
-  const {year} = req.query;
-
-  if (!year) {
-    return res.send("'년도(ex,2018)의 입력을 확인해주세요");
-  } else {
-    const months = Array.from({length: 12}, (_, i) =>
-      String(i + 1).padStart(2, '0'),
-    );
-    const result = await tempmongo();
-    const data = Object.entries(result)
-      .filter(([key]) => {
-        const [keyYear, keyMonth] = key.split('-');
-        return keyYear === year && months.includes(keyMonth);
-      })
-      .reduce((obj, [key, value]) => {
-        obj[key] = value;
-        return obj;
-      }, {});
-
-    res.json(data);
-  }
-});
+// app.get('/tempmongo', (req, res) => {
+//   axios
+//     .get('http://192.168.1.58:3000/tempmongo')
+//     .then(response => {
+//       console.log(`statusCode : ${response.status}`);
+//       console.log(response.data);
+//       res.send(response.data);
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
+// });
 
 app.get('/temp_graph', async (req, res) => {
   const {year1, year2} = req.query;

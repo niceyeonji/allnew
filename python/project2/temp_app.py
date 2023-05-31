@@ -150,24 +150,24 @@ async def month_tempmongo(year1=None, year2=None):
         output += f"{year2}년의 여름(6월~8월) 중 '가장 기온이 높은 달'은 '{max_temp2}℃'인 {max_month2}월입니다. {year2}년 여름(6월~8월)의 '평균 온도'는 '{avg_temp2:.1f}℃'입니다.\n"
 
     if avg_temp1 > avg_temp2:
-        output += f"{year1}년의 여름(6월~8월)이 {year2}년보다 더 기온이 높았습니다."
+        output += f"{year1}년의 여름이 {year2}년의 여름보다 더 기온이 높았습니다."
 
     if avg_temp1 < avg_temp2:
-        output += f"{year2}년의 여름(6월~8월)이 {year1}년보다 더 기온이 높았습니다."
+        output += f"{year2}년의 여름이 {year1}년의 여름보다 더 기온이 높았습니다."
 
     return output
 
 
-# 특정 년도에 해당하는 월별 평균기온 데이터 가져오기
-@app.get('/gettemp')
-async def get_tempmongo(year=None):
-    if year is None:
-        return "'년도(ex,2018)의 입력을 확인해주세요"
-    else:
-        months = [str(i).zfill(2) for i in range(1, 13)]
-        result = await tempmongo()
-        data = {key: value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
-        return data
+# # 특정 년도에 해당하는 월별 평균기온 데이터 가져오기
+# @app.get('/gettemp')
+# async def get_tempmongo(year=None):
+#     if year is None:
+#         return "'년도(ex,2018)의 입력을 확인해주세요"
+#     else:
+#         months = [str(i).zfill(2) for i in range(1, 13)]
+#         result = await tempmongo()
+#         data = {key: value for key, value in result.items() if key.split('-')[0] == year and key.split('-')[1] in months}
+#         return data
 
 
 # 월별 평균기온 비교 그래프 그리기
@@ -186,9 +186,6 @@ async def temp_graph(year1: int, year2: int):
     df_year1 = df[df['년월'].dt.year == year1]
     df_year2 = df[df['년월'].dt.year == year2]
 
-    # # 두 데이터프레임을 합치기
-    # df_combined = pd.concat([df_year1, df_year2])
-
     # 그래프 그리기
     plt.figure(figsize=(10, 6))
 
@@ -199,8 +196,8 @@ async def temp_graph(year1: int, year2: int):
     plt.plot(df_year1_sorted['년월'].dt.month, df_year1_sorted['평균기온(℃)'], marker='o', label=str(year1)+'년')
     plt.plot(df_year2_sorted['년월'].dt.month, df_year2_sorted['평균기온(℃)'], marker='o', label=str(year2)+'년')
 
-    plt.plot(df_year1_sorted['년월'].dt.month[5:8], df_year1_sorted['평균기온(℃)'][5:8], color='red', marker='*')
-    plt.plot(df_year2_sorted['년월'].dt.month[5:8], df_year2_sorted['평균기온(℃)'][5:8], color='red', marker='*')
+    plt.plot(df_year1_sorted['년월'].dt.month[5:8], df_year1_sorted['평균기온(℃)'][5:8], color='red', marker='D', linewidth = "3")
+    plt.plot(df_year2_sorted['년월'].dt.month[5:8], df_year2_sorted['평균기온(℃)'][5:8], color='red', marker='D', linewidth = "3")
 
     plt.xlabel('월')
     plt.ylabel('평균기온(℃)')
@@ -235,43 +232,6 @@ async def combined_frame(year1: int, year2: int):
     df_pivot = df_pivot.reindex(columns=sorted(df_pivot.columns, key=lambda x: int(x)))
 
     return df_pivot
-
-
-@app.get('/firemongo')
-async def fireMongo():
-    baseurl = 'http://192.168.1.187:3001'
-    try:
-        response = requests.get(baseurl + '/firemongo')
-        response.raise_for_status()  # 요청이 성공적으로 이루어졌는지 확인
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        return {"ok": False, "db": "mongodb", "service": "/firemongo"}
-
-
-@app.get('/combined_data')
-async def combined_data():
-    # '/firemongo' 엔드포인트에서 데이터 가져오기
-    baseurl = 'http://192.168.1.187:3005'
-    try:
-        response = requests.get(baseurl + '/firemongo')
-        response.raise_for_status()
-        fire_data = response.json()
-    except requests.exceptions.RequestException as e:
-        return {"ok": False, "db": "mongodb", "service": "/firemongo", "error": str(e)}
-
-    # '/tempmongo' 엔드포인트에서 데이터 가져오기
-    try:
-        response = await tempmongo()
-        temp_data = response
-    except Exception as e:
-        return {"ok": False, "db": "mongodb", "service": "/tempmongo", "error": str(e)}
-
-    # 가져온 데이터를 합쳐서 데이터프레임 생성
-    df_fire = pd.DataFrame(fire_data.items(), columns=['년월', '화재건수'])
-    df_temp = pd.DataFrame(temp_data.items(), columns=['년월', '평균기온(℃)'])
-    combined_df = pd.merge(df_fire, df_temp, on='년월')
-
-    return combined_df
 
     
 if __name__ == "__main__":
