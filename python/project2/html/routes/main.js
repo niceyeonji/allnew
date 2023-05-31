@@ -154,4 +154,36 @@ app.get('/month_tempmongo', (req, res) => {
     });
 });
 
+app.get('/month_firemongo', (req, res) => {
+  const {year1, year2} = req.query;
+  const apiUrl = `http://192.168.1.187:3001/result_fire?year1=${year1}&year2=${year2}`;
+
+  axios
+    .get(apiUrl)
+    .then(response => {
+      const data = response.data;
+      res.json(data);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    });
+});
+
+app.get('/month_ufmongo', (req, res) => {
+  const {year1, year2} = req.query;
+  const apiUrl = `http://192.168.1.187:3000/result_uf?year1=${year1}&year2=${year2}`;
+
+  axios
+    .get(apiUrl)
+    .then(response => {
+      const data = response.data;
+      res.json(data);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    });
+});
+
 module.exports = app;

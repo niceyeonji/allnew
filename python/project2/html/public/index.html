@@ -166,6 +166,7 @@
         fetchFireGraph(year1, year2);
         fetchFireDataFrame(year1, year2);
         fetchFire(year1, year2);
+        getfireData(year1, year2);
       }
 
       function fetchFireGraph(year1, year2) {
@@ -281,6 +282,33 @@
         xhr.send();
       }
 
+      function getfireData(year1, year2) {
+        const url = `/month_firemongo?year1=${year1}&year2=${year2}`;
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('GET', url);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const tempDataContainer = document.getElementById('fireData');
+
+            if (data.hasOwnProperty('detail')) {
+              tempDataContainer.textContent = data.detail;
+            } else {
+              tempDataContainer.innerHTML = data;
+            }
+          } else {
+            console.error(xhr.statusText);
+            alert('데이터를 가져오는 데 실패했습니다.');
+          }
+        };
+        xhr.onerror = function () {
+          console.error(xhr.statusText);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        };
+        xhr.send();
+      }
+
       function getultra() {
         const checkboxes = document.getElementsByName('year');
         let selectedYears = [];
@@ -301,6 +329,7 @@
 
         fetchultrafine(year1, year2);
         fetchUfDataFrame(year1, year2);
+        getufData(year1, year2);
       }
 
       function fetchultrafine(year1, year2) {
@@ -388,6 +417,33 @@
 
         xhr.send();
       }
+
+      function getufData(year1, year2) {
+        const url = `/month_ufmongo?year1=${year1}&year2=${year2}`;
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('GET', url);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const tempDataContainer = document.getElementById('ufData');
+
+            if (data.hasOwnProperty('detail')) {
+              tempDataContainer.textContent = data.detail;
+            } else {
+              tempDataContainer.innerHTML = data;
+            }
+          } else {
+            console.error(xhr.statusText);
+            alert('데이터를 가져오는 데 실패했습니다.');
+          }
+        };
+        xhr.onerror = function () {
+          console.error(xhr.statusText);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        };
+        xhr.send();
+      }
     </script>
   </head>
   <body id="tt-body-index" class="layout-aside-right paging-number">
@@ -445,6 +501,10 @@
     <hr />
     <h2>&nbsp;&nbsp;<결과 정리></h2>
     <div id="tempData"></div>
+    <br />
+    <div id="fireData"></div>
+    <br />
+    <div id="ufData"></div>
     <br />
     <br />
   </body>

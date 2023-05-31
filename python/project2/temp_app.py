@@ -118,7 +118,6 @@ async def tempmongo():
     return data
 
 
-# 특정 연도와 월에 해당하는 데이터 가져오기
 @app.get('/month_tempmongo')
 # 'year' 매개변수가 'None'인지 확인.
 async def month_tempmongo(year1=None, year2=None):
@@ -141,13 +140,16 @@ async def month_tempmongo(year1=None, year2=None):
         max_temp1 = max(data1.values())
         avg_temp1 = sum(data1.values()) / len(data1)
         max_month1 = [k for k, v in data1.items() if v == max_temp1][0].split('-')[1]
-        output += f"{year1}년의 여름(6월~8월) 중 가장 기온이 높은 달은 {max_temp1}도인 {max_month1}월입니다. {year1}년 여름(6월~8월)의 평균 온도는 {avg_temp1:.1f}입니다.\n"
+        output += f"{year1}년의 여름(6월~8월) 중 '가장 기온이 높은 달'은 '{max_temp1}℃'인 {max_month1}월입니다. {year1}년 여름(6월~8월)의 '평균 온도'는 '{avg_temp1:.1f}℃'입니다.\n"
 
     if data2:
         max_temp2 = max(data2.values())
         avg_temp2 = sum(data2.values()) / len(data2)
         max_month2 = [k for k, v in data2.items() if v == max_temp2][0].split('-')[1]
-        output += f"{year2}년의 여름(6월~8월) 중 가장 기온이 높은 달은 {max_temp2}도인 {max_month2}월입니다. {year2}년 여름(6월~8월)의 평균 온도는 {avg_temp2:.1f}입니다.\n"
+        output += f"{year2}년의 여름(6월~8월) 중 '가장 기온이 높은 달'은 '{max_temp2}℃'인 {max_month2}월입니다. {year2}년 여름(6월~8월)의 '평균 온도'는 '{avg_temp2:.1f}℃'입니다.\n"
+
+    if avg_temp1 > avg_temp2:
+        output += f"{year1}년의 여름(6월~8월)이 {year2}년보다 더 기온이 높았습니다."
 
     return output
 
