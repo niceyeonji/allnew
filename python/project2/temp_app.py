@@ -151,6 +151,9 @@ async def month_tempmongo(year1=None, year2=None):
     if avg_temp1 > avg_temp2:
         output += f"{year1}년의 여름(6월~8월)이 {year2}년보다 더 기온이 높았습니다."
 
+    if avg_temp1 < avg_temp2:
+        output += f"{year2}년의 여름(6월~8월)이 {year1}년보다 더 기온이 높았습니다."
+
     return output
 
 
