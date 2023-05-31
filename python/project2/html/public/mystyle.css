@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR&display=swap');
 
 body {
   font-family: Arial, sans-serif;
@@ -100,4 +100,8 @@ td:first-child {
 
 th {
   text-align: left;
+}
+
+div.text {
+  font-family: 'Noto Sans KR', sans-serif;
 }

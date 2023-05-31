@@ -210,16 +210,6 @@
         graphContainer.appendChild(img);
       }
 
-      function fetchFire(year1, year2) {
-        const url = `http://192.168.1.187:4000/fire/yearfire_total_${year1}%26${year2}.png`;
-        const graphContainer = document.getElementById('fire1graph-container');
-        const img = document.createElement('img');
-        img.src = url;
-        img.style.width = '550px';
-        graphContainer.innerHTML = '';
-        graphContainer.appendChild(img);
-      }
-
       function fetchFireDataFrame(year1, year2) {
         const url = `/combined_frame2/${year1}/${year2}`;
         const xhr = new XMLHttpRequest();
@@ -444,6 +434,17 @@
         };
         xhr.send();
       }
+
+      function predict(year1, year2) {
+        const url = `http://192.168.1.187:4000/predict/totaltemp9_forecast.png`;
+
+        const graphContainer = document.getElementById('predict-container');
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.width = '550px';
+        graphContainer.innerHTML = '';
+        graphContainer.appendChild(img);
+      }
     </script>
   </head>
   <body id="tt-body-index" class="layout-aside-right paging-number">
@@ -500,12 +501,19 @@
     </div>
     <hr />
     <h2>&nbsp;&nbsp;<결과 정리></h2>
-    <div id="tempData"></div>
+    <div class="text" id="tempData"></div>
     <br />
-    <div id="fireData"></div>
+    <div class="text" id="fireData"></div>
     <br />
-    <div id="ufData"></div>
+    <div class="text" id="ufData"></div>
     <br />
     <br />
+    <hr />
+    <h2>&nbsp;&nbsp;<올해 기온 예측></h2>
+    <div id="predict-container">
+      &nbsp;&nbsp;<button onclick="predict()">
+        [혐주의] 올해 기온 예측 그래프
+      </button>
+    </div>
   </body>
 </html>

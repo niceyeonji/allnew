@@ -118,6 +118,7 @@ async def tempmongo():
     return data
 
 
+# 비교 결과 나오게 하기
 @app.get('/month_tempmongo')
 # 'year' 매개변수가 'None'인지 확인.
 async def month_tempmongo(year1=None, year2=None):
