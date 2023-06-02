@@ -1,0 +1,193 @@
+Day-40
+
+## p31_class1.py
+
+class Person(object):
+    total = 10
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    def getName(self):
+        return self.name
+    def getAge(self):
+        return self.age
+
+my = Person("Moon", 22)
+print(my.name)
+print(my.age)
+print(my.getName())
+print(my.getAge())
+print(my.total)
+
+you = Person("Kim", 20)
+print(you.getName())
+print(you.getAge())
+print(you.total)
+
+
+## p31_class2.py
+
+class SmartPhone(object):
+    def __init__(self, brand, details):
+        self.brand = brand
+        self.details = details
+    def __str__(self):
+        return f'str : {self.brand} - {self.details}'
+    def __repr__(self):
+        return f'repr : Instant_name = SmartPhone({self.brand}, {self.details})'
+    def __doc__(self):
+        return f'This class is Smart Phone Class. It is have a brand name and detail description.'
+
+SmartPhone1 = SmartPhone('IPhone', {'color' : 'White', 'price' : 10000})
+SmartPhone2 = SmartPhone('Galaxy', {'color' : 'Black', 'price' : 8000})
+SmartPhone3 = SmartPhone('Blackberry', {'color' : 'Silver', 'price' : 6000})
+
+print(dir(SmartPhone))
+print(SmartPhone1)
+print(SmartPhone1.__dict__)
+print(SmartPhone2.__dict__)
+print(SmartPhone3.__dict__)
+
+print(id(SmartPhone1))
+print(id(SmartPhone2))
+print(id(SmartPhone3))
+
+print(SmartPhone1.brand == SmartPhone2.brand)
+print(SmartPhone1 is SmartPhone2)
+
+print(SmartPhone.__str__(SmartPhone1))
+print(SmartPhone.__repr__(SmartPhone2))
+print(SmartPhone.__doc__(SmartPhone3))
+
+print(help(SmartPhone))
+
+
+## p31_class3.py
+
+class SmartPhone(object):
+    def __init__(self, brand, maker, price):
+        self.brand = brand
+        self.maker = maker
+        self.price = price
+    def __str__(self):
+        return f'str: {self.brand} - {self.maker} - {self.price}'
+
+class Galaxy(SmartPhone):
+    def __init__(self, brand, maker, price, country):
+        self.brand = brand
+        self.maker = maker
+        self.price = price
+        self.country = country
+    def __str__(self):
+        return f'str : {self.__class__.__name__} ' \
+            f'스마트폰은 {self.maker} 에서 출시되었고, ' \
+            f'{self.country} 에서 생산 되었습니다. ' \
+            f'가격은 {self.price} 입니다. '
+
+iphone = SmartPhone('IPhone', 'Apple', 10000)
+print(iphone)
+galaxy = Galaxy('Galaxy', 'Samsung', 8000, 'South Korea')
+print(galaxy)
+
+
+## calc_class.py
+
+class Calc(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+    def add(self):
+        return self.a + self.b
+    def sub(self):
+        return self.a - self.b
+
+
+## calc_class_call.py
+
+import calc_class
+
+a = int(input('Input first number : '))
+b = int(input('Input second number : '))
+
+my = calc_class.Calc(a, b)
+
+print(f'{a}  + {b} = {my.add()}')
+print(f'{a}  - {b} = {my.sub()}')
+
+
+## class_animal.py
+
+class Animal:
+    def __init__(self, name):
+        self.name = name
+    def move(self):
+        print("move~")
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        print('woof-woof')
+
+class Duck(Animal):
+    def speak(self):
+        print('quack-quack')
+
+
+## class_Animal_exec.py
+
+from class_animal import *
+
+dog = Dog('doggy')
+print(dog.name)
+dog.move()
+dog.speak()
+
+duck = Duck('donald')
+print(duck.name)
+duck.move()
+duck.speak()
+
+zoo = [Dog('marry'), Duck('dduck')]
+
+for z in zoo:
+    print(z.name)
+    z.speak()
+
+
+## class_rectangle_call.py
+
+from class_rectangle import *
+
+square1 = Rectangle.isSquare(5, 5)
+print(square1)
+
+rect1 = Rectangle(5, 5)
+print('Area of rect1 is ', rect1.calcArea())
+rect1.printCount()
+
+rect2 = Rectangle(2, 5)
+print('Area of rect2 is ', rect2.calcArea())
+rect2.printCount()
+
+rect3 = rect1 + rect2
+print('Area of rect3 is ', rect3.calcArea())
+
+rect3.width = 6
+rect3.height = 6
+print('Area of rect3 is ', rect3.calcArea())
+rect3.printCount()
+
+rect4 = rect2.__add__(rect1)
+print('Area of rect4 is ', rect4.calcArea())
+rect4.printCount()
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,692 @@
+Day-44
+
+## seoul_read.py 
+
+import pandas as pd
+
+filename = 'seoul.csv'
+df = pd.read_csv(filename)
+print(df)
+
+result = df.loc[(df['시군구'] == ' 서울특별시 강남구 신사동')]
+print(result)
+
+result = df.loc[(df['시군구'] == ' 서울특별시 강남구 신사동') & (df['단지명'] == '삼지')]
+print(result)
+
+newdf = df.set_index(keys=['도로명'])
+print(newdf)
+
+result = newdf.loc['동일로']
+count = len(newdf.loc['동일로'])
+print(result)
+print('count : ', count)
+
+
+## p209_missingValue.py
+
+import numpy as np
+import pandas as pd
+from pandas import DataFrame, Series
+
+print('\n# 시리즈의 누락 데이터 처리')
+print('#원본 시리즈')
+myseries = Series(['강감찬', '이순신', np.nan, '광해군'])
+print(myseries)
+
+print('\n# isnull() 함수 : NaN이면 True')
+print(myseries.isnull())
+
+print('\n# notnull() 함수 : NaN이 아니면 True')
+print(myseries.notnull())
+print("-" * 40)
+
+print('\n# notnull() 이용 참인 항목만 출력')
+print(myseries[myseries.notnull()])
+
+print('\n# dropna() 이용 누락 데이터 처리')
+print(myseries.dropna())
+
+filename = 'excel02.csv'
+myframe = pd.read_csv(filename, index_col='이름', encoding='utf-8')
+print(myframe)
+
+print('\n# dropna() 이용 누락 데이터 처리')
+cleaned = myframe.dropna(axis=0)
+print(cleaned)
+
+print('\n# how="all" 이용 누락 데이터 처리')
+cleaned = myframe.dropna(axis=0, how='all')
+print(cleaned)
+
+print('\n# how="any" 이용 누락 데이터 처리')
+cleaned = myframe.dropna(axis=0, how='any')
+print(cleaned)
+
+print('\n# [영어] 컬럼에 NaN 제거')
+print(myframe.dropna(subset=['영어']))
+
+print('\n# 컬럼 기준, how="all" 이용 누락 데이터 처리')
+cleaned = myframe.dropna(axis=1, how='all')
+print(cleaned)
+
+print('\n# 컬럼 기준, how="any" 이용 누락 데이터 처리')
+cleaned = myframe.dropna(axis=1, how='any')
+print(cleaned)
+
+print('## before')
+print(myframe)
+myframe.loc[['강감찬','홍길동'],['국어']] = np.nan
+print('## after')
+print(myframe)
+
+print(myframe.dropna(axis=1, how="all"))
+
+print('## thresh option')
+print(myframe.dropna(axis=1, thresh=2))
+
+print(myframe.dropna(axis=1, how="any"))
+
+
+## p211_Ex_02.py
+
+import numpy as np
+from pandas import DataFrame
+
+mydata = [[60.00, np.nan, 90.00], [np.nan, 80.00, 50.00], [40.00, 50.00, np.nan]]
+myindex = ['강감찬', '김유신', '이순신']
+mycolumn = ['국어', '영어', '수학']
+
+myframe = DataFrame(data=mydata, index=myindex, columns=mycolumn)
+print('\nBefore')
+print(myframe)
+
+myframe.loc[myframe['국어'].isnull(), '국어'] = myframe['국어'].mean()
+myframe.loc[myframe['영어'].isnull(), '영어'] = myframe['영어'].mean()
+myframe.loc[myframe['수학'].isnull(), '수학'] = myframe['수학'].mean()
+
+print('\nAfter')
+print(myframe)
+print('-' * 40)
+print(myframe.describe())
+
+
+## p222_missingValue.py
+
+import numpy as np
+import pandas as pd
+from pandas import Series
+
+filename = "excel02.csv"
+
+print('\n 누락된 데이터 샘플 데이터프레임')
+myframe = pd.read_csv(filename, index_col='이름')
+print(myframe)
+
+print('\n fillna() 메소드 이용')
+print(myframe.fillna(0, inplace=False))
+
+print('\n# inplace=False이므로 원본 변동은 없음.')
+print(myframe)
+
+print('\n# inplace=True 이므로 원본 변동이 생김.')
+myframe.fillna(0, inplace=True)
+print(myframe)
+
+print('\n 누락된 데이터 샘플 데이터프레임')
+myframe.loc[['강감찬', '홍길동'],['국어', '영어']] = np.nan
+myframe.loc[['박영희', '김철수'],['수학']] = np.nan
+print(myframe)
+
+print('\n# 임의의 값을 다른 값으로 치환')
+print('\n# 국어, 영어, 수학 컬럼의 NaN 값들을 일괄 변경')
+mydict = {'국어': 15, '영어' : 25, '수학' : 35}
+myframe.fillna(mydict, inplace=True)
+
+print(myframe)
+print('-' * 40)
+
+myframe.loc[['박영희'],['국어']] = np.nan
+myframe.loc[['홍길동'],['영어']] = np.nan
+myframe.loc[['김철수'],['수학']] = np.nan
+
+print(myframe)
+print('-' * 40)
+
+mydict = {'국어' : np.ceil(myframe['국어'].mean()),
+          '영어' : np.ceil(myframe['영어'].mean()),
+          '수학' : np.ceil(myframe['수학'].mean())}
+
+myframe.fillna(mydict, inplace=True)
+
+print(myframe)
+print('-' * 40)
+
+
+## p230_aggregate.py
+
+import numpy as np
+from pandas import DataFrame
+
+mydata = [[10.0, np.nan, 20.0], \
+          [20.0, 30.0, 40.0], \
+          [np.nan, np.nan, np.nan], \
+          [40.0, 50.0, 30.0]]
+myindex = ['이순신','김유신','윤봉길','계백']
+mycolumns = ['국어','영어','수학']
+
+myframe = DataFrame(data=mydata, index=myindex, columns=mycolumns)
+print('\n성적 데이터프레임 출력')
+print(myframe)
+
+print('\n# 집계함수는 기본적으로 NaN은 제외하고 연산')
+print('\n# sum(), axis = 0, 열방향')
+print(myframe.sum(axis=0))
+
+print('\n# sum(), axis = 1, 행방향')
+print(myframe.sum(axis=1))
+
+print('\n# mean(), axis = 1, skipna=False')
+print(myframe.mean(axis=1, skipna=False))
+print('-' * 40)
+
+print('\n# mean(), axis = 1, skipna=True')
+print(myframe.mean(axis=1, skipna=True))
+print('-' * 40)
+
+print('\n# idxmax() 최대값을 가진 색인 출력')
+print(myframe.idxmax())
+
+print('\n# 원본 데이터프레임 출력')
+print(myframe)
+
+print('\n# cumsum 메소드, axis = 0  출력')
+print(myframe.cumsum(axis=0))
+
+print('\n# cumsum 메소드, axis = 1  출력')
+print(myframe.cumsum(axis=1))
+
+print('\n# cummax 메소드, axis = 1  출력')
+print(myframe.cummax(axis=1))
+
+print('\n# cummin 메소드, axis = 1  출력')
+print(myframe.cummin(axis=1))
+
+print('\n# 평균')
+print(np.floor(myframe.mean()))
+
+myframe.loc[myframe['국어'].isnull(), '국어'] = np.min(myframe['국어']) - 5
+myframe.loc[myframe['영어'].isnull(), '영어'] = np.min(myframe['영어']) - 5
+myframe.loc[myframe['수학'].isnull(), '수학'] = np.min(myframe['수학']) - 5
+
+print(myframe)
+
+print(np.round(myframe.describe()))
+
+
+## p211_Ex_03.py
+
+import numpy as np
+import pandas as pd
+from pandas import Series
+
+filename = '과일매출현황.csv'
+
+df = pd.read_csv(filename, index_col='과일명')
+print('\n# 원본 데이터프레임')
+print(df)
+
+print('\n# 누락 데이터 채워 놓기')
+df.loc[df['구입액'].isnull(), ['구입액']] = 50.00
+df.loc[df['수입량'].isnull(), ['수입량']] = 20.00
+print(df)
+
+print('\n# 구입액과 수입량의 소계')
+print(df.sum(axis=0))
+
+print('\n# 과일별 소계')
+print(df.sum(axis=1))
+
+print('\n# 구입액과 수입량의 평균')
+print(df.mean(axis=0))
+
+print('\n# 과일별 평균')
+print(df.mean(axis=1))
+
+
+# pip install matplotlib
+
+
+## p249_seriesGraph.py
+
+from pandas import Series
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+mylist = [30, 20, 40, 30, 60, 50]
+myindex = ['강감찬','김유신','이순신','안익태','윤동주','홍길동']
+
+print(myindex)
+print(mylist)
+print('-' * 50)
+
+myseries = Series(data=mylist, index=myindex)
+myylim = [0, myseries.max() + 10]
+myseries.plot(title = '시험 점수', kind='line', ylim=myylim, grid=True, rot=10, use_index=True)
+
+filename = 'seriesGraph01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_04.py
+
+from pandas import Series
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+mylist = [30, 20, 40, 60, 50]
+myindex = ['이상화','한용운','노천명','윤동주','이육사']
+
+print(myindex)
+print(mylist)
+print('-' * 50)
+
+myseries = Series(data=mylist, index=myindex)
+myylim = [0, myseries.max() + 10]
+myseries.plot(title = '금월 실적', kind='line', ylim=myylim, grid=False, rot=40, use_index=True, color=['b'])
+
+filename = 'seriesGraph02.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight’)
+print(filename + ' Saved...')
+plt.show()
+
+
+## p253_DataframeGraph.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = 'dataframeGraph.csv'
+myframe = pd.read_csv(filename, encoding='euc-kr')
+
+myframe = myframe.set_index(keys='name')
+print(myframe)
+
+myframe.plot(kind='line', title='Sometitile', figsize=(10, 6), legend=True)
+
+filename = 'dataframeGraph01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_05.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = 'ex802.csv'
+
+myframe = pd.read_csv(filename, index_col='type', encoding='utf-8')
+
+myframe.plot(kind='line', rot=0, title="지역별 차종 교통량", legend=True)
+print(myframe)
+
+filename = 'dataframeGraph02.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p255_seriesExam.py
+
+from pandas import Series
+import matplotlib.pyplot as plt
+
+plt.rc('font', family='AppleGothic')
+
+myindex = ['강감찬','홍길동','이순신','최영']
+member = Series(data=[20, 60, 80, 40], index=myindex)
+print(member)
+print('-' * 50)
+
+print('# values 속성을 이용 요소들의 값 확인')
+print(member.values)
+print('-' * 50)
+
+print('# index 속성을 이용 색인 객체를 확인')
+print(member.index)
+print('-' * 50)
+
+member.plot(kind='bar', rot=40, ylim=[0, member.max() + 20], use_index=True, grid=False, table=False, color=['r','g','b','y'])
+plt.xlabel('학생 이름')
+plt.ylabel('점수')
+plt.title('학생별 시험 점수')
+
+ratio = 100 * member / member.sum()
+print(ratio)
+print('-' * 50)
+
+for idx in range(member.size):
+    value = str(member[idx]) + '건'
+    ratioval = '%.1f%%' % (ratio[idx])
+
+    plt.text(x=idx, y=member[idx] + 1, s=value, horizontalalignment='center')
+    plt.text(x=idx, y=member[idx] / 2, s=ratioval, horizontalalignment='center')
+
+meanval = member.mean()
+print(meanval)
+print('-' * 50)
+
+average = '평균 : %d건' % meanval
+plt.axhline(y=meanval, color='r', linewidth=1, linestyle='dashed')
+plt.text(x=0, y=meanval + 1, s=average, horizontalalignment='center')
+
+filename = 'graph01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_06.py
+
+from pandas import Series
+import matplotlib.pyplot as plt
+
+plt.rc('font', family='AppleGothic')
+
+mylist = [30, 20, 40, 30, 60]
+myindex = ['강감찬', '김유신', '이순신', '안익태', '윤동주']
+myseries = Series(data=mylist, index=myindex)
+myseries.plot(kind='bar', rot = 0,
+              use_index=True, grid=False, table=False, color=['r', 'g', 'b', 'y', 'm'])
+
+plt.xlabel("학생 이름")
+plt.ylabel("점수")
+plt.title("학생별 시험 점수")
+
+ratio = 100 * myseries / myseries.sum()
+print(ratio)
+print('-' * 40)
+
+for idx in range(myseries.size):
+    value = str(myseries[idx]) + '건'
+    ratioval = '%.1f%%' % (ratio[idx])
+    plt.text(x=idx, y=myseries[idx] + 1, s=value, horizontalalignment='center')
+    plt.text(x=idx, y=myseries[idx] / 2, s=ratioval, horizontalalignment='center')
+
+meanval = myseries.mean()
+print(meanval)
+print('-' * 40)
+
+average = '평균 : %d건' % meanval
+plt.axhline(y=meanval, color='r', linewidth=1, linestyle='dashed')
+plt.text(x=0, y=meanval + 1, s=average, horizontalalignment='center')
+
+filename = 'graph02.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p262_DataframeGraph02.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = 'ex802.csv'
+
+myframe = pd.read_csv(filename, index_col='type', encoding='utf-8')
+myframe.index.name = '자동차 유형'
+myframe.columns.name = '도시(city)'
+
+myframe.plot(kind='bar', rot=0, title='지역별 차량 등록 대수', legend=True)
+
+print(myframe)
+print('-' * 40)
+
+filename = 'dataframeGraph02_01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+
+myframeT = myframe.T
+print(myframeT)
+print('-' * 40)
+
+myframeT.plot(kind='bar', rot=0, title='지역별 차량 등록 대수', legend=True)
+filename = 'dataframeGraph02_02.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+print('-' * 40)
+
+ymax = myframeT.sum(axis=1)
+ymaxlimit = ymax.max() + 10
+
+myframeT.plot(kind='bar', ylim=[0, ymaxlimit], rot=0, stacked=True, title='지역별 차량 등록 대수', legend=True)
+filename = 'dataframeGraph02_03.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_07.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = 'mygraph.csv'
+
+myframe = pd.read_csv(filename, index_col='이름', encoding='utf-8')
+myframe.index.name = '이름'
+myframe.columns.name = '시험 과목'
+
+myframe.plot(kind='bar', rot=0, stacked=True, title='학생별 누적 시험 점수', legend=True)
+filename = 'dataframeGraph02_04.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+print('-' * 40)
+
+plt.show()
+
+
+
+## p266_scatterPlot.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+filename = '프로야구타자순위2021년.csv'
+
+myframe = pd.read_csv(filename, encoding='utf-8')
+print('head() 메소드 결과')
+print(myframe.head())
+print('-' * 40)
+
+print('info() 메소드 결과')
+print(myframe.info())
+print('-' * 40)
+
+mycolors = ['r', 'g', 'b']
+labels = ['두산', 'LG', '키움'] 
+print(labels)
+
+cnt = 0 
+
+for finditem in labels:
+    xdata = myframe.loc[myframe['팀명'] == finditem, '안타']
+    ydata = myframe.loc[myframe['팀명'] == finditem, '타점']
+    plt.plot(xdata, ydata, color=mycolors[cnt], marker='o', linestyle='None', label=finditem)
+    cnt += 1    
+
+plt.legend(loc=4)
+plt.xlabel("안타 개수")
+plt.ylabel("타점")
+plt.title("안타와 타점에 대한 산점도")
+plt.grid(True)
+
+plt.show()
+
+
+## p239_Ex_08.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+filename = 'tips.csv'
+
+myframe = pd.read_csv(filename, encoding='utf-8', index_col=0)
+
+mycolors = ['r', 'b']
+labels = myframe['sex'].unique()
+cnt = 0  # 카운터 변수
+
+for finditem in labels:
+    xdata = myframe.loc[myframe['sex'] == finditem, 'total_bill']
+    ydata = myframe.loc[myframe['sex'] == finditem, 'tip']
+    plt.plot(xdata, ydata, color=mycolors[cnt], marker='o', linestyle='None', label=finditem)
+    cnt += 1
+
+plt.legend()
+plt.xlabel("결재 총액")
+plt.ylabel("팁 비용")
+plt.title("결재 총액과 팁 비용의 산점도")
+plt.grid(True)
+
+plt.show()
+
+
+## p270_piGraph.py
+
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+
+slices = [1, 2, 3, 4]
+hobbies = ['잠자기', '외식', '영화 감상', '운동']
+mycolors = ['blue', '#6AFF00', 'yellow', '#FF003C']
+
+plt.pie(x=slices, labels=hobbies, shadow=True, explode=(0, 0.1, 0, 0),
+        colors=mycolors, autopct='%1.2f%%', startangle=90, counterclock=False)
+
+plt.legend(loc=4)
+
+filename = 'pieGraph01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_09.py
+
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+
+mycolors = ['blue', '#6AFF00', 'yellow', '#FF003C', 'green']
+mylist = [30, 20, 40, 60, 50]
+myindex = ['이상화', '한용운', '노천명', '윤동주', '이육사']
+
+plt.pie(x=mylist, labels=myindex, shadow=True, explode=(0, 0.1, 0, 0, 0), colors=mycolors, autopct='%1.2f%%', startangle=90, counterclock=False)
+
+plt.legend(loc=4)
+
+filename = 'pieGraph01.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p274_boxPlot.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = '점수데이터.csv'
+myframe = pd.read_csv(filename, encoding='utf-8', index_col=0)
+ 
+print(myframe['jumsu'].unique())
+
+frame01 = myframe.loc[myframe['jumsu'] == 'lower', 'length']
+frame01.index.name = 'lower'
+print(frame01.head())
+print('-' * 40)
+
+frame02 = myframe.loc[myframe['jumsu'] == 'upper', 'length']
+frame02.index.name = 'upper'
+print(frame02.head())
+print('-' * 40)
+
+totalframe = pd.concat([frame01, frame02], axis=1, ignore_index=True)
+totalframe.columns =  ['lower', 'upper']
+print(totalframe.head())
+print('-' * 40)
+ 
+totalframe.plot(kind='box')
+
+plt.xlabel("점수 구분")
+plt.ylabel("길이")
+plt.grid(False)
+plt.title("점수에 따른 길이의 상자 수염 그래프")
+
+filename = 'boxPlot01_image.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+## p239_Ex_10.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'AppleGothic'
+
+filename = 'mpg.csv'
+myframe = pd.read_csv(filename, encoding='utf-8')
+ 
+print(myframe['drv'].unique())
+
+frame01 = myframe.loc[myframe['drv'] == 'f', 'hwy']
+frame01.index.name = '전륜 구동'
+print(frame01.head())
+print('-' * 40 )
+
+frame02 = myframe.loc[ myframe['drv'] == '4', 'hwy']
+frame02.index.name = '4륜 구동'
+print(frame02.head())
+print('-' * 40 )
+
+frame03 = myframe.loc[ myframe['drv'] == 'r', 'hwy']
+frame03.index.name = '후륜 구동'
+print(frame03.head())
+print( '-' * 40 )
+
+totalframe = pd.concat([frame01, frame02, frame03], axis=1, ignore_index=True)
+totalframe.columns =  ['f', '4', 'r']
+print(totalframe.head())
+print('-' * 40)
+ 
+totalframe.plot(kind='box')
+
+plt.xlabel("구동 방식")
+plt.ylabel("주행 마일수")
+plt.grid(False)
+plt.title("고속도록 주행 마일수의 상자 수염")
+
+filename = 'boxPlot01_image.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' Saved...')
+plt.show()
+
+
+
+

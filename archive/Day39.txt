@@ -1,0 +1,328 @@
+Day-39
+
+[Project2 일정 안내]
+
+기간 : 5월 17일 ~ 31일
+주제 : 자유
+
+Python API를 이용한 데이터 수집 / 크롤링 -> 
+MongoDB Insert -> Data Fetch -> 
+Data process -> RDBMS 
+
+Front end : HTML / CSS3 / JS
+Back end : node JS, Python
+Data process : Python, Shell Script
+ETC :  Shell Script
+
+
+
+## p25_calc.py
+
+def calc(a):
+    def add(b):
+        return a + b
+    return add
+
+sum = calc(1)
+print(sum(2))
+
+def hello(msg):
+    message = "Hi, " + msg
+    def say():
+        print(message)
+    return say
+
+f = hello('Moon')
+f()
+
+
+
+## p25_timer.py
+
+def counter2():
+    t = [0]
+    def increment():
+        t[0] += 1
+        return t[0]
+    return increment
+
+timer =  counter2()
+print(timer())
+
+print(timer())
+
+
+
+## p26_decorator1_notdeco.py
+
+import datetime
+
+def func1():
+    print(datetime.datetime.now())
+    print("Main Function1 start")
+    print(datetime.datetime.now())
+
+def func2():
+    print(datetime.datetime.now())
+    print("Main Function2 start")
+    print(datetime.datetime.now())
+
+def func3():
+    print(datetime.datetime.now())
+    print("Main Function3 start")
+    print(datetime.datetime.now())
+
+func1()
+func2()
+func3()
+
+
+
+## p26_decorator2.py
+
+import datetime
+
+def datetime_deco(func):
+    def decorated():
+        print(datetime.datetime.now())
+        func()
+        print(datetime.datetime.now())
+    return decorated
+
+@datetime_deco
+def func1():
+    print("Main Function1 start")
+
+@datetime_deco
+def func2():
+    print("Main Function2 start")
+
+@datetime_deco
+def func3():
+    print("Main Function3 start")
+    
+func1()
+func2()
+func3()
+
+
+
+## p26_decorator3_class.py
+
+import datetime
+
+class DatetimeDecorator:
+    def __init__(self, f):
+        self.func = f
+    def __call__(self, *args, **kwargs):
+        print(datetime.datetime.now())
+        self.func(*args, **kwargs)
+        print(datetime.datetime.now())
+
+class MainClass:
+    @DatetimeDecorator
+    def func1():
+        print("Main Function1 start")
+    @DatetimeDecorator
+    def func2():
+        print("Main Function2 start")
+    @DatetimeDecorator
+    def func3():
+        print("Main Function3 start")
+
+my = MainClass()
+my.func1()
+my.func2()
+my.func3()
+
+
+
+## p27_generator.py
+
+def counter3(max):
+    t = 0
+    while t < max:
+        yield t
+        t += 1
+    return
+
+timer = counter3(5)
+print(timer.__next__())
+print(timer.__next__())
+print(timer.__next__())
+
+
+
+Quiz. 
+
+리스트 항목을 꺼내서 제곱값을 구해서 출력하는 제너레이터를 생성하시오.
+
+mynum = [ 1,  2, 3, 4, 5]
+
+def square_number(nums):
+
+
+
+## p28_coroutine.py
+
+def handler():
+    print("Initialize Handler")
+    while True:
+        value = (yield)
+        print("Received %s " % value)
+
+listener = handler()
+listener.__next__()
+listener.send(1)
+listener.send("message")
+
+
+
+## p29_list_comp.py
+
+numbers = [1, 2, 3, 4, 5]
+evens = [2 * i for i in numbers]
+
+print(evens)
+print(sum(evens))
+
+squares = [i * i for i in numbers]
+
+print(squares)
+
+
+
+## p29_generator_expr.py
+
+numbers = [1, 2, 3, 4, 5]
+evens = (2 * i for i in numbers)
+
+print(evens)
+print(evens.__next__())
+print(evens.__next__())
+print(sum(evens))
+
+print(numbers)
+numbers.reverse()
+print(numbers)
+
+evens = (2 * i for i in numbers)
+
+print(evens)
+print(evens.__next__())
+print(evens.__next__())
+print(numbers)
+print(evens.__next__())
+
+
+
+## p29_genexpr_369.py
+
+numbers = (i for i in range(1, 101))
+
+data = list(numbers)
+
+item = [3, 6, 9]
+
+for i in data:
+    n10 = int(i / 10)
+    n1 = i % 10
+    if i % 10 == 1:
+        print()
+    if i < 10:
+        if i in item:
+            print('  👏', end="")
+        else:
+            print("%4d" % i, end="")
+    else:
+        if n10 in item and n1 in item:
+            print(' 👏👏', end="")
+        elif n10 in item or n1 in item:
+            print('  👏', end="")
+        else:
+            print("%4d" % i, end="")
+
+
+
+## p29_jiwon.py
+
+numbers = (i for i in range(1, 101))
+
+li_numbers = list(numbers)
+nums=[]
+samyukgu = ["3", "6", "9"]
+
+for i in range(len(li_numbers)):
+    nums.append(str(li_numbers[i]))
+
+for a in range(len(nums)):
+    if len(nums[a]) == 2:
+        if nums[a][0] in samyukgu and nums[a][1] in samyukgu:
+            li_numbers[a] = "짝짝"
+        elif nums[a][0] in samyukgu or nums[a][1] in samyukgu:
+            li_numbers[a] = "짝"
+    elif len(nums[a]) == 1:
+        if nums[a] in samyukgu:
+            li_numbers[a] = "짝"
+
+for j in range(len(li_numbers)):
+    if j != 0 and j % 10 == 0:
+        print("\n",li_numbers[j], end="")
+    else:
+        print(" ",li_numbers[j], end=" ")
+
+
+
+## p29_sunghyun.py
+
+numbers = (i for i in range(1, 101))
+clap = "👏"
+numbers = list(numbers)
+
+three_six_nine = [3, 6, 9]
+
+for i in numbers:
+    if i % 10 in three_six_nine and int(i / 10) in three_six_nine:
+        numbers[i-1] = clap + clap
+    elif i % 10 in three_six_nine or int(i / 10) in three_six_nine:
+        numbers[i-1] = clap
+
+for i in range(len(numbers)):
+    n10 = int((i + 1) / 10)
+    n1 = (i+1) % 10
+    if n1 == 0 and n10 != 0:
+        print(numbers[i])
+    else :
+        if type(numbers[i]) == int:
+            print("%2d" % numbers[i] , end=" ")
+        else :
+            print(numbers[i], end =" ")
+
+
+
+## p29_chanwoo1.py
+
+from itertools import product
+tsn = [str(i) if set(['3', '6', '9']).isdisjoint(set(list(str(i)))) else '👏' if tuple(str(i)) not in list(product(['3', '6', '9'], ['3', '6', '9'])) else '👏👏'  for i in range(1, 101)]
+print(tsn)
+
+
+
+## p29_chanwoo2.py
+
+tsn = [str(i).replace('3', '👏').replace('6', '👏').replace('9', '👏')  for i in range(1, 101)]
+for i, l in enumerate(tsn):
+    if '👏' in l:
+        print('  ', end='')
+        for j in l:
+            if j == '👏':
+                print('%s'%(j), end='')
+        print('\t', end='')
+    else:
+        print('%6s'%(l), end='')
+        print('\t', end='')
+    if i % 10 == 9:
+        print()
+    print('', end='')
+
+

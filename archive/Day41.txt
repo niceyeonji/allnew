@@ -1,0 +1,973 @@
+Day-41
+
+## test.txt
+
+This is Test File.
+This is End of File.
+
+
+## p33_file1.py
+
+f = open("test.txt")
+line = 1
+while line:
+    line = f.readline()
+    print(line)
+f.close()
+
+
+## p33_file2.py
+
+f = open("out.txt", "w")
+f.write("This file is %s \n" % ("out.txt"))
+f.write("end of file")
+f. close()
+
+f = open("out.txt", "r")
+line = 1
+while line:
+    line = f.readline()
+    print(line)
+f.close()
+
+
+## p34_sys.py
+
+import sys
+
+sys.stdout.write("Enter your name : ")
+name = sys.stdin.readline()
+print(name)
+
+gender = input("Enter your Gender : ")
+print(gender)
+
+
+## p35_pickle
+
+import pickle
+
+class SmartPhone(object):
+    def __init__(self, brand, maker, price):
+        self.brand = brand
+        self.maker = maker
+        self.price = price
+    def __str__(self):
+        return f'str : {self.brand} - {self.maker} - {self.price}'
+
+object = SmartPhone("IPhone", "Apple", 10000)
+f = open("test.pickle", "wb")
+pickle.dump(object, f)
+f.close()
+
+f = open("test.pickle", "rb")
+object = pickle.load(f)
+print(object)
+f.close
+
+
+## p36_exception1.py
+
+try:
+    f = open("test.txt", "r")
+except IOError as e:
+    print(e)
+finally:
+    data = f.readline()
+    print(data)
+    f.close()
+
+
+## p36_exception2.py
+
+a = "Hello"
+b = 1
+
+try:
+    c = a + b
+    print(c)
+except:
+    print('The Error is occurred')
+print(a)
+
+
+## p36_exception3.py
+
+def division_function(a, b):
+    try:
+        print(a / b)
+    except TypeError as e:
+        print(e)
+    except ZeroDivisionError as e:
+        print(e)
+
+division_function("a", 1)
+division_function(1, 0)
+division_function(4, 2)
+
+
+## p36_exception4.py
+
+def division_function(a, b):
+    try:
+        print(a / b)
+    except Exception as e:
+        print('First')
+    except TypeError as e:
+        print('Second')
+    except ZeroDivisionError as e:
+        print('Third')
+
+division_function("a", 1)
+division_function(1, 0)
+division_function(4, 2)
+
+
+## p36_exception5.py
+
+def division_function(a, b):
+    try:
+        print(a / b)
+    except TypeError as e:
+        print('First')
+    except ZeroDivisionError as e:
+        print('Second')
+    except Exception as e:
+        print('Third')
+
+division_function("a", 1)
+division_function(1, 0)
+division_function(4, 2)
+
+
+## p36_exception6.py
+
+def division_function(a, b):
+    try:
+        print(a / b)
+    except TypeError as e:
+        return -1
+    except ZeroDivisionError as e:
+        return -2
+    except Exception as e:
+        return -3
+
+ret = division_function("a", 1)
+print(ret)
+ret = division_function(1, 0)
+print(ret)
+ret = division_function(4, 2)
+if ret != None:
+    print("Error")
+
+
+## p37_raise.py
+
+list = []
+
+try:
+    while True:
+        print('Item amount : ', len(list))
+        print('Inventory : ', list)
+
+        if len(list) >= 4:
+            raise Exception('Inventory Lack')
+        item = 'item' + str(len(list))
+        list.append(item)
+except Exception as e:
+    print('Inventory Full')
+    print(e)
+
+
+## p37_threading01.py
+
+import threading
+
+def sum(low, high):
+    total = 0
+    for i in range(low, high):
+        total += i
+    print('Sub Thread : ', total)
+t = threading.Thread(target=sum, args=(1, 100000))
+t.start()
+
+print('Main Thread')
+
+
+## p37_threading02.py
+
+import threading, requests, time
+
+def getHtml(url):
+    resp = requests.get(url)
+    time.sleep(1)
+    print(url, len(resp.text), ' chars')
+t = threading.Thread(target=getHtml, args=('http://google.com',))
+t.start()
+
+print('### End ###')
+
+
+# pip install requests
+
+
+## p37_threading03_class.py
+
+import threading, requests, time
+
+class HtmlGetter(threading.Thread):
+    def __init__(self, url):
+        threading.Thread.__init__(self)
+        self.url = url
+    def run(self):
+        resp = requests.get(self.url)
+        time.sleep(1)
+        print(self.url, len(resp.text), ' chars')
+t = HtmlGetter('http://google.com')
+t.start()
+
+print('### End ###')
+
+
+## p37_threading04_daemon.py
+
+import threading, requests, time
+
+"""
+Thread class 속성 중 daemon 속성은 sub thread가 daemon thread 
+여부를 지정.
+daemon thread는 Background thread로 Main thread가 종료되면 즉시 종료됨.
+반면 daemon thread가 아닌 thread는 Main thread와 관계없이 자신의 작업이 끝날때까지 계속 실행되는 특징이 있음.
+"""
+def getHtml(url):
+    resp = requests.get(url)
+    time.sleep(1)
+    print(url, len(resp.text), ' chars')
+t = threading.Thread(target=getHtml, args=('http://google.com',))
+t.daemon = True
+t.start()
+
+while True:
+    for _ in range(5):
+        time.sleep(1)
+    print('### End ###')
+    break
+
+
+
+## p37_threading04_new.py
+
+import threading, requests, time
+
+"""
+Thread class 속성 중 daemon 속성은 sub thread가 daemon thread 
+여부를 지정.
+daemon thread는 Background thread로 Main thread가 종료되면 즉시 종료됨.
+반면 daemon thread가 아닌 thread는 Main thread와 관계없이 자신의 작업이 끝날때까지 계속 실행되는 특징이 있음.
+"""
+def getHtml(url):
+    resp = requests.get(url)
+    time.sleep(1)
+    print(url, len(resp.text), ' chars')
+t = threading.Thread(target=getHtml, args=('http://google.com',))
+t.daemon = True
+t.start()
+
+while True:
+    for _ in range(5):
+        time.sleep(1)
+    print('### End ###')
+    break
+
+
+## p37_threading05_notused.py
+
+def example():
+    for _ in range(1, 10):
+        print(_)
+
+example()
+example()
+
+
+## p37_threading06_multi.py
+
+import threading
+
+def example():
+    for _ in range(1, 10):
+        print(_)
+
+threading.Thread(target=example).start()
+threading.Thread(target=example).start()
+
+
+## p37_threading07_queue.py
+
+import threading, queue, time
+
+work = queue.Queue()
+
+def generator(start, end):
+    for _ in range(start, end):
+        work.put(_)
+def display():
+    while work.empty() is False:
+        data = work.get()
+        print('data is ' + str(data))
+        time.sleep(1)
+        work.task_done()
+
+threading.Thread(target=generator, args = (1, 10)).start()
+threading.Thread(target=display).start()
+work.join()
+
+
+## p37_threading08_multi.py
+
+import threading, time
+
+data = 0
+
+def generator(start, end):
+    global data
+    for _ in range(start, end):
+        buf = data
+        time.sleep(0.01)
+        data = buf + 1
+
+t1 = threading.Thread(target=generator, args=(1, 10))
+t2 = threading.Thread(target=generator, args=(1, 10))
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
+
+print(data)
+
+
+## p37_threading09_multi_join.py
+
+import threading, time
+
+class sample(threading.Thread):
+    def __init__(self, time):
+        super(sample, self).__init__()
+        self.time = time
+        self.start()
+        
+    def run(self):
+        print(self.time, " starts")
+        for i in range(0, self.time):
+            time.sleep(1)
+        print(self.time, "has finished")
+        
+t3 = sample(3)
+t2 = sample(2)
+t1 = sample(1)
+t3.join()
+print("t3.join() has finished")
+t2.join()
+print("t2.join() has finished")
+t1.join()
+print("t1.join() has finished")
+
+
+
+## p37_threading10_lock.py
+
+import threading, time
+
+data = 0
+lock = threading.Lock()
+def generator(start, end):
+    global data
+    for _ in range(start, end):
+        lock.acquire()
+        buf = data
+        time.sleep(0.01)
+        data = buf + 1
+        lock.release()
+
+t1 = threading.Thread(target=generator, args=(1, 10))
+t2 = threading.Thread(target=generator, args=(1, 10))
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
+
+print(data)
+
+
+## minimum.py
+
+def min(a, b):
+    if a > b:
+        return b
+    else:
+        return a
+
+
+## p38_module1.py
+
+import minimum
+
+a = input('Input First number : ')
+b = input('Input Second number : ')
+
+print(f'Min number is {minimum.min(a, b)}')
+
+
+## p38_module2.py
+
+import minimum as Min
+
+a = input('Input First number : ')
+b = input('Input Second number : ')
+
+print(f'Min number is {Min.min(a, b)}')
+
+
+## p38_module3.py
+
+from minimum import min
+
+a = input('Input First number : ')
+b = input('Input Second number : ')
+
+print(f'Min number is {min(a, b)}')
+
+
+
+## p43_blankpygame.py
+
+import pygame, sys
+from pygame.locals import *
+
+pygame.init()
+DISPLAYSURF = pygame.display.set_mode((400, 300))
+pygame.display.set_caption('Hello Pygame World!')
+
+while True:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+
+# pip install pygame  
+
+
+## p44_catanimation.py
+
+import pygame, sys
+from pygame.locals import *
+
+pygame.init()
+
+FPS = 30
+fpsClock = pygame.time.Clock()
+
+DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
+pygame.display.set_caption('Animation')
+
+WHITE = (255, 255, 255)
+catImg = pygame.image.load('cat.png')
+catx = 10
+caty = 10
+direction = 'right'
+
+while True:
+    DISPLAYSURF.fill(WHITE)
+
+    if direction == 'right':
+        catx += 5
+        if catx == 280:
+            direction = 'down'
+    elif direction == 'down':
+        caty += 5
+        if caty == 220:
+            direction = 'left'
+    elif direction == 'left':
+        catx -= 5
+        if catx == 10:
+            direction = 'up'
+    elif direction == 'up':
+        caty -= 5
+        if caty == 10:
+            direction = 'right'
+
+    DISPLAYSURF.blit(catImg, (catx, caty))
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    pygame.display.update()
+    fpsClock.tick(FPS)
+
+
+## p45_drawing.py
+
+import pygame, sys
+from pygame.locals import *
+
+pygame.init()
+
+DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
+pygame.display.set_caption('Drawing')
+
+BLACK = (  0,   0,   0)
+WHITE = (255, 255, 255)
+RED   = (255,   0,   0)
+GREEN = (  0, 255,   0)
+BLUE  = (  0,   0, 255)
+
+DISPLAYSURF.fill(WHITE)
+pygame.draw.polygon(DISPLAYSURF, GREEN, ((146, 0), (291, 106), (236, 277), (56, 277), (0, 106)))
+pygame.draw.line(DISPLAYSURF, BLUE, (60, 60), (120, 60), 4)
+pygame.draw.line(DISPLAYSURF, BLUE, (120, 60), (60, 120))
+pygame.draw.line(DISPLAYSURF, BLUE, (60, 120), (120, 120), 4)
+pygame.draw.circle(DISPLAYSURF, BLUE, (300, 50), 20, 0)
+pygame.draw.ellipse(DISPLAYSURF, RED, (300, 200, 40, 80), 1)
+pygame.draw.rect(DISPLAYSURF, RED, (200, 150, 100, 50))
+
+pixObj = pygame.PixelArray(DISPLAYSURF)
+pixObj[380][280] = BLACK
+pixObj[382][282] = BLACK
+pixObj[384][284] = BLACK
+pixObj[386][286] = BLACK
+pixObj[388][288] = BLACK
+del pixObj
+
+while True:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+    pygame.display.update()
+
+
+## p46_mixer.py
+
+import pygame.mixer
+from time import sleep
+
+pygame.mixer.init(48000, -16, 1, 1024)
+sound = pygame.mixer.Sound("WilhelmScream.wav")
+channelA = pygame.mixer.Channel(1)
+channelA.play(sound)
+sleep(2.0)
+
+
+## p47_spaceship.py
+
+import pygame
+import math
+
+class SpaceShip(pygame.sprite.Sprite):
+    def __init__(self, w, h, heading, speed):
+        pygame.sprite.Sprite.__init__(self)
+        self.surface = pygame.Surface([20, 22])
+        self.surface.fill(pygame.Color(0, 0, 0))
+        self.color = pygame.Color(0, 255, 255)
+        pygame.draw.line(self.surface, self.color, (2, 21), (10, 0), 3)
+        pygame.draw.line(self.surface, self.color, (10, 0), (18, 20), 3)
+        pygame.draw.line(self.surface, self.color, (4, 15), (9, 15), 3)
+        pygame.draw.line(self.surface, self.color, (16, 15), (11, 15), 3)
+        self.w, self.h = w, h
+        self.x, self.y = w/2, h/2
+        self.heading = heading
+        self.speed = speed
+        self.lives = 3
+
+    def update(self):
+        if self.lives <= 0:
+            return
+        self.image = pygame.transform.rotate(self.surface, - self.heading * 180 / 3.14)
+        self.x = self.x + (math.sin(self.heading) * self.speed)
+        self.y = self.y - (math.cos(self.heading) * self.speed)
+
+        if (self.x < 0):
+           self.x += self.w
+        if (self.x > self.w):
+           self.x -= self.w
+        if (self.y < 0):
+           self.y += self.h
+        if (self.y > self.h):
+           self.y -= self.h
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+
+    def accelerate(self):
+        self.speed += 0.08
+        if (self.speed > 3.0):
+            self.speed = 3
+
+    def decelerate(self):
+        self.speed -= 0.08
+        if (self.speed < 0.3):
+            self.speed = 0.3
+
+    def turn_right(self):
+        self.heading += 0.05
+
+    def turn_left(self):
+        self.heading -= 0.05
+
+    def damage(self):
+        if (self.lives > 0):
+            self.lives -= 1
+            self.x, self.y = self.w/2, self.h/2
+            self.heading = 0
+            self.speed = 0
+
+
+## p48_asteroid.py
+
+import pygame
+import math, random
+
+scale=[1.25, 0.9, 0.4]
+
+class Asteroid(pygame.sprite.Sprite):
+    def __init__(self, type, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.surface = pygame.Surface([45, 40])
+        self.surface.fill(pygame.Color(0, 0, 0))
+        self.color = pygame.Color(255, 255, 255)
+        pygame.draw.line(self.surface, self.color, (5, 40), (0, 25), 2)
+        pygame.draw.line(self.surface, self.color, (0, 25), (0, 10), 2)
+        pygame.draw.line(self.surface, self.color, (0, 10), (20, 10), 2)
+        pygame.draw.line(self.surface, self.color, (20, 10), (15, 0), 2)
+        pygame.draw.line(self.surface, self.color, (15, 0), (30, 0), 2)
+        pygame.draw.line(self.surface, self.color, (30, 0), (45, 10), 2)
+        pygame.draw.line(self.surface, self.color, (45, 10), (25, 20), 2)
+        pygame.draw.line(self.surface, self.color, (25, 20), (45, 30), 2)
+        pygame.draw.line(self.surface, self.color, (45, 30), (35, 40), 2)
+        pygame.draw.line(self.surface, self.color, (35, 40), (25, 35), 2)
+        pygame.draw.line(self.surface, self.color, (25, 35), (5, 39), 2)
+        self.w, self.h = w, h
+        self.x, self.y = 30, 30 + random.randint(0, 440)
+        self.heading = 0
+        self.speed = 0.5 + random.random() * 1.5
+        self.rot_velocity = 0.01
+        self.heading = random.random() * 10.0
+        self.twist = random.random() * 10.0
+        self.type = type
+        self.scale = scale[type]
+        self.surface = pygame.transform.rotozoom(self.surface, 0, self.scale)
+        self.image = self.surface
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.image = pygame.transform.rotate(self.surface, self.twist)
+        self.x = self.x + (math.sin(self.heading) * self.speed)
+        self.y = self.y - (math.cos(self.heading) * self.speed)
+        self.twist = self.twist + self.rot_velocity
+
+        if (self.x < 0):
+           self.x += self.w
+        if (self.x > self.w):
+           self.x -= self.w
+        if (self.y < 0):
+           self.y += self.h
+        if (self.y > self.h):
+           self.y -= self.h
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+        self.heading = self.twist
+
+
+## p49_blast.py
+
+import pygame
+import math
+
+class Blast(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.surface = pygame.Surface([3, 3])
+        self.surface.fill(pygame.Color(0, 0, 0))
+        self.color = pygame.Color(0, 255, 255)
+        pygame.draw.circle(self.surface, self.color,
+                         (1, 1), 2, 2)
+        self.x, self.y = 0, 0
+        self.heading = 0
+        self.speed = 5
+        self.live = 0
+        self.image = self.surface
+        self.rect = self.surface.get_rect()
+
+    def update(self):
+        self.x = self.x + (math.sin(self.heading) * self.speed)
+        self.y = self.y - (math.cos(self.heading) * self.speed)
+        self.rect.center = (self.x, self.y)
+
+    def firedfrom(self, s):
+        self.heading = s.heading
+        self.x = s.x
+        self.y = s.y
+        self.update()
+
+
+
+p50_blasteroid.py
+
+import pygame
+import math
+from p47_spaceship import *
+from p48_asteroid import *
+from p49_blast import *
+
+ASTEROID_SCORES = [20, 50, 100]
+WIDTH = 500
+HEIGHT = 500
+
+def main():
+    pygame.init()
+    total_score = 0
+    fps = pygame.time.Clock()
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    ship = SpaceShip(WIDTH, HEIGHT, 0, 0)
+    asteroid_list = pygame.sprite.Group()
+    for i in range(4):
+        asteroid = Asteroid(0, WIDTH, HEIGHT)
+        asteroid_list.add(asteroid)
+    blast_list = pygame.sprite.Group()
+    pygame.key.set_repeat()
+
+    while True:
+        #get input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or \
+                (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    pygame.quit()
+                    break
+            keystate = pygame.key.get_pressed()
+            if (keystate[pygame.K_SPACE] and ship.lives > 0):
+                blast = Blast()
+                blast.firedfrom(ship)
+                blast_list.add(blast)
+
+        keystate = pygame.key.get_pressed()
+
+        #handle player input
+        heading = keystate[pygame.K_UP] - keystate[pygame.K_DOWN]
+        direction = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
+        if (heading > 0):
+            ship.accelerate()
+        elif (heading < 0):
+            ship.decelerate()
+        if (direction > 0):
+            ship.turn_right()
+        elif (direction < 0):
+            ship.turn_left()
+
+        ship.update()
+        asteroid_list.update()
+        blast_list.update()
+
+        #asteroids.collide(ship)
+        collide_list = pygame.sprite.spritecollide(ship, asteroid_list, True)
+        for asteroid in collide_list:
+            asteroid_list.remove(asteroid)
+            ship.damage()
+
+        #blasts.collide(asteroids)
+        for blast in blast_list:
+            hit_list = pygame.sprite.spritecollide(blast, asteroid_list, True)
+            for asteroid in hit_list:
+                # asteroid splitted
+                if (asteroid.type == 0 or asteroid.type == 1):
+                    new1 = Asteroid(asteroid.type + 1, WIDTH, HEIGHT)
+                    new1.x, new1.y = asteroid.x, asteroid.y
+                    asteroid_list.add(new1)
+                    new2 = Asteroid(asteroid.type + 1, WIDTH, HEIGHT)
+                    new2.x, new2.y = asteroid.x, asteroid.y
+                    asteroid_list.add(new2)
+                asteroid_list.remove(asteroid)
+                blast_list.remove(blast)
+                total_score += ASTEROID_SCORES[asteroid.type]
+
+            if blast.x > WIDTH or blast.x < 0 or blast.y > HEIGHT or blast.y < 0:
+                blast_list.remove(blast)
+
+        if (len(asteroid_list) == 0):
+            for i in range(4):
+                asteroid = Asteroid(0, WIDTH, HEIGHT)
+                asteroid_list.add(asteroid)
+        window.fill(pygame.Color(0, 0, 0))
+        asteroid_list.draw(window)
+        if (ship.lives > 0):
+            window.blit(ship.image, ship.rect)
+        blast_list.draw(window)
+
+        font = pygame.font.SysFont("monospace", 24)
+        label = font.render(str(total_score), 1, (200,200,200))
+        window.blit(label, (50, 10))
+
+        rect = ship.surface.get_rect()
+        if (ship.lives >= 1):
+            rect.center = (30, 60)
+            window.blit(ship.surface, rect)
+        if (ship.lives >= 2):
+            rect.center = (50, 60)
+            window.blit(ship.surface, rect)
+        if (ship.lives >= 3):
+            rect.center = (70, 60)
+            window.blit(ship.surface, rect)
+        if (ship.lives == 0):
+            font = pygame.font.SysFont("monospace", 36)
+            label = font.render("GAME OVER", 1, (200,200,200))
+            window.blit(label, (WIDTH/2-100, HEIGHT/2-50))
+
+        pygame.display.update()
+        fps.tick(30)
+
+if __name__ == '__main__':
+    main()
+
+
+
+## x01_random.py
+
+import random
+
+data = random.sample(range(1, 101), 10)
+print(data)
+
+
+## x02_max_def. py
+
+import random
+
+def findMax(data):
+    max = data[0]
+    for i in range(len(data)):
+        if data[i] > max:
+            max = data[i]
+    return max
+
+data = random.sample(range(1, 101), 10)
+print(data)
+print(f'Max value is : {findMax(data)}')
+
+
+## x02_max_class.py
+
+import random
+
+class findMax(object):
+    def __init__(self, data):
+        self.data = data
+    def max(self):
+        max = self.data[0]
+        for i in range(len(self.data)):
+            if self.data[i] > max:
+                max = self.data[i]
+        return max
+
+data = random.sample(range(1, 101), 10)
+print(data)
+
+data1 = findMax(data)
+print(f'Max value is : {data1.max()}')
+
+
+
+## x03_gcd_def.py
+
+def gcd(a, b):
+    print("gcd", (a, b))
+    while b != 0:
+        r = a % b
+        a = b
+        b = r
+        print("gcd", (a, b))
+    return a
+
+a = int(input("Input First number : "))
+b = int(input("Input Second number : "))
+
+print(f'gcd({a}, {b}) of {a}, {b} : {gcd(a, b)}')
+
+
+## x03_gcd_class.py
+
+class Gcd(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+    def gcd(self):
+        print("gcd", (self.a, self.b))
+        while self.b != 0:
+            self.r = self.a % self.b
+            self.a = self.b
+            self.b = self.r
+            print("gcd", (self.a, self.b))
+        return self.a
+
+a = int(input("Input First number : "))
+b = int(input("Input Second number : "))
+
+gcd1 = Gcd(a, b)
+print(f'gcd({a}, {b}) of {a}, {b} : {gcd1.gcd()}')
+
+
+## x03_gcd_def_swap.py
+
+def gcd(a, b):
+    if a < b:
+        a, b = b, a
+    print("gcd", (a, b))
+    while b != 0:
+        r = a % b
+        a = b
+        b = r
+        print("gcd", (a, b))
+    return a
+
+a = int(input("Input First number : "))
+b = int(input("Input Second number : "))
+
+print(f'gcd({a}, {b}) of {a}, {b} : {gcd(a, b)}')
+
+
+## x03_gcd_class_swap.py
+
+class Gcd(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+    def gcd(self):
+        if self.a < self.b:
+            self.a, self.b = self.b, self.a
+        print("gcd", (self.a, self.b))
+        while self.b != 0:
+            self.r = self.a % self.b
+            self.a = self.b
+            self.b = self.r
+            print("gcd", (self.a, self.b))
+        return self.a
+
+a = int(input("Input First number : "))
+b = int(input("Input Second number : "))
+
+gcd1 = Gcd(a, b)
+print(f'gcd({a}, {b}) of {a}, {b} : {gcd1.gcd()}')
+
+
+
+
+
+
+

@@ -1,0 +1,611 @@
+Day-45
+
+## p280_visualizationExam.py
+
+import numpy as np
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+
+from matplotlib import font_manager, rc
+from math import sqrt
+
+# font_location = 'c:/windows/fonts/malgun.ttf'
+# font_name = font_manager.FontProperties(fname=font_location).get_name()
+# matplotlib.rc('font', family=font_name)
+plt.rcParams['font.family'] = 'AppleGothic'
+
+theaterfile = 'theater.csv'
+colnames = ['id','theater','region','bindo']
+dftheater = pd.read_csv(theaterfile, names=colnames, header=None)
+dftheater = dftheater.rename(index=dftheater.id)
+dftheater = dftheater.reindex(columns=['theater','region','bindo'])
+dftheater.index.name = 'id'
+print('전체 조회')
+print(dftheater)
+print('-' * 50)
+
+print('극장별 상영 횟수 집계')
+mygrouping = dftheater.groupby('theater')['bindo']
+sumSeries = mygrouping.sum()
+meanSeries = mygrouping.mean()
+sizeSeries = mygrouping.size()
+
+print('3개의 시리즈 이용 데이터프레임 생성')
+df = pd.concat([sumSeries, meanSeries, sizeSeries], axis=1)
+df.columns = ['합계','평균','개수']
+print(df)
+print('-' * 50)
+
+df.plot(kind='barh', rot=0)
+plt.title(str(len(df)) + '개 매장 집계 데이터')
+filename = 'visualizationExam_01.png'
+plt.savefig(filename)
+print(filename + ' saved...')
+
+print('집계 메소드를 사전에 담아 전달')
+print('지역의 개수와 상영 횟수의 총합')
+mydict = {'bindo' : 'sum', 'region': 'size'}
+result = dftheater.groupby('theater').agg(mydict)
+print(result)
+print('-' * 50)
+
+print('numpy를 이용한 출력')
+result = mygrouping.agg([np.count_nonzero, np.mean, np.std])
+print(result)
+print('-' * 50)
+
+def myroot(values):
+    mysum = sum(values)
+    return sqrt(mysum)
+
+def plus_add(values, somevalue):
+    result = myroot(values)
+    return result + somevalue
+
+mygrouping = dftheater.groupby('theater')['bindo']
+print('groupby와 사용자 정의 함수 사용')
+result = mygrouping.agg(myroot)
+print(result)
+print('-' * 50)
+
+print('groupby와 사용자 정의 함수(매개변수 2개) 사용')
+result = mygrouping.agg(plus_add, somevalue=3)
+print(result)
+print('-' * 50)
+
+print('컬럼 2개 이상을 그룹핑')
+newgrouping = dftheater.groupby(['theater','region'])['bindo']
+result = newgrouping.count()
+print(result)
+print('-' * 50)
+
+newDf = df.loc[:, ['평균','개수']]
+newDf.plot(kind='bar', rot=0)
+plt.title('3개 극장의 평균과 상영관 수')
+
+filename = 'visualizationExam_02.png'
+plt.savefig(filename)
+print(filename + ' saved...')
+
+lables = []
+explode = (0, 0.03, 0.06)
+
+for key in sumSeries.index:
+    mydata = key + '(' + str(sumSeries[key]) + ')'
+    lables.append(mydata)
+
+fig1, ax1 = plt.subplots()
+mytuple = tuple(lables)
+ax1.pie(sumSeries, explode=explode, labels=mytuple, autopct='%1.1f%%', shadow=True, startangle=90)
+ax1.axis('equal')
+plt.show()
+
+filename = 'visualizationExam_03.png'
+plt.savefig(filename)
+print(filename + ' saved...')
+print('finished')
+
+
+### urllib
+
+
+## p291_urllib.py
+
+import urllib.request
+
+url = "https://shared-comic.pstatic.net/thumb/webtoon/626907/thumbnail/title_thumbnail_20150407141027_t83x90.jpg"
+savename = 'urldownload01.png'
+
+urllib.request.urlretrieve(url, savename)
+
+print('web image : ' + url)
+print(savename + 'saved....')
+
+
+## p293_urllib.py
+
+import urllib.request
+
+url = 'https://shared-comic.pstatic.net/thumb/webtoon/626907/thumbnail/title_thumbnail_20150407141027_t83x90.jpg'
+
+savename = 'urldownload02.png'
+
+result = urllib.request.urlopen(url)
+
+data = result.read()
+print('# type(data) : ', type(data))
+
+with open(savename, mode='wb') as f:
+    f.write(data)
+    print(savename + ' save...')
+
+
+
+## Ex_p257_01.py
+
+import urllib.request
+
+url = 'https://shared-comic.pstatic.net/thumb/webtoon/648419/thumbnail/thumbnail_IMAG10_1421195d-13be-4cde-bcf9-0c78d51c5ea3.jpg'
+
+savename = input('저장할 파일 이름 입력 : ')
+
+result = urllib.request.urlopen(url)
+
+data = result.read()
+print('# type(data) :', type(data))
+
+with open(savename, mode='wb') as f:
+    f.write(data)
+    print(savename + ' saved...')
+
+
+### regular Expression
+
+### 정규 표현식 플래그
+
+^ : start string
+$ : end string
+* : 반복(all)
++ :  반복, 1번 이상
+?  : 반복, 있거나 없거나
+{} : 반복 횟수
+
+[a-zA-Z] : 알파벳
+[0-9] : 숫자
+[^0-9] : 숫자가 아닌 것
+g : 전역 탐색
+i : 대소문자 구별하지 않음
+\d : 숫자
+\D : 숫자가 아닌 것
+\w :  문자, 숫자
+\W : 문자, 숫자 아닌 것
+\s : white space
+\S : white space 아닌 것
+Dot(.) : \n을 제외한 모든 문자
+
+
+## p297_patternMatch.py
+
+import re
+
+mylist = ['ab123','cd456','ef789','abc12']
+
+regex = '[a-z]{2}\d{3}'
+pattern = re.compile(regex)
+
+print('# 문자열 2개, 숫자 3개 패턴 찾기')
+totallist = []
+for item in mylist:
+    if pattern.match(item):
+        print(item, '은(는) 조건에 적합')
+        totallist.append(item)
+    else:
+        print(item, '은(는) 조건에 부적합')
+print('조건에 적합한 항목들')
+print(totallist)
+
+
+## Ex_p264_02.py
+
+import re
+
+mylist = ['ab123','cd4#6','cf79a','abc1']
+
+regex = '[ac]{1}\w{4}'
+pattern = re.compile(regex)
+
+print('# 문자 a 또는 c로 시작하고, 이후 숫자 또는 알파벳이 4개로 끝나는 패턴 찾기')
+totallist = []
+for item in mylist:
+    if pattern.match(item):
+        print(item, '은(는) 조건에 적합')
+        totallist.append(item)
+    else:
+        print(item, '은(는) 조건에 부적합')
+print('조건에 적합한 항목들')
+print(totallist)
+print('-' * 50)
+
+
+
+### Beautiful Soup
+
+# pip install beautifulsoup4
+
+
+## fruits.html
+
+<html>
+	<head>
+		<title>제목 없음</title>
+	</head>
+<body>
+	<p class="ptag red" align="center">사과</p>
+	<p class="ptag yellow" align="center">참외</p>
+	<p class="ptag blue" align="center">블루베리</p>
+	<div id="container">
+		<p class="hard">과일</p>
+	</div>
+</body>
+</html>
+
+
+## p303_bs4Exam.py
+
+from bs4 import BeautifulSoup
+
+html = open('fruits.html', 'r', encoding="utf-8")
+soup = BeautifulSoup(html, 'html.parser')
+body = soup.select_one("body")
+ptag = body.find('p')
+print('1번째 p 태그 : ', ptag['class'])
+ptag['class'][1] = 'white'
+print('1번째 p 태그 : ', ptag['class'])
+ptag['id'] = 'apple'
+print('-' * 50)
+
+print('1번째 p 태그의 id 속성 : ', ptag['id'])
+print('-' * 50)
+
+body_tag = soup.find('body')
+print(body_tag)
+print('-' * 50)
+
+idx = 0
+print('children 속성으로 하위 항목 보기')
+for child in body_tag.children:
+    idx += 1
+    print(str(idx) + '번째 요소 : ', child)
+print('-' * 50)
+
+mydiv = soup.find('div')
+print(mydiv)
+print('-' * 50)
+
+
+print('div의 부모 태그')
+print(mydiv.parent)
+print('-' * 50)
+
+mytag = soup.find("p", attrs={'class' : 'hard'})
+print(mytag)
+print('-' * 50)
+
+print('mytag의 부모 태그는? ')
+print(mytag.parent)
+print('-' * 50)
+
+print('mytag의 모든 상위 부모 태그들의 이름')
+parents = mytag.find_parents()
+for p in parents:
+    print(p.name)
+print('-' * 50)
+
+
+## quiz_01.py
+
+from bs4 import BeautifulSoup
+from pandas import DataFrame as df
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = 'AppleGothic'
+
+html = open('ex5-10.html', 'r', encoding="utf-8")
+soup = BeautifulSoup(html, 'html.parser')
+
+result = []
+tbody = soup.find("tbody")
+tds = tbody.findAll('td')
+for data in tds:
+    result.append(data.text)
+print(result)
+print('-' * 50)
+
+mycolumns = ['이름', '국어', '영어']
+
+myframe = df(np.reshape(np.array(result), (4, 3)), columns=mycolumns)
+myframe = myframe.set_index('이름')
+print(myframe)
+print('-' * 50)
+
+myframe.astype(float).plot(kind='line', title='Score', legend=True)
+
+filename = 'scoreGraph.png'
+plt.savefig(filename, dpi=400, bbox_inches='tight')
+print(filename + ' saved...')
+plt.show()
+
+
+## css01.html
+
+<html>
+<head></head>
+<body>
+	<div id="cartoon">
+		<h1>좋아하는 만화</h1>
+		<ul class="elements">
+			<li>피구왕 통키</li>
+			<li>미래 소년 코난</li>
+			<li>로보트 태권 브이</li>
+		</ul>
+	</div>
+	<!------------------------------------------------------->
+	<ul id="itemlist">
+		<li id="item1"><a href="hoge.html">피구왕 통키</a></li>
+		<li id="item2"><a href="https://www.naver.com">그랜다이저</a></li>
+		<li id="item3"><a href="https://www.daum.net">로보트 태권 V</a></li>
+		<li id="item4"><a href="http://www.google.com">들장미 소녀 캔디</a></li>
+		<li id="item5"><a href="http://www.abcd.com">똘이 장군</a></li>		
+	</ul>
+	<!------------------------------------------------------->
+	<div id="main-goods">
+		<h1>과일과 야채</h1>
+		<ul id="fruits">
+			<li>감</li>
+			<li>밤</li>
+			<li>대추</li>
+			<li>배</li>
+		</ul>
+		<ul id="vegatables">
+			<li>파프리카</li>
+			<li class="us">당근</li>
+			<li class="us">호박</li>
+			<li class="black" data-lo="us">양파</li>
+			<li class="cn" id="ko">가지</li>
+		</ul>
+	</div>
+</body>
+</html>
+
+
+## p311_cssSelector.py
+
+import re
+from bs4 import BeautifulSoup
+
+myencoding = 'utf-8'
+myparser = 'html.parser'
+filename = 'css01.html'
+
+html = open(filename, encoding=myencoding)
+soup = BeautifulSoup(html, myparser)
+
+h1 = soup.select_one("div#cartoon > h1").string
+print("h1 =", h1)
+
+li_list = soup.select("div#cartoon > ul.elements > li")
+for li in li_list:
+    print("li =", li.string)
+print('-' * 50)
+
+choice = lambda x : print(soup.select_one(x).string)
+
+print('\nchoice("#item5") : ', end='')
+choice("#item5")
+
+print('\nchoice("#item4") : ', end='')
+choice("#item4")
+
+print('\nchoice("ul > li#item3) : ', end='')
+choice("ul > li#item3")
+
+print('\nchoice("li[id=\'item1\']") : ', end='')
+choice("li[id='item1']")
+
+print('\nchoice("li:nth-of-type(4)") : ', end='')
+choice("li:nth-of-type(4)")
+
+print('\nchoice("li")[1].string : ', end='')
+print(soup.find_all("li")[1].string)
+
+print('\nchoice("li")[3].string : ', end='')
+print(soup.find_all("li")[3].string)
+print('-' * 50)
+
+mytag = soup.select_one('div#cartoon > ul.elements')
+mystring = mytag.select_one('li:nth-of-type(3)').string
+print(mystring)
+print('-' * 50)
+
+mytag = soup.select_one('ul#itemlist')
+mystring = mytag.select_one('li:nth-of-type(4)').string
+print(mystring)
+print('-' * 50)
+
+print(soup.select("#vegatables > li[class='us']")[0].string)
+print(soup.select("#vegatables > li.us")[1].string)
+print('-' * 50)
+
+result = soup.select('a[href$=".com"]')
+for item in result:
+    print(item['href'])
+
+result = soup.select('a[href*="daum"]')
+for item in result:
+    print(item['href'])
+
+cond = {"id":"ko", "class":"cn"}
+print(soup.find("li", cond).string)
+print('-' * 50)
+print(soup.find(id="vegatables").find("li",cond).string)
+print('-' * 50)
+
+print("# 정규 표현식으로 href에서 https인 것 추출하기")
+li = soup.find_all(href=re.compile(r"^https://"))
+
+for e in li:
+    print(e.attrs['href'])
+
+print(soup.select("#fruits > li")[0].string)
+
+mytag = soup.select_one('ul#fruits')
+mystring = mytag.select_one("li:nth-of-type(2)").string
+print(mystring)
+
+print('\n# finished')
+
+
+## p321_bs4Cartoon.py
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+myurl = 'https://comic.naver.com/webtoon/weekday.naver'
+
+response = urlopen(myurl)
+
+print(type(response))
+
+soup = BeautifulSoup(response, 'html.parser')
+
+title = soup.find('title').string
+print(title)
+
+
+## p328_naverCartoon.py
+
+import os
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+from pandas import DataFrame
+
+myparser = 'html.parser'
+myurl = 'https://comic.naver.com/webtoon/weekday.nhn'
+response = urlopen(myurl)
+soup = BeautifulSoup(response, myparser)
+
+weekday_dict = {'mon':'월요일', 'tue':'화요일', 'wed':'수요일',
+                'thu':'목요일', 'fri':'금요일', 'sat':'토요일',
+                'sun':'일요일'}
+myfolder = './imsi'
+
+try:
+    if not os.path.exists(myfolder):
+        os.mkdir(myfolder)
+    for mydir in weekday_dict.values():
+        mypath = myfolder + mydir
+        if os.path.exists(mypath):
+            pass
+        else:
+            os.mkdir(mypath)
+except FileExistsError as err:
+    pass
+
+def saveFile(mysrc, myweekday, mytitle):
+    image_file = urlopen(mysrc)
+    filename = myfolder + myweekday + '\\' + mytitle + '.jpg'
+    myfile = open(filename, mode='wb')
+    myfile.write(image_file.read())
+mylist = []
+
+mytarget = soup.find_all('div', attrs={'class':'thumb'})
+print('만화 총 개수 : %d' % (len(mytarget)))
+
+for abcd in mytarget:
+   myhref = abcd.find('a').attrs['href']
+    myhref = myhref.replace('./webtoon/list.nhn?','')
+    result = myhref.split('&')
+    mytitleid = result[0].split('=')[1]
+    myweekday = result[1].split('=')[1]
+    myweekday = weekday_dict[myweekday]
+
+    imgtag = abcd.find('img')
+    mysrc = imgtag.attrs['src']
+    mytitle = imgtag.attrs['title'].strip()
+    mytitle = mytitle.replace('?', '').replace(':', '')
+    
+    mytuple = tuple([mytitleid, myweekday, mytitle, mysrc])
+    mylist.append(mytuple)
+    
+    saveFile(mysrc, myweekday, mytitle)
+    
+print(mylist)
+
+myframe = DataFrame(mylist, columns=['타이틀 번호','요일','제목','링크'])
+filename = 'cartoon.csv'
+myframe.to_csv(filename, encoding='utf-8', index=False)
+print(filename, ' saved....')
+print('\n# finished.')
+
+
+
+## p333_bs4_Exam.py
+
+import urllib.request
+from bs4 import BeautifulSoup
+from pandas import DataFrame
+
+url = "https://movie.daum.net/ranking/reservation"
+html = urllib.request.urlopen(url)
+soup = BeautifulSoup(html, 'html.parser')
+
+infos = soup.findAll('div', attrs={'class':'thumb_cont'})
+
+# print('-' * 40)
+# print(infos)
+# print('-' * 40)
+
+no = 0
+result = []
+for info in infos:
+    no += 1
+    mytitle = info.find('a', attrs={'class':'link_txt'})
+    title = mytitle.string
+
+    mygrade = info.find('span', attrs={'class':'txt_grade'})
+    grade = mygrade.string
+
+    mynum = info.find('span', attrs={'class':'txt_num'})
+    num = mynum.string
+
+    myrelease = info.find('span', attrs={'class':'txt_info'})
+    release = myrelease.span.string
+
+    result.append((no, title, grade, num, release))
+# print(result)
+
+print('-' * 40)
+
+mycolumn = ['순위', '제목', '평점', '애매율', '개봉일']
+
+myframe = DataFrame(result, columns=mycolumn)
+newdf = myframe.set_index(keys=['순위'])
+print(newdf)
+print('-' * 40)
+
+filename = 'daumMovie.csv'
+myframe.to_csv(filename, encoding='utf8', index=False)
+print(filename, ' saved...', sep='')
+print('finished')
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,479 @@
+Day-42
+
+
+## fibonaci
+
+f(x) = 1, x =0
+f(x) = f(x-1)* x, x > 1
+
+def factorial(x):
+	if x == 0:
+		return 1
+	else :
+		return x * factorial(x - 1)
+
+
+## x04_factorial_def.py
+
+def factorial(x):
+	if x == 0:
+		return 1
+	else :
+		return x * factorial(x - 1)
+
+input = int(input("Input the number : "))
+print(f'{input} factorial = {factorial(input)}')
+
+
+## x04_factorial_class1.py
+
+class Factorial(object):
+	def __init__(self, x):
+		self.x = x
+	def factorial(self):
+		if self.x == 0:
+			return 1
+		n = self.x
+		self.x -= 1
+		return n * self.factorial()
+
+input = int(input("Input the number : "))
+fact = Factorial(input)
+print(f'{input} factorial = {fact.factorial()}')
+
+
+## x04_factorial_class2.py
+
+class Factorial(object):
+	def __init__(self, x):
+		self.x = x
+	def factorial(self):
+		n = 1
+		for i in range(1, self.x + 1):
+				n = n * i
+		return n
+
+input = int(input("Input the number : "))
+fact = Factorial(input)
+print(f'{input} factorial = {fact.factorial()}')
+
+
+## x05_binary_digits_def.py
+
+import random
+
+def binary_digits(num, lists):
+	q = num // 2
+	r = num % 2
+	lists.append(r)
+	if q == 0:
+		lists.reverse()
+		return lists
+	else:
+		return binary_digits(q, lists)
+
+lists = []
+num = random.randrange(4, 16)
+print(f'{num} binary number is : {binary_digits(num, lists)}')
+
+
+## x05_binary_digits_class.py
+import random
+
+class Binary_digits(object):
+	def __init__(self, num, lists):
+		self.num = num
+		self.lists = lists
+	def convert(self):
+		q = self.num
+		lists = self.lists
+		while True:
+			r = q % 2
+			q = q // 2
+			lists.append(r)
+			if q == 0:
+				break
+		lists.reverse()
+		return lists
+
+lists = []
+num = random.randrange(4, 16)
+binary = Binary_digits(num, lists)
+print(f'{num} binary number is : {binary.convert()}')
+
+
+## p38_typeCasting.py
+
+str1 = '100'
+str2 = '200'
+str3 = '12.345'
+
+int1 = int(str1)
+int2 = int(str2)
+float1 = float(str3)
+
+print(int1 == str1)
+print(type(int1))
+print(type(int2))
+print(type(float1))
+
+sum = int1 + int2
+print('result1 : ', sum)
+
+float2 = float1 + 35.2
+print('result2 : ', float2)
+
+
+
+## p41_inputOutput.py
+
+name = input("input name : ")
+age = int(input("input age : "))
+
+print("name : %s" % (name))
+print("age : %d" % (age))
+
+
+
+## p41_inputOutput_format.py
+
+name = input("input name : ")
+age = int(input("input age : "))
+
+print("name : {}".format(name))
+print("age : {}".format(age))
+
+
+## p45_formatTest.py
+
+coffee = 5
+price = 2000
+
+print("우리 매장에 커피는 {}잔 있습니다.".format(coffee))
+
+money = int(input("돈을 넣어주세요 : "))
+print("{}원을 입급하셨습니다.".format(money))
+
+amount = int(input("커피 수량을 입력하세요 : "))
+print("{}잔을 구입하셨습니다.".format(amount))
+
+change = money - price
+
+print("거스름 돈은 {}원이며, 커피 {}잔을 판매합니다.".format(change, amount))
+print("남은 커피 양은 {}잔 입니다.".format(coffee - amount))
+
+
+## p48_calcIncome.py
+
+salary = int(input("월 급여 입력 : "))
+income = 0
+tax = 0
+
+if salary >= 500:
+    income = 12 * salary
+else:
+    income = 13 * salary
+
+if income >= 10000:
+    tax = 0.2 * income
+elif income >= 7000:
+    tax = 0.15 * income
+elif income >= 5000:
+    tax = 0.12 * income
+elif income >= 1000:
+    tax = 0.1 * income
+else:
+    tax = 0
+
+    
+print("월급 : %d" % (salary))
+print("연봉 : %.2f" % (income))
+print("세금 : %.2f” % (tax))
+
+
+## p51_listBasic.py
+
+somelist = ['김의찬', '유만식', '이영철', '심수련', '윤기석', '노윤희', '황우철']
+
+print(somelist)
+print(somelist[4])
+print(somelist[-2])
+print(somelist[1:4])
+print(somelist[4:])
+length = len(somelist)
+print(somelist[:length:2])
+print(somelist[1:length:2])
+
+
+
+## p56_tupleExam.py
+
+tuple01 = (10, 20, 30)
+tuple01 = tuple01 + (40, )
+
+print('print Tuple : ', tuple01)
+
+tuple02 = 10, 20, 30, 40
+
+mylist = [10, 20 , 30, 40]
+tuple03 = tuple(mylist)
+
+if tuple02 == tuple03:
+    print("Component equal")
+else:
+    print("Component not equal")
+
+tuple04 = (10, 20, 30)
+tuple05 = (40, 50, 60)
+tuple06 = tuple04 + tuple05
+print(tuple06)
+
+tuple07 = tuple04 * 3
+print(tuple07)
+
+a, b = (11, 22)
+a, b = b, a
+
+print('a =', a, 'b =', b)
+
+tuple08 = (11, 22, 33, 44, 55, 66)
+print(tuple08[1:3])
+print(tuple08[3:])
+
+
+## p61_dictionaryExam.py
+
+dictionary = {'김유신' : 50, '윤봉길' : 40, '김구' : 60}
+print('ditionary list : ', dictionary)
+
+for key in dictionary.keys():
+    print(key)
+
+for value in dictionary.values():
+    print(value)
+
+for key in dictionary.keys():
+    print('{}의 나이는 {}입니다.'.format(key, dictionary[key]))
+
+for key, value in dictionary.items():
+    print('{}의 나이는 {}입니다.'.format(key, value))
+
+findKey = '유관순'
+
+if findKey in dictionary:
+    print(findKey + '(은)는 존재합니다.')
+else:
+    print(findKey + '(은)는 존재하지 않습니다.')
+
+result = dictionary.pop('김구')
+print('After pop dictionary : ', dictionary)
+print('pop value : ', result)
+
+dictionary.clear()
+print('dictionary list : ', dictionary)
+
+
+## p69_forwithString.py
+
+mystring = "life is an egg"
+mylist = mystring.split()
+
+print(mylist)
+
+for idx in range(len(mylist)):
+    if idx % 2 == 0:
+        mylist[idx] = mylist[idx].upper()
+    else:
+        mylist[idx] = mylist[idx].lower()
+
+print(mylist)
+
+result = '#'.join(mylist)
+print('result : ', result)
+
+
+result = ' '.join(mylist)
+print('result : ', result)
+
+
+## p76_list_comp.py
+
+mylist01 = list(onedata for onedata in range(1, 6))
+print(mylist01)
+
+mylist02 = list(10 * onedata for onedata in range(1, 6))
+print(mylist02)
+
+mylist03 = [3, 4, 6, 2]
+result = [idx ** 2 for idx in mylist03 if idx % 2 == 0]
+print(result)
+
+
+## p80_dictSorted.py
+
+wordInfo = {'세탁기' : 50, '선풍기' : 30, '청소기' : 40, '냉장고' : 60}
+
+myxticks = sorted(wordInfo, key=wordInfo.get, reverse=True)
+print(myxticks)
+
+revers_key = sorted(wordInfo.keys(), reverse=True)
+print(revers_key)
+
+chartdata = sorted(wordInfo.values(), reverse=True)
+print(chartdata)
+
+
+## p83_lamdaExam.py
+
+def nolamda(x, y):
+    return 3 * x + 2 * y
+
+x, y = 3, 5
+
+result = nolamda(x, y)
+print('일반 함수 방식 : %d' % (result))
+
+yeslamda = lambda x, y : 3 * x + 2 * y
+result = yeslamda(x, y)
+print("람다 방식 : %d" % (result))
+
+
+
+## p87_classTest.py
+
+class Calculate(object):
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+    def add(self):
+        result = self.first + self.second
+        return 'add result : %d' % result
+    
+    def sub(self):
+        result = self.first - self.second
+        return 'sub result : %d' % result
+    
+    def mul(self):
+        result = self.first * self.second
+        return 'mul result : %d' % result
+    
+    def div(self):
+        if self.second == 0:
+            self.second = 5
+        result = self.first / self.second
+        return 'div result : %.3f' % result
+
+calc = Calculate(14, 0)
+
+print(calc.add())
+print(calc.sub())
+print(calc.mul())
+print(calc.div())
+
+
+## sample.txt
+
+70
+60
+55
+75
+95
+90
+80
+80
+85
+100
+
+
+## p93_readWrite.py
+
+myfile01 = open('sample.txt', 'rt', encoding='UTF-8')
+linelists = myfile01.readlines()
+myfile01.close()
+print(linelists)
+
+myfile02 = open('result.txt', 'wt', encoding='UTF-8')
+
+total = 0
+for one in linelists:
+    score = int(one)
+    total += score
+    myfile02.write('total = ' + str(total) + ', value = ' + str(score) + '\n')
+average = total / len(linelists)
+
+myfile02.write('총점 : ' + str(total) + '\t')
+myfile02.write('평균: ' + str(average))
+myfile02.close()
+print("done~!!")
+
+myfile03 = open('result.txt', 'rt', encoding='UTF-8')
+line = 1
+while line:
+    line = myfile03.readline()
+    print(line)
+myfile03.close()
+
+
+## p98_osModule.py
+
+import os
+
+myfolder = './'
+newpath = os.path.join(myfolder, 'work')
+
+try:
+    os.mkdir(path=newpath)
+
+    for idx in range(1, 11):
+        newfile = os.path.join(newpath, 'somefolder' + str(idx).zfill(2))
+        os.mkdir(path=newfile)
+except FileExistsError:
+    print('Directory exist already...')
+finally:
+    print('finished')
+
+
+## sample02.txt
+
+김철수,40
+홍길동,12
+
+
+## p99_readWriter02.py
+
+myfile01 = open('sample02.txt', 'rt', encoding='UTF-8')
+linelists = myfile01.readlines()
+myfile01.close()
+
+myfile2 = open('result02.txt', 'wt', encoding='UTF-8')
+total = 0 # 총점
+for one in linelists :
+    mylist = one.split(',')
+    if (int)(mylist[1]) >= 19 :
+        adult = '성인'
+    else:
+        adult = '미성년'
+    text = mylist[0] + '/' + mylist[1].strip() + '/' + adult
+    myfile2.write(text + '\n')
+myfile2.close()
+
+myfile3 = open('result02.txt', 'rt', encoding='UTF-8')
+line = 1
+while line:
+    line = myfile3.readline()
+    print(line)
+myfile3.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

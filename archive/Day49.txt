@@ -1,0 +1,925 @@
+Day-49
+
+import urllib.request, datetime, math, json
+import pandas as pd
+import xml.etree.ElementTree as ET
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+        
+def getRequestUrl(url):
+    req = urllib.request.Request(url)
+    try:
+        response = urllib.request.urlopen(req)
+        if response.getcode() == 200:
+            return response.read().decode('utf-8')
+    except Exception as e:
+        # print(e)
+        print("[%s] Error for URL : %s" % (datetime.datetime.now(), url))
+        return None
+
+def getBicycleData(pageNo, numOfRows):
+    end_point = 'http://apis.data.go.kr/6310000/ulsanbicyclepath/getUlsanbicyclepathList'
+
+    parameters = '?'
+    parameters += "ServiceKey=" + get_secret("data_apiKey")
+    parameters += "&pageNo=" + str(pageNo) 
+    parameters += "&numOfRows=" + str(numOfRows) 
+    url = end_point + parameters
+
+    print('URL')
+    print(url)
+
+    result = getRequestUrl(url)
+    if (result == None):
+        return None
+    else:
+        return result
+
+dataList = []
+
+pageNo = 1 
+numOfRows = 2 
+nPage = 0
+while(True):
+    print('pageNo : %d, nPage : %d' % (pageNo, nPage))
+    xmlData = getBicycleData(pageNo, numOfRows)
+    print(xmlData)
+    xmlTree = ET.fromstring(xmlData)
+
+    if (xmlTree.find('header').find('resultMsg').text == 'success'):
+        totalCount = int(xmlTree.find('body').find('totalCount').text)
+        print('데이터 총 개수 : ', totalCount)  
+
+        listTree = xmlTree.find('body').find('data').findall('list')
+        print(listTree)
+
+        for node in listTree:
+            bikeFirstLanes = node.find("bikeFirstLanes").text
+            bikeFirstLanesRatio = node.find("bikeFirstLanesRatio").text
+            bikeLanesRatio = node.find("bikeLanesRatio").text
+            bikeOnlyLanes = node.find("bikeOnlyLanes")
+            if bikeOnlyLanes == None :
+                bikeOnlyLanes = ""
+            else :
+                bikeOnlyLanes = bikeOnlyLanes.text
+            bikeOnlyLanesRatio = node.find("bikeOnlyLanesRatio").text
+            cycleRoute = node.find("cycleRoute").text
+            entId = node.find("entId").text
+            gugun = node.find("gugun").text
+            pedestrianBikeLanes = node.find("pedestrianBikeLanes").text
+            pedestrianBikeLanesRatio = node.find("pedestrianBikeLanesRatio").text
+
+            onedict = {'자전거우선도로':bikeFirstLanes, \
+                       '자전거우선도로비율':bikeFirstLanesRatio, '자전거전용도로비율':bikeLanesRatio, \
+                       '자전거전용차로':bikeOnlyLanes, '자전거전용차로비율':bikeOnlyLanesRatio, \
+                       '자전거전용도로':cycleRoute, '고유번호':entId, '군구':gugun, \
+                       '자전거보행자겸용도로':pedestrianBikeLanes, '자전거보행자겸용도로비율':pedestrianBikeLanesRatio}
+            dataList.append(onedict)
+
+        if totalCount == 0:
+            break
+        nPage = math.ceil(totalCount / numOfRows)
+        if (pageNo == nPage):
+            break 
+
+        pageNo += 1
+    else :
+        break
+
+savedFilename = 'xx_ulsanByke.csv'
+
+myframe = pd.DataFrame(dataList)
+myframe.to_csv(savedFilename)
+
+print(savedFilename + ' file saved..')
+
+
+# mkdir -p /allnew/python/data
+
+# cd /allnew/python/data
+
+
+## corona_01.py
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+print(today)
+
+params = '?serviceKey=' + get_secret("data_apiKey")
+params += '&pageNo=1'
+params += '&numOfRows=500'
+params += '&apiType=JSON'
+params += '&status_dt=' + str(today)
+
+url += params
+print(url)
+
+response = requests.get(url)
+print(response)
+print('-' * 50)
+
+contents = response.text
+print(type(contents))
+print(contents)
+print('-' * 50)
+
+dict = json.loads(contents)
+print(type(dict))
+print(dict)
+print('-' * 50)
+
+items = dict['items']
+print(type(items))
+print(items)
+print('-' * 50)
+
+df = pd.DataFrame(items).rename(index={0:'result'}).T
+print(type(df))
+print(df)
+print('-' * 50)
+
+data = df.loc[['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']]
+print(type(data))
+print(data)
+print('-' * 50)
+
+
+ ## corona_02.py
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+print(today)
+
+params = '?serviceKey=' + get_secret("data_apiKey")
+params += '&pageNo=1'
+params += '&numOfRows=500'
+params += '&apiType=JSON'
+params += '&status_dt=' + str(today)
+
+url += params
+print(url)
+
+response = requests.get(url)
+print(response)
+print('-' * 50)
+
+contents = response.text
+print(type(contents))
+print(contents)
+print('-' * 50)
+
+dict = json.loads(contents)
+print(type(dict))
+print(dict)
+print('-' * 50)
+
+items = dict['items']
+print(type(items))
+print(items)
+print('-' * 50)
+
+# list to dict
+items_dict = {key : value for key, value in enumerate(items)}
+print(type(items_dict))
+print(items_dict)
+print('-' * 50)
+
+items = items_dict[0]
+print(type(items))
+print(items)
+print('-' * 50)
+
+df = pd.DataFrame(items, index=[0]).rename(index={0:'result'}).T 
+print(type(df))
+print(df)
+print('-' * 50)
+
+data = df.loc[['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']]
+print(type(data))
+print(data)
+print('-' * 50)
+
+
+ ## corona_03.py
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+print(today)
+
+params = '?serviceKey=' + get_secret("data_apiKey")
+params += '&pageNo=1'
+params += '&numOfRows=500'
+params += '&apiType=JSON'
+params += '&status_dt=' + str(today)
+
+url += params
+print(url)
+
+response = requests.get(url)
+print(response)
+print('-' * 50)
+
+contents = response.text
+print(type(contents))
+print(contents)
+print('-' * 50)
+
+dict = json.loads(contents)
+print(type(dict))
+print(dict)
+print('-' * 50)
+
+items = dict['items'][0]
+print(type(items))
+print(items)
+print('-' * 50)
+
+# dict key is row
+df = pd.DataFrame.from_dict(items, orient='index').rename(columns={0:"result"})print(type(df))
+print(df)
+print('-' * 50)
+
+# dict key is row
+df = pd.DataFrame.from_dict(items, orient='index').rename(columns={0:"result"})
+print(type(df))
+print(df)
+print('-' * 50)
+
+data = df.loc[['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']]
+print(type(data))
+print(data)
+print('-' * 50)
+
+
+ ## corona_04.py
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+print(today)
+
+params = '?serviceKey=' + get_secret("data_apiKey")
+params += '&pageNo=1'
+params += '&numOfRows=500'
+params += '&apiType=JSON'
+params += '&status_dt=' + str(today)
+
+url += params
+print(url)
+
+response = requests.get(url)
+print(response)
+print('-' * 50)
+
+contents = response.text
+print(type(contents))
+print(contents)
+print('-' * 50)
+
+dict = json.loads(contents)
+print(type(dict))
+print(dict)
+print('-' * 50)
+
+items = dict['items'][0]
+print(type(items))
+print(items)
+print('-' * 50)
+
+item = ['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']
+# validItem = {key: value for key, value in items.fromkeys(item).items()}
+# print(validItem)
+
+validItem = {}
+for _ in item:
+    validItem[_] = items[_]
+print(validItem)
+print('-' * 50)
+
+df = pd.DataFrame.from_dict(validItem, orient='index').rename(columns={0:"result"})
+print(type(df))
+print(df)
+print('-' * 50)
+
+
+## corona_api_01.py
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+from fastapi import FastAPI
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+app = FastAPI()
+
+@app.get('/')
+async def healthCheck():
+    return "OK"
+
+@app.get('/hello')
+async def Hello():
+    return "Hello World~!!"
+
+@app.get('/getdata')
+async def getData():
+    url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+    today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+    print(today)
+
+    params = '?serviceKey=' + get_secret("data_apiKey")
+    params += '&pageNo=1'
+    params += '&numOfRows=500'
+    params += '&apiType=JSON'
+    params += '&status_dt=' + str(today)
+
+    url += params
+    print(url)
+
+    response = requests.get(url)
+    print(response)
+    print('-' * 50)
+
+    contents = response.text
+    print(type(contents))
+    print(contents)
+    print('-' * 50)
+
+    dict = json.loads(contents)
+    print(type(dict))
+    print(dict)
+    print('-' * 50)
+
+    items = dict['items'][0]
+    print(type(items))
+    print(items)
+    print('-' * 50)
+
+    item = ['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']
+
+    validItem = {}
+    for _ in item:
+        validItem[_] = items[_]
+    print(validItem)
+    print('-' * 50)
+
+    return validItem
+
+
+# pip install fastapi uvicorn
+
+# python -m uvicorn corona_api_01:app --host 0.0.0.0 --port 3000 --reload
+
+
+## corona_api_02.py 
+
+import requests
+import json
+import pandas as pd 
+from datetime import datetime, timedelta
+from fastapi import FastAPI
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+app = FastAPI()
+
+@app.get('/')
+async def healthCheck():
+    return "OK"
+
+@app.get('/hello')
+async def Hello():
+    return "Hello World~!!"
+
+@app.get('/getdata')
+async def getData(today=None):
+    if today is None:
+        today = (datetime.today() - timedelta(1)).strftime("%Y%m%d")
+        print(today)
+    else:
+        print(today)
+
+    url = 'http://apis.data.go.kr/1352000/ODMS_COVID_02/callCovid02Api'
+
+    params = '?serviceKey=' + get_secret("data_apiKey")
+    params += '&pageNo=1'
+    params += '&numOfRows=500'
+    params += '&apiType=JSON'
+    params += '&status_dt=' + str(today)
+
+    url += params
+    print(url)
+
+    response = requests.get(url)
+    print(response)
+    print('-' * 50)
+
+    contents = response.text
+    print(type(contents))
+    print(contents)
+    print('-' * 50)
+
+    dict = json.loads(contents)
+    print(type(dict))
+    print(dict)
+    print('-' * 50)
+
+    items = dict['items'][0]
+    print(type(items))
+    print(items)
+    print('-' * 50)
+
+    item = ['gPntCnt', 'hPntCnt', 'accExamCnt', 'statusDt']
+
+    validItem = {}
+    for _ in item:
+        validItem[_] = items[_]
+    print(validItem)
+    print('-' * 50)
+
+    return validItem
+
+
+## fastapi_basic_01.py
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get('/')
+async def healthCheck():
+    return "OK"
+
+@app.get('/hello')
+async def Hello():
+    return "Hello World~!!"
+
+@app.post('/random')
+@app.get('/random')
+async def random(max=None):
+    import random
+    
+    if max is None:
+        max = 10
+    else:
+        max = int(max)
+    random_v = random.randint(1, max)
+
+    return random_v
+
+
+## fastapi_basic_02.py
+
+from fastapi import FastAPI 
+from pydantic.main import BaseModel
+
+class HelloWorldRequest(BaseModel):
+    name : str
+    age : int
+
+app = FastAPI()
+
+@app.get(path='/')
+async def hello():
+    return "Hello World"
+
+@app.get(path='/hello/{name}')
+async def hello_with_name(name:str):
+    return "Hello with name. your name is " + name
+
+@app.get(path='/hello/query')
+async def hello_with_querystring(name:str):
+    return "Hello with name. your name is " + name
+
+@app.post(path='/hello/post')
+async def hello_post(request: HelloWorldRequest):
+    return "Hello with post. your name is {}, your age is {}".format(request.name, request.age)
+
+
+
+### fastapi mongodb
+
+# mkdir /allnew/python/data/fastapi_mongodb
+
+# cd /allnew/python/data/fastapi_mongodb
+
+
+## secret.json
+
+{
+  "kakao_apiKey": “x”,
+  "data_apiKey": “x”,
+  "ATLAS_API": “x”,
+  "ATLAS_Hostname": “x”,
+  "ATLAS_Username": "root",
+  "ATLAS_Password": "1234"
+}
+
+# pip install pymongo
+
+# python -m uvicorn app:app --host 0.0.0.0 --port 3000 --reload
+
+
+## app.js
+
+from fastapi import FastAPI 
+from pymongo import mongo_client
+import pydantic
+from bson.objectid import ObjectId
+import os.path
+import json
+
+pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
+
+app = FastAPI()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+HOSTNAME = get_secret("ATLAS_Hostname")
+USERNAME = get_secret("ATLAS_Username")
+PASSWORD = get_secret("ATLAS_Password")
+
+client = mongo_client.MongoClient(f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
+print('Connected to Mongodb....')
+
+mydb = client['test']
+mycol = mydb['testdb']
+
+@app.get('/')
+async def healthCheck():
+    return "OK"
+
+@app.get('/getmongo')
+async def getMongo():
+    return list(mycol.find().limit(10))
+
+@app.get('/getuser')
+async def getuser(id=None):
+    if id is None:
+        return "id를 입력하세요."
+    result = mycol.find_one({"id":id})
+    if result:
+        return result
+    else:
+        return "검색 결과가 없습니다."
+
+@app.get('/useradd')
+async def useradd(id=None, name=None):
+    if (id and name) is None:
+        return "id, name을 입력하세요."
+    else:
+        user = dict(id=id, name=name)
+        mycol.insert_one(user)
+        result = mycol.find_one({"id":id})
+        return result
+
+@app.get("/userupdate")
+async def userupdate(id=None, name=None):
+    if (id and name) is None:
+        return "id, name을 입력하세요"
+    else:
+        user = mycol.find_one({"id": id})
+        if user:
+            filter = {'id':id}
+            data = {"$set":{'name':name}}
+            mycol.update_one(filter, data)
+            result = mycol.find_one({"id": id})
+            return result
+        else:
+            return f"id = {id} 데이터가 존재하지 않습니다."
+
+@app.get("/userdel")
+async def userdel(id=None):
+    if id is None:
+        return "id를 입력하세요"
+    else:
+        user = mycol.find_one({"id": id})
+        if user:
+            mycol.delete_one({"id": id})
+            return list(mycol.find().limit(10))
+        else:
+            return f"id = {id} 데이터가 존재하지 않습니다."
+
+
+## data.csv
+
+col1,col2
+1,10
+2,20
+3,20
+4,40
+5,50
+
+## fastapi_csv.py
+
+from fastapi import FastAPI 
+import pandas as pd 
+
+app = FastAPI()
+
+@app.get('/')
+def healthCheck():
+    return "OK"
+
+@app.get('/getcsv')
+def getcsv():
+    csv_file = 'data.csv'
+
+    df = pd.read_csv(csv_file)
+    dict_data = df.to_dict()
+
+    return dict_data
+
+
+# mkdir /allnew/python/data/fastapi_mysql
+
+# cd /allnew/python/data/fastapi_mysql
+
+
+## secret.json
+{
+….
+  "Mysql_Hostname": "192.168.1.12",
+  "Mysql_Port": 3306,
+  "Mysql_Username": "mysql",
+  "Mysql_Password": "1234",
+  "Mysql_DBname": "testdb"
+}
+
+## database.py
+
+from sqlalchemy import *
+from sqlalchemy.orm import sessionmaker
+import os.path
+import json
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, '../../secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+
+HOSTNAME = get_secret("Mysql_Hostname")
+PORT = get_secret("Mysql_Port")
+USERNAME = get_secret("Mysql_Username")
+PASSWORD = get_secret("Mysql_Password")
+DBNAME = get_secret("Mysql_DBname")
+
+DB_URL = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DBNAME}'
+
+class db_conn:
+    def __init__(self):
+        self.engine = create_engine(DB_URL, pool_recycle=500)
+
+    def sessionmaker(self):
+        Session = sessionmaker(bind=self.engine)
+        Session = Session()
+        return session
+    
+    def connection(self):
+        conn = self.engine.connection()
+        return conn
+
+
+## models.py
+
+from sqlalchemy import Column, TEXT, INT 
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class St_info(Base):
+    __tablename__ = "st_info"
+
+    ST_ID = Column(INT, nullable=False, primary_key=True)
+    NAME = Column(TEXT, nullable=False)
+    DEPT = Column(TEXT, nullable=False)
+
+class St_grade(Base):
+    __tablename__ = "st_grade"
+
+    ST_ID = Column(INT, nullable=False, primary_key=True)
+    Linux = Column(TEXT, nullable=False)
+    DB = Column(TEXT, nullable=False)   
+
+
+# pip install SQLAlchemy
+
+# pip install pymysql
+
+## app.py
+
+from fastapi import FastAPI 
+from pydantic import BaseModel
+from database import db_conn
+from models import St_info, St_grade
+
+app = FastAPI()
+
+db = db_conn()
+session = db.sessionmaker()
+
+class Item(BaseModel):
+    name : str 
+    number : int 
+
+@app.get('/')
+async def healthCheck():
+    return "OK"
+
+@app.get('/stinfo')
+async def select_st_info():
+    result = session.query(St_info)
+    return result.all()
+
+@app.get('/stgrade')
+async def select_st_grade():
+    result = session.query(St_grade).all()
+    return result
+
+@app.get('/getuser')
+async def getuser(id=None, name=None):
+    if (id is None) and (name is None):
+        return "학번 또는 이름으로 검색하세요."
+    else:
+        if name is None:
+            result = session.query(St_info).filter(St_info.ST_ID == id).all()
+        elif id is None:
+            result = session.query(St_info).filter(St_info.NAME == name).all()
+        else:
+            result = session.query(St_info).filter(St_info.ST_ID == id, St_info.NAME == name).all()
+        return result
+
+@app.get('/useradd')
+async def useradd(id=None, name=None, dept=None):
+    if (id and name and dept) is None:
+        return "학번, 이름, 학과명을 입력하세요."
+    else:
+        user = St_info(ST_ID=id, NAME=name, DEPT=dept)
+        session.add(user)
+        session.commit()
+        result = session.query(St_info).all()
+        return result
+
+@app.get("/userupdate")
+async def updateadd(id=None, name=None, dept=None):
+    if id is None:
+        return "학번을 입력하세요"
+    else:
+        user = session.query(St_info).filter(St_info.ST_ID == id).first()
+        user.NAME = name
+        user.DEPT = dept
+        session.add(user)
+        session.commit()
+        result = session.query(St_info).filter(St_info.ST_ID == id).all()
+        return result
+
+@app.get("/userdel")
+async def updateadd(id=None):
+    if id is None:
+        return "학번을 입력하세요"
+    else:
+        session.query(St_info).filter(St_info.ST_ID == id).delete()
+        session.commit()
+        result = session.query(St_info).all()
+        return result
+
+
+
+
+
