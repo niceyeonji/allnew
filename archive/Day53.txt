@@ -1,0 +1,647 @@
+Day-53
+
+### new instance 중지 후 이미지 생성
+
+이미지 이름 :
+multi_webserver_img
+
+이미지 설명 :
+new
+
+
+### 시작 템플릿 생성
+
+EC2 -> 인스턴스 -> 인스턴스 centos 선택 ->
+작업 -> 인스턴스에서 템플릿 생성 -> 시작 템플릿 이름 “aws_centos_t” -> 템플릿 버전 “v1.0” ->
+맨 아래 고급 세부 정보 항목 ->
+종료동작 -> 시작 템플릿에서 포함하지 않음 선택 ->
+최대 절전 중지 방식 -> 시작 템플릿에서 포함하지 않음 선택 -> 시작 템플릿 생성
+
+
+### Auto Scaling  그룹 생성
+
+EC2 -> 인스턴스 -> 템플릿으로 인스턴스 시작 ->
+원본 템플릿 “aws_centos_t” 선택 -> 인스턴스 시작
+
+생성된 인스턴스 이름 변경 : “scale_t”
+
+
+
+EC2 -> 시작 템플릿 -> aws_centos_t 선택 -> 작업 -> Auto Scaling 그룹 생성 -> 그룹 이름 “scaling_t” -> 다음 ->
+
+가용영역 및 서브넷을 “2a, 2c” 선택 -> 다음 -> 모니터링 CloudWatch 내에서 그룹 지표 수집 활성화 체크 -> 다음 -> 그룹 크기.. 최대 용량 “2”로 변경 -> 
+크기 조정 정책에서 대상 추척 크기 조정 정택 선택 -> 
+크기 조정 정책 이름 : cpu policy,
+대상 값 : 70, 인스턴스 요구 사항 : 180 ->
+다음 -> 다음 -> 다음 -> Auto Scaling 그룹 생성
+
+## host computer..
+
+## vi .ssh/config
+
+# aws ec2 scaling_t
+   Host scale
+       HostName 13.125.49.42
+       User root
+       IdentityFile ~/.ssh/new_aws_moon.pem
+
+# ssh ec2-user@scale
+
+$ sudo passwd root
+1234
+1234
+
+$ su -
+1234
+
+# vi .ssh/authorized_keys
+
+ssh-rsa 앞부분 삭제…..
+
+# exit
+
+$ exit
+
+# ssh scale
+
+# dnf -y install stress
+
+창을 하나 더 만들고 top으로 모니터링..
+
+# top
+
+# stress —cpu 2
+
+잠시 후에 
+
+EC2 ->  Auto Scaling 그룹 -> Scaling_t 
+인스턴스가 새로 생기는지 확인
+
+작업 종료하면 수 분 후에 자동으로 인스턴스가 사라짐..
+
+
+## Auto Scaling -> Auto Scaling 그룹 삭제
+
+## scale_t 인스턴스 종료….
+
+
+## 로드 밸런싱
+
+EC2 -> 인스턴스 -> 템플릿으로 인스턴스 시작 ->
+원본 템플릿 “aws_centos_t” 선택 -> 인스턴스 시작
+
+생성된 인스턴스 이름 변경 : “alb”
+
+퍼블릭 IPv4 주소 복사….
+
+3.39.237.11
+
+EC2 -> 로드 밸런싱 -> 대상 그룹 선택
+
+create target group 클릭
+
+Target group name : aws-moon-tg
+
+Health checks path 를 /ping으로 변경
+
+-> next 클릭..
+
+Register targets -> instance 선택 ->
+Include as pending 클릭 ->
+create target group 클릭
+
+
+로브밸런싱 -> 로드밸런서 -> create load balancer 클릭 ->
+
+Application Load Balancer 선택 후 create
+
+Lad balancer name 지정 :   moon-alb-test
+
+Subnet mapping 에서 가용 영역 선택
+
+Security groups에서 aws_group 선택
+
+Listeners and routing에서 defalut action에서 target 그룹 지정
+
+맨 아래 create load balancer 클릭
+
+view load balancer 클릭
+
+로드밸런서 -> 모니터링 창을 보면서 이후 작업 진행…
+
+
+## vi .ssh/config
+
+   # aws ec2 alb
+   Host alb
+       HostName 3.39.237.11
+       User root
+       IdentityFile ~/.ssh/new_aws_moon.pem
+
+# ssh ec2-user@alb
+
+$ sudo passwd root
+1234
+1234
+
+# su -
+
+# vi .ssh/authorized_keys
+
+ssh-rsa 앞부분 삭제..
+
+# exit
+
+$ exit
+
+# ssh alb
+
+# netstat -ntlp
+
+
+# vi /etc/nginx/nginx.conf 
+
+ 54         location / {
+ 55                 proxy_pass http://localhost:3000;
+ 56         }
+
+# systemctl restart nginx
+
+# systemctl status nginx
+
+
+## node js install and test
+
+# nvm --version
+
+# nvm ls
+
+# nvm use v16.20
+
+# nvm ls
+
+# node -e "console.log('Running Node.JS ' + process.version)"
+Running Node.JS v16.20.0
+
+# mkdir node
+
+# cd node
+
+# vi hello.js
+
+  1 var express = require('express');
+  2 var app = express();
+  3
+  4 app.get('/', function (req, res) {
+  5         res.send("Hello, NodeJS~!!");
+  6 });
+  7
+  8 app.listen(8000, function () {
+  9         console.log('8000 Port : Server Started~!!');
+ 10 })
+ 11
+
+# npm init -y
+
+# npm install express
+
+# node hello.js
+
+브라우저를 열어서 자신의 IP로 접속하면 3000번 포트의 node js 실행 정보가 보여짐…
+
+콘솔에서 로드밸런서 모니터링 정보 중 
+Consumed Load Balancer Capacity Units을 보면 정상적인 로드밸런싱이 일어남을 확인 가능..
+
+
+
+결과 확인 되신 분들은…
+
+alb 인스턴스 -> 로드 밸런서 -> 대상 그룹 삭제….
+
+ 
+## new 인스턴스 생성
+
+이름 : aws_regacy_centos
+이미지 : Amazon Linux 2 Kernel 5.10 AMI
+키 페어 이름 : new_aws_moon
+보안 그룹 : aws_group
+스토리지 : 30G
+
+기존 new 인스턴스 종료후 남는 탄력적 IP를 연결해주세요.
+
+# rm -rf .ssh/known_hosts
+
+# ssh ec2-user@new
+
+$ sudo passwd root
+1234
+1234
+
+# vi /etc/ssh/sshd_config
+
+ 38 PermitRootLogin yes
+
+# systemctl restart sshd
+
+# vi .ssh/authorized_keys
+
+ssh-rsa 앞부분 삭제…
+
+# exit
+
+$ exit
+
+
+## host computer…
+
+# cd ~/.ssh
+
+# scp -i new_aws_moon.pem new_aws_moon.pem root@new:/root
+
+# scp -i new_aws_moon.pem config root@new:/root
+
+# ssh new
+
+# mv new_aws_moon.pem .ssh
+
+# mv config .ssh
+
+# yum -y update; yum -y upgrade
+
+# scp root@awsc:/root/.bashrc .
+
+# scp root@awsc:/root/.exrc .
+
+# source .bashrc
+
+# cp .bashrc /etc/skel
+cp: overwrite `/etc/skel/.bashrc'? y
+
+# cp .exrc /etc/skel
+
+# su - ec2-user
+
+$ cp /etc/skel/.bashrc .
+
+$ cp /etc/skel/.exrc .
+
+$ source .bashrc
+
+$ exit
+
+## vi .bashrc 
+열어서 아래 3줄 삭제..
+
+
+### new - jdk 설치
+
+## host computer…
+
+jdk-8u202-linux-x64.tar.gz
+
+# scp -i ~/.ssh/new_aws_moon.pem jdk-8u202-linux-x64.tar.gz root@new:/root
+
+
+## new…
+
+# mkdir -p /usr/java
+
+# mv ~/jdk-8u202-linux-x64.tar.gz /usr/java
+
+# cd /usr/java
+
+# tar xvzf jdk-8u202-linux-x64.tar.gz
+
+# rm -rf *.gz
+
+# mv jdk1.8.0_202/ jdk1.8
+
+ 78 export JAVA_HOME=/usr/java/jdk1.8
+ 79 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+ 80 export PATH=$PATH=$PATH:$JAVA_HOME/bin
+
+# source /etc/profile
+
+# javac -version
+
+
+### new - node 설치
+
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+
+# source ~/.bashrc
+
+# nvm --version
+
+# nvm ls-remote
+
+# nvm install v16.20
+
+# nvm ls
+
+# node -v
+v16.20.0
+
+
+### new - SBT install
+
+# curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
+
+# mv sbt-rpm.repo /etc/yum.repos.d/
+
+# yum -y install sbt
+
+
+### scala install
+
+# wget https://downloads.lightbend.com/scala/2.13.10/scala-2.13.10.tgz
+
+# mv scala-2.13.10.tgz /usr/local
+
+# cd /usr/local
+
+# tar xvzf scala-2.13.10.tgz
+
+# rm -rf scala-2.13.10.tgz
+
+## vi /etc/profile
+
+ 78 export JAVA_HOME=/usr/java/jdk1.8
+ 79 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+ 80 export SCALA_HOME=/usr/local/scala-2.13.10
+ 81 export PATH=$PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin
+
+# source /etc/profile
+
+# scala -version
+
+
+## maven install
+
+# wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+
+# mv apache-maven-3.8.8-bin.tar.gz /usr/local
+
+# cd /usr/local
+
+# tar xvzf apache-maven-3.8.8-bin.tar.gz
+
+# rm -rf *.gz
+
+# mv apache-maven-3.8.8/ maven-3.8.8
+
+
+# vi /etc/profile
+
+ 78 export JAVA_HOME=/usr/java/jdk1.8
+ 79 export CLASSPATH=$CLASSPATH:$JAVA_HOME/jar/lib/ext:$JAVA_HOME/lib/tools.jar
+ 80 export SCALA_HOME=/usr/local/scala-2.13.10
+ 81 export MAVEN_HOME=/usr/local/maven-3.8.8
+ 82 export PATH=$PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin:$MAVEN_HOME/bin
+
+# source /etc/profile
+
+# mvn -v
+
+
+### new - NGINX install
+
+# yum -y update
+
+# amazon-linux-extras install -y nginx1
+
+# systemctl start nginx
+
+# systemctl status nginx
+
+# systemctl enable nginx
+
+# netstat -ntlp
+
+
+### Tomcat install
+
+https://apache.org
+
+# ssh new
+
+# cd /usr/local
+
+# wget https://archive.apache.org/dist/tomcat/tomcat-10/v10.0.27/bin/apache-tomcat-10.0.27.tar.gz
+
+# tar xvzf apache-tomcat-10.0.27.tar.gz
+
+# rm -rf *.gz
+
+# mv apache-tomcat-10.0.27/ tomcat-10.0.27
+
+## vi /etc/profile
+
+ 81 export TOMCAT_HOME=/usr/local/tomcat-10.0.27
+ 82 export PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin:$MAVEN_HOME/bin:$TOMCAT_HOME/bin
+
+# source /etc/profile
+
+# version.sh
+
+# startup.sh
+
+# netstat -ntlp
+
+http://52.78.109.35:8080/
+
+# cd /usr/local/tomcat-10.0.27/conf/
+
+# ls
+
+# vi tomcat-users.xml
+
+56  <role rolename="tomcat"/>
+57  <role rolename="role1"/>    
+58  <role rolename="employee"/>
+59  <user username=“moon” password="1234" roles="employee"/>
+60  <user username="tomcat" password="1234" roles="tomcat"/>
+61  <user username="both" password="1234" roles="tomcat,role1"/>
+62  <user username="role1" password="1234" roles="role1"/>
+
+## 브라우저에서…
+
+Examples -> JSP Examples -> Other Examples -> Form Authentication
+
+위 링크에서 사용자 로그인 테스트…
+
+# shutdown.sh
+
+# startup.sh
+
+Fist Web Application -> 아래 Example Application 클릭 -> Sample Application에서 다운로드 -> sample.war 다운로드 되어 짐…
+
+## host computer…
+
+# scp -i ~/.ssh/new_aws_moon.pem sample.war root@awsc:/root
+
+## awsc…..
+
+# cd /usr/local/tomcat-10.0.27/webapps/
+
+# mv ~/sample.war .
+
+# ls
+
+## 브라우저에서…
+
+http://52.78.109.35:8080/sample/
+
+# ls
+
+로 확인하면 sample 디렉토리가 생성됨
+
+# file sample.war
+sample.war: Java archive data (JAR)
+
+
+### tomcat 서버 종료
+
+ # shutdown.sh
+
+# netstat -ntlp
+
+# cd
+
+
+### Lightsail 구축
+
+platform : Linux
+
+blueprint : Node.js
+
+Choose your instance plan $10
+
+name : node1 
+
+Key-value tags
+
+name : node1
+
+create instance 클릭
+
+
+
+Network -> Static IP -> create static IP
+
+Attach to an instance -> nod1 선택
+
+Pulic static ip address 13.209.183.10 생성됨..
+
+
+Lightsail Home 클릭 -> node1 오른쪽 3점 클릭 ->
+
+Manager -> Download default key download
+
+
+## host computer…
+
+# cd ~/Downloads
+
+# mv *.pem ../aws
+
+# cd ../aws
+
+# ls
+
+# cp LightsailDefaultKey-ap-northeast-2.pem ../.ssh
+
+# chmod 600 LightsailDefaultKey-ap-northeast-2.pem
+
+# scp LightsailDefaultKey-ap-northeast-2.pem root@awsc:/root
+
+# scp LightsailDefaultKey-ap-northeast-2.pem root@awsu:/root
+
+
+## awsc….
+
+# chmod 600 ~/.ssh/LightsailDefaultKey-ap-northeast-2.pem
+
+# ssh bitnami@bit
+
+$ sudo passwd root
+
+$ su -
+
+# vi .ssh/authorized_keys
+
+ssh-rsa 앞부분 삭제…
+
+# exit
+
+$ exit
+
+# scp .ssh/new_aws_moon.pem root@bit:/root
+
+# scp .ssh/config root@bit:/root
+
+# ssh bit
+
+# cat > .exrc
+set nu ai sm
+
+# vi .bashrc
+
+ 35 alias c='clear'
+ 36 alias h='history'
+ 37 alias df='df -Th'
+ 38 alias grep='grep --color=auto'
+ 39 alias ls='ls -aCF --color=auto'
+ 40 alias ll='ls -alF --color=auto'
+ 41
+ 42 export PS1='[\[\e[1;31m\]\u\[\e[m\]@\[\e[1;32m\]\h\[\e[m\] \[\e[1;36m\]\w\[\e[m\]]\$ '
+
+# cp .bashrc /etc/skel
+
+# cp .exrc /etc/skel
+
+# su - bitnami
+
+$ cp /etc/skel/.bashrc .
+
+$ cp /etc/skel/.exrc .
+
+$ source .bashrc
+
+$ exit
+
+# mkdir /node
+
+# cd /node
+
+# vi hello.js
+
+     1	var express = require('express');
+     2	var app = express();
+     3
+     4	app.get('/', function (req, res) {
+     5		res.send("Hello, Node JS~!!");
+     6	});
+     7
+     8	app.listen(8000, function () {
+     9	         console.log(‘8000 Port : Server Started~!!');
+    10	})
+    11
+
+# npm init -y
+
+# npm install express
+
+# npm install -g nodemon
+
+# nodemon hello.js
+
+## node1 -> manage -> Netwoking -> add rule
+
+custom tcp 8000 추가
+
+브라우저에서 ip:8000 확인
+
+
+
+
