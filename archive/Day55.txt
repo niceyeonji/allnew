@@ -1,0 +1,611 @@
+Day-55
+
+### Slack을 이용한 Chat bot 제작
+
+## Slack 회원 가입 후 워크 스페이스 생성.
+
+## slack api 사이트 -> Your Apps
+
+Create an app click -> From scratch click
+
+App Name : Bot
+
+Pick a workspace to develop your app in: moon
+
+Create App click
+
+
+## Add features and functionality
+
+## App 관련 권한 설정..
+
+Review Scopes to Add Click
+
+
+Slack API Methods 사이트에 가면 권한 확인 가능
+
+https://api.slack.com/methods
+
+
+## Bot Token Scopes
+
+conversations.list  채널 목록 조회
+: channels:read, groups:read, im:read, mpim:read
+
+conversations.history  채널 내 글 이력 조회
+: channels:history, groups:history, im:history, mpim:history
+
+chat.postMessage  메시지 등록
+: chat:write
+
+
+OAuth Tokens for Your Workspace
+
+install to workspace click
+
+Allow 클릭
+
+Bot User OAuth Token -> Copy 클릭
+
+xoxb-5414170700355-5438184896432-qCX1jiAOaQrsrBxD2QsFEP8R
+
+
+## bot 앱을 채널에 추가하기
+
+워크 스페이스 -> Bot 클릭 옆 클릭 -> 이 앱을 채널에 추가 ->
+# 프로젝트 채널 선택 -> 추가
+
+
+### Python으로 Slack API 호출하기
+
+## slack python sdk 설치..
+
+# mkdir -p /allnew/python/slackbot
+
+# cd /allnew/python/slackbot
+
+# pip install slack_sdk
+
+
+## first.py
+
+from slack_sdk import WebClient
+import os.path
+import json
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, "../secret.json")
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+        
+class SlackAPI:
+    def __init__(self, token):
+        self.client = WebClient(token)
+        
+    def get_channel_id(self, channel_name):
+        result = self.client.conversations_list()
+        channels = result.data['channels']
+        channel = list(filter(lambda c: c['name']==channel_name, channels))[0]
+        channel_id = channel["id"]
+        return channel_id
+        
+    def get_message_ts(self, channel_id, query):
+        result = self.client.conversations_history(channel=channel_id)
+        messages = result.data['messages']
+        message = list(filter(lambda m: m["text"]==query, messages))[0]
+        message_ts = message["ts"]
+        return message_ts
+        
+    def post_thread_message(self, channel_id, message_ts, text):
+        result = self.client.chat_postMessage(
+            channel=channel_id,
+            text = text,
+            thread_ts = message_ts
+            )
+        return result
+    
+    def post_message(self, channel_id, text):
+        result = self.client.chat_postMessage(
+            channel = channel_id,
+            text = text
+        )
+        return result
+
+BotToken = get_secret("slack_BotOAuthToken")
+slack = SlackAPI(BotToken)
+channel_name = "프로젝트"
+query = "슬랙봇 테스트"
+text = "안녕하세요. 슬랙봇입니다."
+
+channel_id = slack.get_channel_id(channel_name)
+message_ts = slack.get_message_ts(channel_id, query)
+slack.post_thread_message(channel_id, message_ts, text)
+
+
+
+## vi .gitignore
+
+    34	python/secret.json
+    35	**/secret.json
+
+
+## /allnew/python/secret.json
+{
+"slack_BotOAuthToken": "xoxb-5414170700355-5438184896432-qCX1jiAOaQrsrBxD2QsFEP8R"
+}
+
+# 프로젝트 채널에서 -> “슬랙봇 테스트” 입력
+
+# python first.py
+
+
+
+
+## Add features and functionality
+
+## User Token Scopes
+
+conversations.list  채널 목록 조회
+: channels:read, groups:read, im:read, mpim:read
+
+conversations.history  채널 내 글 이력 조회
+: channels:history, groups:history, im:history, mpim:history
+
+chat.postMessage  메시지 등록
+: chat:write
+
+
+OAuth Tokens for Your Workspace
+
+install to workspace click
+
+Allow 클릭
+
+
+User OAuth Token -> Copy 클릭
+
+xoxp-5414170700355-5426931168113-5438429885392-97dcab5b97077af32fa64c8254cb4e33
+
+
+## /allnew/python/secret.json
+{
+  "slack_UserOAuthToken": "xoxp-5414170700355-5426931168113-5438429885392-97dcab5b97077af32fa64c8254cb4e33",
+  "slack_BotOAuthToken": "xoxb-5414170700355-5438184896432-qCX1jiAOaQrsrBxD2QsFEP8R",
+  "slack_WebHookToken": "https://hooks.slack.com/services/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"
+}
+
+
+## app.py
+
+import requests
+import uvicorn
+from fastapi import FastAPI, status
+from fastapi.responses import PlainTextResponse
+import os.path
+import json
+
+app = FastAPI()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+secret_file = os.path.join(BASE_DIR, "../secret.json")
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg
+        
+UserToken = get_secret('slack_UserOAuthToken')
+BotToken = get_secret('slack_BotOAuthToken')
+channelName = "#프로젝트"
+
+@app.get(path='/')
+async def health_check():
+    return "OK"
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=3000)
+
+def post_message(token, channel, text):
+    response = requests.post("https://slack.com/api/chat.postMessage", 
+        headers = {"Authorization" : "Bearer "+token},
+        data={"channel":channel, "text":text}
+    )
+
+@app.post(path='/sendUserchat')
+async def sendUserChat(text:str):
+    post_message(UserToken,channelName,text)
+    return {f'message:{text}'} 
+
+@app.post(path='/sendBotchat')
+async def sendBotChat(text:str):
+    post_message(BotToken,channelName,text)
+    return {f'message:{text}'} 
+
+@app.post(path='/sendhook')
+async def sendHook(text:str):
+    webhookToken = get_secret("slack_WebHookToken")
+    cmd = "curl -X POST -H " 
+    cmd += "'Content-type: application/json' --data "
+    cmd += "'{" + '"text"' + ":" + '"' + text + '"' + "}' "
+    cmd += webhookToken    
+    os.system(cmd)
+    return cmd 
+
+
+# pip install uvicorn
+
+# pip install fastapi
+
+## Makefile
+
+pre:
+	source .venv/bin/activate
+run:
+	uvicorn app:app --host 0.0.0.0 --port 3000 --reload
+
+# make run
+
+
+
+
+## Add features and functionality
+
+Incoming WebHooks
+
+Activate Incoming Webhooks -> ON
+
+Add New Webhook to Workspace
+
+복사 한 후 에 터미널에서 테스트
+
+Sample curl request to post to a channel:
+
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
+
+https://hooks.slack.com/services/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
+
+
+## App Manifest
+
+display_information:
+  name: Bot
+features:
+  bot_user:
+    display_name: Bot
+    always_online: false
+oauth_config:
+  scopes:
+    user:
+      - channels:read
+      - groups:read
+      - im:read
+      - mpim:read
+      - channels:history
+      - groups:history
+      - im:history
+      - mpim:history
+      - chat:write
+    bot:
+      - channels:read
+      - groups:read
+      - im:read
+      - mpim:read
+      - channels:history
+      - groups:history
+      - im:history
+      - mpim:history
+      - chat:write
+      - incoming-webhook
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
+
+## 3가지 fastapi 테스트…
+
+
+
+
+### Amazon S3
+
+Amazon S3 -> 버킷 만들기 ->
+버킷 이름 : lunar-2075 ->
+AWS 리전 : 아시아 태평양(서울) ap-northeast-2 >
+이 버킷의 퍼블릭 액세스 차단 설정 ->
+모든 퍼블릭 액세스 차단 체크 해제 ->
+아래 2개 체크 박스 체크 ->
+현재 설정으로 인해 이 버킷과 그 안에 포함된 객체가 퍼블릭 상태가 될 수 있음을 알고 있습니다. 체크 ->
+버킷 만들기
+
+Amazon S3 -> lunar-2075 -> 액세스 지점 생성 ->
+액세스 지점 이름 : lunar-2075-ap ->
+이 액세스 포인트의 퍼블릭 액세스 차단 설정 ->
+모든 퍼블릭 액세스 차단 -> 
+모든 퍼블릭 액세스 차단 체크 해제 ->
+아래 2개 체크 박스 체크 ->
+VPC ID -> vpc-lunar-2075
+액세스 지점 생성
+
+lunar-2075-ap -> 속성 ->
+
+arn:aws:s3:ap-northeast-2:958801565764:accesspoint/lunar-2075-ap
+
+
+### Amazon S3 사용자 인증
+
+AWS 콘솔 -> 보안 자격 증명 -> 사용자 -> 사용자 추가
+
+사용자 이름 : s3admin  -> 다음
+
+권한 옵션 -> 직접 정책 연결 -> AmazonS3으로 검색 -> 
+AmazonS3FullAccess -> 다음 -> 사용자 생성
+
+s3admin -> 보안 자격 증명 -> 
+
+Command Line Interface(CLI)
+위의 권장 사항을 이해했으며 액세스 키 생성을 계속하려고 합니다. 체크  -> 다음 -> 액세스키 만들기 
+
+
+### S3 Programming
+
+## /allnew/.env
+
+ID=AKIA56PIG3BCFDOCMXHH
+SECRET=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
+
+
+# mkdir /allnew/node/s3_data
+
+# cd /allnew/node/s3_data
+
+## uploads.js
+
+const fs = require('fs');
+const env = require("dotenv").config({ path: "../../.env"});
+
+const AWS =  require('aws-sdk');
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
+const BUCKET_NAME = 'lunar-2075';
+const MYREGION = 'ap-northeast-2'
+const s3 = new AWS.S3({accessKeyId: ID, secretAccessKey: SECRET, region: MYREGION});
+
+const uploadFile = (fileName) => {
+  const fileContent = fs.readFileSync(fileName);
+  const params = {
+    Bucket: BUCKET_NAME,
+    Key: 'axios.png',
+    Body: fileContent
+  };
+  s3.upload(params, function(err, data) {
+    if (err) {throw err;}
+    console.log(`File uploaded succssfully. ${data.Location}`);
+  });
+};
+uploadFile('axios.png');
+
+
+## host computer..
+
+# cd  ~/Downdloads
+
+# scp axios.png root@awsu:/allnew/node/s3
+
+# npm init -y
+
+# npm install aws-sdk
+
+# npm install fs dotenv axios
+
+# node uploads.js 
+
+
+
+
+## downlaod.js
+
+const fs = require('fs');
+const env = require("dotenv").config({ path: "../../.env"});
+
+const AWS =  require('aws-sdk');
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
+const BUCKET_NAME = 'lunar-2075';
+const MYREGION = 'ap-northeast-2'
+const s3 = new AWS.S3({accessKeyId: ID, secretAccessKey: SECRET, region: MYREGION});
+
+const downloadFile = (fileName) => {
+  const params = {
+    Bucket: BUCKET_NAME,
+    Key: 'axios.png'
+  };
+  s3.getObject(params, function(err, data) {
+    if (err) {throw err;}
+    fs.writeFileSync(fileName, data.Body)
+  });
+};
+downloadFile('axios.png');
+
+# ls
+
+# rm -rf axios.png
+
+# node download.js
+
+
+
+
+### s3_list
+
+# cd ..
+
+# mkdir s3_list
+
+# cd s3_list
+
+# mkdir public routes
+
+# cp ../member/app.js .
+
+
+## app.js
+
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+app.set('port', process.env.PORT || 8000);
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+var s3view = require('./routes/s3view.js');
+app.use('/', s3view);
+
+app.listen(app.get('port'), () => {
+    console.log('8000 Port : Server Started...')
+});
+
+
+# cp ../member/public/index.html public
+
+## public/index.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>S3 Example</title>
+  </head>
+  <body>
+    <h3>S3 Example</h3>
+    <hr />
+    <iframe
+      name="targetURL"
+      width="70%"
+      height="500"
+      style="border: none"
+      src="/list"
+    ></iframe>
+  </body>
+</html>
+
+
+# cp ../member/routes/main.js routes/s3view.js
+
+
+## routes/s3view.js
+
+const express    = require('express');
+const app        = express.Router();
+const bodyParser = require('body-parser');
+const fs         = require('fs');
+const path       = require('path');
+const env        = require("dotenv").config({ path: "../../../.env"});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended : false}));
+app.use(express.json());
+app.use(express.urlencoded({extended : true}));
+
+const AWS = require('aws-sdk');
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
+const BUCKET_NAME = 'lunar-2075';
+const MYREGION = 'ap-northeast-2'
+const s3 = new AWS.S3({accessKeyId: ID, secretAccessKey: SECRET, region: MYREGION});
+
+app.get("/list", (req, res) => {
+  var params = {
+    Bucket: BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: 'uploadedFiles/'
+  }
+  s3.listObjects(params, function (err, data) {
+    if(err) throw err;
+    //res.json(data.Contents);
+    res.writeHead(200);
+      var template = `
+        <!doctype html>
+        <html>
+        <head>
+          <title>Result</title>
+          <meta charset="utf-8">
+        </head>
+        <body>
+          <table border="1" margin: auto; text-align: center;>
+          <tr>
+            <th> Key </th>
+            <th> LastModified </th>
+            <th> Size </th>
+            <th> StorageClass </th>
+            <th> Down </th>
+            <th> Del </th>
+          </tr>
+      `;
+      for(var i=0;i<data.Contents.length;i++) {
+        template += `
+          <tr>
+            <th>${data.Contents[i]['Key']}</th>
+            <th>${data.Contents[i]['LastModified']}</th>
+            <th>${data.Contents[i]['Size']}</th>
+            <th>${data.Contents[i]['StorageClass']}</th>
+            <th>
+            <form method='post' action='/downloadFile'>
+            <button type="submit" name='dlKey' value=${data.Contents[i]['Key']}>down</button>
+            </form>
+            </th>
+            <th>
+            <form method='post' action='/deleteFile'>
+            <button type="submit" name='dlKey' value=${data.Contents[i]['Key']}>del</button>
+            </form>
+            </th>
+          </tr>
+          `;
+        }
+        template +=`
+        </table>
+      </body>
+      </html>
+    `;
+    res.end(template);
+  })
+});
+
+module.exports = app;
+
+# npm init -y
+
+# npm install express body-parser fs path dotenv morgan cookie-parser aws-sdk
+
+# npm install -g nodemon
+
+# nodemon app.js
+
+
+## S3에서 폴더 만들기
+
+uploadedFiles
+
+
+
+

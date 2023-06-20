@@ -1,0 +1,876 @@
+Day-57
+
+### Docker Basic
+
+## host computer..
+
+# docker -v
+
+# docker search raspbian
+
+# docker pull raspbian/stretch
+
+# docker images
+
+# docker run -it --name raspbian raspbian/stretch /bin/bash
+
+root@18e9cf47bb81:/# df -h
+
+root@18e9cf47bb81:/# exit
+
+# docker ps
+
+# docker ps -a
+
+# docker images
+
+# docker start 1
+
+# docker ps
+
+# docker attach 1
+
+root@18e9cf47bb81:/# apt -y update; apt -y upgrade
+
+root@18e9cf47bb81:/# apt -y install vim
+
+root@18e9cf47bb81:/# cat > ~/.exrc
+set nu ai sm
+
+root@18e9cf47bb81:/# vi ~/.bashrc
+
+ 25 alias c='clear'
+ 26 alias h='history'
+ 27 alias df='df -Th'
+ 28 alias egrep='egrep --color=auto'
+ 29
+ 30 export PS1='[\[\e[1;31m\]\u\[\e[1;36m\]@\[\e[1;32m\]\h\[\e[m\] \[\e[1;36m\]\w\[\e[m\]]\$ '
+
+root@18e9cf47bb81:/# source ~/.bashrc
+
+[root@18e9cf47bb81 /]# cd
+
+[root@18e9cf47bb81 ~]# cp .exrc /etc/skel
+
+[root@18e9cf47bb81 ~]# cp .bashrc /etc/skel
+
+[root@18e9cf47bb81 ~]# exit
+
+# docker ps -a
+
+# docker login --username=impelfin
+Password:
+Login Succeeded 
+
+# docker commit raspbian raspbian_20230616
+
+# docker ps -a
+
+# docker images
+
+# docker tag raspbian_20230616 impelfin/raspbian_20230616
+
+# docker images
+
+# docker push impelfin/raspbian_20230616
+
+# docker ps -a
+
+# docker rm 1
+
+# docker images
+
+# docker rmi impelfin/raspbian_20230616
+Untagged: impelfin/raspbian_20230616:latest
+
+# docker images
+
+# docker rmi 2
+
+# docker rmi 8
+
+# docker images
+
+# docker pull impelfin/raspbian_20230616
+
+# docker images
+
+# docker run -it --name raspbian impelfin/raspbian_20230616 /bin/bash
+
+[root@344d0f63eff8 /]# df -h
+
+[root@344d0f63eff8 /]# exit
+
+# docker images
+
+# docker ps -a
+
+# docker start 3
+
+# docker attach 3
+
+# Ctrl + P + Q (백그라운 남겨둔 채 빠져 나옴)
+
+[root@344d0f63eff8 /]# read escape sequence
+
+# docker ps
+
+# docker attach 3
+
+[root@344d0f63eff8 /]# exit
+
+
+## 브라우저에서 docker logo image를 Downloads에 다운
+
+# docker run -it -v /Users/Lune/Downloads:/mnt/share --name rasp impelfin/raspbian_20230616
+
+[root@aa0546d18e8b /]# cd /mnt/share
+
+[root@aa0546d18e8b /mnt/share]# ls
+Docker-Logo.png
+
+[root@aa0546d18e8b /mnt/share]# exit
+
+# docker ps -a
+
+# docker container rm -f $(docker container ls -aq)
+
+# docker pull ubuntu
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+# docker image rm -f $(docker image ls -q)
+
+# docker images
+
+# docker pull impelfin/raspbian_20230616
+
+—————————————————————————
+[Windows users]
+
+# bash
+—————————————————————————
+
+# docker save impelfin/raspbian_20230616 > raspbian_20236016.tar
+
+# ls
+
+# file raspbian_20236016.tar
+
+# docker images
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+# docker load --input raspbian_20236016.tar
+
+# docker images
+
+# rm -rf raspbian_20236016.tar
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+# exit
+
+
+### Docker ubuntu:14.04 pull and run
+
+# docker run -it ubuntu:14.04
+
+# docker images
+
+# docker ps -a
+
+# docker start 3
+
+# docker attach 3
+
+root@34417a831169:/# exit
+
+# docker pull centos:7
+
+# docker images
+
+# docker ps -a
+
+# docker create -it --name mycentos centos:7
+
+# docker ps -a
+
+# docker start mycentos
+
+# docker attach mycentos
+
+[root@d65219fc7349 /]# exit
+
+# docker start 3
+
+# docker attach 3
+
+# exit
+
+# docker start d
+
+# docker attach d
+
+Ctrl + p + q
+
+[root@d65219fc7349 /]# read escape sequence
+
+# docker ps
+
+# docker start mycentos
+
+# docker attach mycentos
+
+# exit
+
+# docker inspect mycentos | grep d
+
+# docker ps
+
+# docker run -it ubuntu:14.04 echo Hello World
+
+# docker ps -a
+
+# docker rename strange_lumiere myubuntu
+
+# docker ps -a
+
+# docker stop mycentos
+
+# docker ps
+
+# docker ps -a
+
+# docker container rm -f $(docker container ls -aq)
+
+# docker images
+
+# docker run -it --name myu ubuntu:14.04
+
+root@6237f2970909:/# exit
+
+# docker start $(docker ps -aq)
+
+# docker ps
+
+# docker stop $(docker ps -aq)
+
+# docker rm $(docker ps -aq)
+
+# docker ps -a
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+
+### Docker -p Option Test
+
+# ssh awsu
+
+# docker run -it --name myweb -p 8000:80 ubuntu:14.04
+
+root@5a3f2a37ca51:/# apt -y update; apt -y upgrade
+
+root@5a3f2a37ca51:/# apt -y install apache2
+
+root@5a3f2a37ca51:/# service apache2 start
+
+root@5a3f2a37ca51:/# ps -ef | grep apache2
+
+Ctrl + p + q
+
+# docker ps
+
+# netstat -ntlp
+
+tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      11362/docker-proxy
+
+http://13.124.4.168:8000/
+
+
+
+## your browser -> aws ec2:8000 -> docker ubuntu:8000 -> apache2:80
+
+# docker stop 5
+
+# docker rm $(docker ps -aq)
+
+# docker rmi $(docker images -q)
+
+———————————————————————————
+
+# systemctl stop nginx
+
+# netstat -ntlp
+
+
+### Docker Wordpress - Amazon EC2 Ubuntu
+
+# docker images
+
+# docker run -d --name wordpressdb -e MYSQL_ROOT_PASSWORD=abc123 -e MYSQL_DATABASE=wordpress mysql:5.7
+
+# docker images
+
+# docker run -d -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=abc123 --name wordpress --link wordpressdb:mysql -p 80 wordpress
+
+# docker images
+
+# docker ps -a
+
+# docker stop $(docker ps -aq)
+
+# docker ps -a
+
+# docker rm $(docker ps -aq)
+
+# docker run -d --name detach_test ubuntu:14.04
+
+# docker run -d --name wordpressdb -e MYSQL_ROOT_PASSWORD=abc123 -e MYSQL_DATABASE=wordpress mysql:5.7
+
+# docker ps -a
+
+# docker ps
+
+# docker exec wordpressdb ls /
+
+# docker exec -it wordpressdb /bin/bash
+
+bash-4.2# echo $MYSQL_ROOT_PASSWORD
+abc123
+
+bash-4.2# mysql -u root -p
+Enter password: abc123
+
+mysql> exit
+
+bash-4.2# exit
+
+# docker run -d -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=abc123 --name wordpress --link wordpressdb:mysql -p 80 wordpress
+
+# docker exec wordpress curl mysql:3306 --silent
+
+# docker ps
+
+# docker stop wordpress wordpressdb
+wordpress
+wordpressdb
+
+# docker start wordpress
+Error response from daemon: Cannot link to a non running container: /wordpressdb AS /wordpress/mysql
+Error: failed to start containers: wordpress
+
+# docker start wordpressdb
+wordpressdb
+
+# docker start wordpress
+wordpress
+
+# docker stop wordpressdb
+
+# docker run -d --name wordpressdb_hostvolumne -e MYSQL_ROOT_PASSWORD=abc123 -e MYSQL_DATABASE=wordpress -v /home/wordpress_db:/var/lib/mysql mysql:5.7
+
+# docker ps
+
+# ls /home/wordpress_db
+
+# docker stop $(docker ps)
+
+# docker ps -a
+
+# docker rm -f $(docker ps -aq)
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+# rm -rf /home/wordpress_db/
+
+
+### Docker Nginx Server
+
+# docker images
+
+# docker pull nginx
+
+# docker images
+
+# docker run --name nginx -d -p 8000:80 nginx
+
+# docker ps
+
+# curl localhost:8000
+
+
+
+# docker inspect nginx | grep 172.17.0.1
+
+# docker stats nginx
+
+# docker stop nginx
+
+# docker rm nginx
+
+# docker rmi $(docker images -q)
+
+
+### NodeJS Webserver
+
+# docker pull node:16.18.1
+
+# docker images
+
+# vi node_test.js
+
+  1 var http = require('http')
+  2 var content = function(req, res) {
+  3         res.end("Welcome to NodeJS!!" + "\n");
+  4         res.writeHead(200);
+  5 }
+  6
+  7 var server = http.createServer(content);
+  8 server.listen(8000);
+  9
+
+# docker run -it -d -p 8000:8000 --name node_test node:16.18.1
+
+# docker ps
+
+# docker cp node_test.js node_test:/node_test.js
+
+# docker exec -it node_test /bin/bash
+
+root@b0224e1baddd:/# ls
+
+root@b0224e1baddd:/# node node_test.js
+Ctrl + p + q
+
+read escape sequence
+
+# curl localhost:8000
+
+
+
+# docker stop node_test
+
+# curl localhost:8000
+curl: (7) Failed to connect to localhost port 8000 after 0 ms: Connection refused
+
+# docker start node_test
+node_test
+
+# docker exec -d node_test node node_test.js
+
+# curl localhost:8000
+
+# docker stop node_test
+
+# docker rm -f $(docker ps -aq)
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+
+
+### 실행중인 컨테이너 일괄 종료
+
+# docker pull ubuntu
+
+# docker pull centos:7
+
+# docker run -it -d --name ubuntu ubuntu
+
+# docker run -it -d --name cent centos:7
+
+# docker ps
+
+# docker ps -qa
+
+# docker start ubuntu
+
+# docker start cent
+
+# docker ps
+
+# docker rm -f $(docker ps -qa)
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+
+
+### Container CPU 제한
+
+터미널을 하나 더 열어서 htop 명령어 실행
+
+# ssh awsu
+
+# htop
+
+# docker run -d --name cpu_1024 --cpu-shares 1024 ubuntu
+
+# docker update --cpu-shares 512 cpu_1024
+
+# docker update --cpus=0.2 cpu_512
+
+# docker run -it --name cpu_test1 --cpus=0.5 ubuntu bash
+
+root@32c71bf83dbb:/# apt -y update; apt -y upgrade
+
+root@32c71bf83dbb:/# apt -y install stress
+
+root@32c71bf83dbb:/# stress -c 3
+
+root@32c71bf83dbb:/# exit
+
+# docker update --cpus=0.7 cpu_test1
+
+# docker start cpu_test1
+
+# docker attach cpu_test1
+
+root@32c71bf83dbb:/# stress -c 4
+
+root@32c71bf83dbb:/# exit
+
+# docker rm $(docker ps -aq)
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+
+### Dockerfile
+
+Docker에서 인프라 구성을 기술한 파일을 'Dockerfile'이라고 함.
+
+Docker 이미지를 작성하기 위해서는 다음과 같은 내용들이 필요함
+* 베이스가 될 Docker 이미지
+* Docker 컨테이너 안에서 수행한 조작(명령)
+* 환경변수 등의 설정
+* Docker 컨테이너 안에서 작동시켜둘 데몬 실행
+
+
+
+
+Dockerfile의 기본 구문
+
+Dockerfile은 텍스트 형식의 파일.
+어떤 에디터로도 작성 가능.
+
+확장자는 필요없으며, ‘Dockerfile’이라는 이름을 가지고 그 안에 인프라 구성 정보를 작성.
+
+Dockerfile 이외의 파일로 이미지를 작성할 시 이미지를 빌드할 때 파일명을 명시적으로 지정
+ 
+Dockerfile의 기본 구문은 다음과 같다.
+
+명령어 인수 #주석
+
+명령어는 대문자든 소문자든 상관없지만 관례적으로 대문자로 통일하여 사용
+
+주석을 사용할 경우 #를 사용
+
+FROM
+베이스 이미지 지정
+RUN
+명령 실행
+CMD
+컨테이너 실행 명령
+LABEL
+라벨 설정
+EXPOSE
+개방할 포트 번호
+ENV
+환경변수
+ADD
+파일/디렉토리 추가
+COPY
+파일 복사
+ENTRYPOINT
+컨테이너 실행 명령
+VOLUME
+볼륨 마운트
+USER
+사용자 지정
+WORKDIR
+작업 디렉토리
+ARG
+Dockerfile 안의 변수
+ONBUILD
+빌드 완료 후 실행되는 명령어
+STOPSIGNAL
+시스템 콜 시그널 설정
+HEALTHCHECK
+컨테이너의 헬스 체크
+SHELL
+기본 쉘 설정
+
+## Dockerfile로부터 Docker 이미지 생성
+
+docker build 명령어 서식
+
+# docker build -t [생성할 이미지명]:[태그명] [Dockerfile의 위치]
+
+# mkdir -p /allnew/docker
+
+# cd /allnew/docker
+
+# mkdir centos_test
+
+# cd centos_test/
+
+
+# vi Dockerfile
+
+  1 #Base Image
+  2 FROM centos:centos7
+
+# ls
+
+# docker build -t sample:1.0 .
+
+# docker images
+
+# docker run -it --name sample sample:1.0 /bin/bash
+
+[root@eb6a61d369f0 /]# cat /etc/os-release
+
+[root@eb6a61d369f0 /]# exit
+
+# docker ps -a
+
+# docker rm $(docker ps -aq)
+
+# docker images
+
+# docker rmi sample:1.0
+Untagged: sample:1.0
+
+# docker rmi $(docker images -q)
+
+# docker images
+
+
+# vi Makefile
+
+  1 build:
+  2         docker build .
+  3 run:
+  4         docker run -it --name centos centos:centos7 /bin/bash
+  5 exec:
+  6         docker start centos
+  7         docker attach centos
+  8 ps:
+  9         docker ps -a
+ 10 img:
+ 11         docker images
+ 12 rm:
+ 13         docker rm centos
+ 14 rmi:
+ 15         docker rmi centos:centos7
+
+# ls
+
+# make build
+
+# make img
+
+# make run
+
+[root@adb76251d1d1 /]# exit
+
+# make ps
+
+# make rm
+
+# make rmi
+
+# make img
+
+
+### Dockerfile - 레이어 구조
+
+# cd ..
+
+# mkdir ubuntu
+
+# cd ubuntu
+
+
+# vi Dockerfile
+
+  1 # Step1 : Base Images
+  2 FROM ubuntu
+  3
+  4 # Step2 : Install Program
+  5 RUN apt -y update && apt -y install -q nginx && apt -y install vim
+  6
+  7 # Step3 : File Copy
+  8 COPY index.html /var/www/html
+  9
+ 10 # Step4 : Start NGINX
+ 11 CMD ["nginx","-g","daemon off;"]
+
+# cp ../centos_test/Makefile .
+
+
+# vi Makefile
+
+  1 build:
+  2         docker build -t ubuntu:x .
+  3 run:
+  4         docker run -it --name ubuntu -d -p 8000:80 ubuntu:x
+  5 exec:
+  6         docker exec -it ubuntu /bin/bash
+  7 ps:
+  8         docker ps -a
+  9 img:
+ 10         docker images
+ 11 rm:
+ 12         docker stop ubuntu
+ 13         docker rm ubuntu
+ 14 rmi:
+ 15         docker rmi ubuntu
+ 16         docker rmi ubuntu:x
+
+
+# vi index.html
+
+<!Doctype html>
+<html>
+<head>
+<title>Docker - Ubuntu - nginx!!</title>
+</head>
+<body>
+    <h1>Docker - ubuntu - nginx!!</h1>
+</body>
+</html>
+
+# make build
+
+# make img
+
+# make run
+
+# make ps
+
+# curl localhost:8000
+
+
+
+# make exec
+
+root@7c15391f3449:/# exit
+
+# make ps
+
+# make rm
+
+# make rmi
+
+# make img
+
+
+###  Docker RUN options
+
+i : interactive
+t : bash. terminal
+—name : naming
+d : background
+a : attach(stdin, stdout, stderror)
+c : cpu
+m: memory
+e : environment variable
+P : port all
+p : port one
+u : uid
+v : mount directory  - local:container
+w : working directory in container
+
+
+### Multi stage build
+
+
+
+# cd ..
+
+# mkdir multibuild
+
+# cd multibuild
+
+# vi Dockerfile
+
+# 1. Build Image
+FROM golang:1.13 AS builder
+
+# Install dependencies
+WORKDIR /go/src/github.com/asashiho/dockertext-greet
+
+# Build modules
+COPY main.go .
+RUN GOOS=linux go build -a -o greet .
+
+##-----------------------------------
+# 2. Prodcution Image
+FROM busybox
+WORKDIR /opt/greet/bin
+
+# Deploy modules
+COPY --from=builder /go/src/github.com/asashiho/dockertext-greet/ .
+ENTRYPOINT ["./greet"]
+
+
+## main.go
+
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Print("Hello go~!!\n")
+}
+
+
+# cp ../ubuntu/Makefile .
+
+
+## Makefile
+
+  1 build:
+  2         docker build -t greet .
+  3 run:
+  4         docker run -it --rm greet asa
+  5 ps:
+  6         docker ps -a
+  7 img:
+  8         docker images
+  9 rmi:
+ 10         docker rmi $$(docker images -q)
+
+
+# make build
+
+# make run
+
+# make ps
+
+# make img
+
+# make rmi
+
+# make img
+
+
+
+
+

@@ -1,0 +1,444 @@
+Day-56
+
+
+### Amazon S3 Bucket policy set
+
+Amazon S3 -> 버킷 -> lunar-2075 ->  권한 ->
+편집 -> 
+퍼블릭 액세스 차단(버킷 설정) 체크 모두 해제 ->
+변경사항 저장 -> 확인 -> 확인
+
+버킷 정책 -> 편집 -> 정책 생성기 -> 
+
+버킷 ARN -> 복사
+
+arn:aws:s3:::lunar-2075
+
+
+
+
+{
+  "Id": "Policy1686788958892",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1686788940150",
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::lunar-2075",
+      "Principal": "*"
+    }
+  ]
+}
+
+
+
+변경 사항 저장 click..
+
+## awsu..
+
+# cd /allnew/node
+
+# cp -r s3_list s3
+
+
+## app.js
+
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path');
+const fs = require("fs")
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+app.set('port', process.env.PORT || 8000);
+app.set(‘views’, path.join(__dirname, 'public'));
+app.set('view engine','ejs');
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+var s3view = require('./routes/s3view.js');
+app.use('/', s3view);
+
+app.listen(app.get('port'), () => {
+    var dir = './uploadedFiles';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    console.log('8000 Port : Server Started...')
+});
+
+
+## public/confirmation.ejs
+
+<h1>Success!</h1>
+
+<% if(file) { %>
+<pre><%=JSON.stringify(file, null, 2) %></pre>
+<% } %>
+
+<% if(files) { %>
+<pre><%=JSON.stringify(files, null, 2) %></pre>
+<% } %>
+
+<a href='/'>Back</a>
+
+
+## public/upload.ejs
+
+<h1><i>S3</i> File Management Console </h1>
+<hr>
+
+<h3>File Upload</h3>
+<form action="/uploadFile” enctype="multipart/form-data" method="post">
+    <input type="file" name="attachment">
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+<hr>
+
+<iframe name=targetURL class="iframe-preview center" width="100%" height="500" style="border:none;" src="list">
+</iframe>
+
+## routes/s3view.js
+
+const express    = require('express');
+const app        = express.Router();
+const bodyParser = require('body-parser');
+const multer = require("multer")
+const fs         = require('fs');
+const path       = require('path');
+const env        = require("dotenv").config({ path: "../../../.env"});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended : false}));
+app.use(express.json());
+app.use(express.urlencoded({extended : true}));
+
+const AWS = require('aws-sdk');
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
+const BUCKET_NAME = 'lunar-2075';
+const MYREGION = 'ap-northeast-2'
+const s3 = new AWS.S3({accessKeyId: ID, secretAccessKey: SECRET, region: MYREGION});
+
+var storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'uploadedFiles/');
+  },
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}__${file.originalname}`);
+  },
+});
+
+var upload = multer({ dest : 'uploadedFiles/' });
+var uploadWithOriginalFilename = multer({ storage : storage });
+
+app.get('/', function(req, res) {
+  res.render('upload');
+});
+
+app.get("/list", (req, res) => {
+  var params = {
+    Bucket: BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: 'uploadedFiles/'
+  }
+  s3.listObjects(params, function (err, data) {
+    if(err) throw err;
+    //res.json(data.Contents);
+    res.writeHead(200);
+      var template = `
+        <!doctype html>
+        <html>
+        <head>
+          <title>Result</title>
+          <meta charset="utf-8">
+        </head>
+        <body>
+          <table border="1" margin: auto; text-align: center;>
+          <tr>
+            <th> Key </th>
+            <th> LastModified </th>
+            <th> Size </th>
+            <th> StorageClass </th>
+            <th> Down </th>
+            <th> Del </th>
+          </tr>
+      `;
+      for(var i=1;i<data.Contents.length;i++) {
+        template += `
+          <tr>
+            <th>${data.Contents[i]['Key']}</th>
+            <th>${data.Contents[i]['LastModified']}</th>
+            <th>${data.Contents[i]['Size']}</th>
+            <th>${data.Contents[i]['StorageClass']}</th>
+            <th>
+            <form method='post' action='/downloadFile'>
+            <button type="submit" name='dlKey' value=${data.Contents[i]['Key']}>down</button>
+            </form>
+            </th>
+            <th>
+            <form method='post' action='/deleteFile'>
+            <button type="submit" name='dlKey' value=${data.Contents[i]['Key']}>del</button>
+            </form>
+            </th>
+          </tr>
+          `;
+        }
+        template +=`
+        </table>
+      </body>
+      </html>
+    `;
+    res.end(template);
+  })
+});
+
+app.post('/uploadFile', uploadWithOriginalFilename.single('attachment'), function(req,res) {
+  res.render('confirmation', { file:req.file, files:null });
+  
+  console.log(req.file.filename);
+  const filename = req.file.filename;
+  const file = 'uploadedFiles/' + filename;
+  const uploadFile = (filename) => {
+    const fileContent = fs.readFileSync(filename);
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename,
+      Body: fileContent
+    };
+    s3.upload(params, function(err, data) {
+      if (err) { return console.log(err); } 
+      console.log(`File uploaded successfully. ${data.Location}`);
+    })
+  }
+  uploadFile(file);
+  
+  const filePath = path.join(__dirname, '../uploadedFiles', filename);
+  fs.unlink(filePath, (err) => err ? console.log(err) : console.log(`File delete successfully. ${filePath}`))
+})
+
+app.post('/downloadFile', function(req,res) {
+  var filename = req.body.dlKey;
+  console.log(filename);
+  
+  const downloadFile = (filename) => {
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename
+    };
+    s3.getObject(params, function(err, data) {
+      if (err) { return console.log(err); } 
+      res.attachment(filename);
+      res.send(data.Body);
+      res.end();
+    })
+  }
+  downloadFile(filename);
+})
+
+app.post('/deleteFile', function(req,res) {
+  var filename = req.body.dlKey;
+  console.log(filename);
+  
+  const deleteFile = (filename) => {
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename
+    };
+    s3.deleteObject(params, function(err, data) {
+      if (err) { return console.log(err); } 
+      console.log(data);
+      res.redirect('/list');
+    })
+  }
+  deleteFile(filename);
+})
+
+module.exports = app;
+
+
+# cd s3
+
+# rm -rf node_modules/
+
+# rm -rf package*
+
+# npm init -y
+
+# npm install express morgan body-parser cookie-parser ejs multer fs path dotenv aws-sdk
+
+# nodemon app.js
+
+
+
+
+ami-0f29e8a072eec0e03
+
+958801565764/aws_ubuntu_img
+
+
+
+### Docker install - AWS EC2 Ubuntu
+
+# apt -y update
+
+# apt -y upgrade
+
+# docker -v
+Docker version 20.10.21, build 20.10.21-0ubuntu1~22.04.3
+
+# docker search hello-world
+
+# docker pull hello-world
+
+# docker run hello-world
+
+# docker ps -a
+
+# docker ps
+
+# docker images 
+
+# docker ps -a
+
+# docker rm 5
+
+# docker rm f
+
+# docker images 
+
+# docker rmi 9
+
+
+## host computer
+
+# docker search hello-world
+
+# docker pull hello-world
+
+# docker run hello-world
+
+# docker ps 
+
+# docker ps -a
+
+# docker rm 5
+
+# docker run hello-world
+
+# docker ps -a
+
+# docker rm 5
+
+# docker images
+
+# docker rmi 9
+
+
+### swagger
+
+# docker search swagger
+
+# docker pull swaggerapi/swagger-editor
+
+# docker images
+
+# docker run -d -p 8000:8080 swaggerapi/swagger-editor
+
+# docker ps
+
+http://localhost:8000/
+
+
+## swagger-editor 상단 메뉴
+
+File-> Save as YAML -> openapi.yaml 파일 생성
+
+
+# Generate Server 메뉴를 통해 아주 간단하게 Swagger-codegen을 이용 가능
+
+Generate Server -> nodejs-server -> Downloads에 저장
+
+nodejs-server-server-generated.zip
+
+
+# docker ps
+
+# docker stop a
+
+# docker ps -a
+
+# docker rm a
+
+# docker images
+
+# docker rmi 1
+
+
+## host computer..
+
+# scp ~/Downloads/nodejs-server-server-generated.zip root@awsu:/root
+
+
+## awsu..
+
+# cd /allnew/node/
+
+# mkdir swagger
+
+# cd swagger/
+
+# mv ~/nodejs-server-server-generated.zip .
+
+# ls
+
+# apt -y install unzip
+
+# unzip nodejs-server-server-generated.zip
+
+# rm -rf *.zip
+
+# npm install fs path http connect swagger-tools js-yaml
+
+# npm start
+
+http://13.124.4.168:8080/docs/
+
+
+### AWS 과정 평가
+
+# ssh -i ~/.ssh/new_aws_moon.pem ec2-user@43.202.40.117
+
+$ sudo passwd root
+
+$ su -
+
+# vi .ssh/authorized_keys
+
+ssh-rsa 앞 부분 삭제…
+
+# exit
+
+$ exit
+
+# ssh -i ~/.ssh/new_aws_moon.pem root@43.202.40.117
+
+# netstat -ntlp
+
+# cd /var/www
+
+aws-exercise-a.tar.gz
+aws-exercise-b.tar.gz
+
+
+
+
+
+
+
+
+
